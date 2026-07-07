@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+/* ────────────────────────────────────────────────────────────────────────
+   Apollo Racquet Club — theme  (playful-warm / retro-casual)
+   Multi-color flat blocks, chunky rounded type, warm sunny palette that nods
+   to Apollo, the English Cream Golden Retriever. Tailwind v4 CSS-first config.
+   ──────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Warm neutrals */
+  --color-cream: #f7efe0; /* base canvas */
+  --color-cream-2: #f0e4cf; /* deeper cream / tints */
+  --color-ink: #2e2024; /* primary text on light */
+  --color-muted: #7c6a61; /* secondary text on light */
+
+  /* Playful block colors */
+  --color-peach: #f4a87e; /* big blocks + warmth */
+  --color-peach-soft: #f9cdb0; /* peach tint */
+  --color-rose: #eabfc4; /* soft pink blocks */
+  --color-rose-soft: #f5dee1; /* rose tint */
+
+  /* Caramel gold — the Apollo namesake accent */
+  --color-gold: #e4a835;
+  --color-gold-deep: #a9761a; /* gold text on light surfaces */
+  --color-gold-soft: #f4dca6;
+
+  /* Dark anchor */
+  --color-plum: #38282c;
+  --color-plum-deep: #291d20;
+
+  /* Type */
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Base ──────────────────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-plum);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-gold-deep);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Display face runs a touch tight and heavy */
+.font-display {
+  letter-spacing: -0.015em;
+}
+
+/* ── Reusable helpers ──────────────────────────────────────────────────── */
+/* Uppercase eyebrow label */
+.eyebrow {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-gold-deep);
+}
+
+/* Marker-style highlight behind a word (hero) */
+.marker {
+  background-image: linear-gradient(
+    var(--color-gold-soft),
+    var(--color-gold-soft)
+  );
+  background-repeat: no-repeat;
+  background-position: 0 78%;
+  background-size: 100% 42%;
+  padding: 0 0.06em;
+}
+
+/* Playful textures — tint via the element's text color (currentColor) */
+.tex-dots {
+  background-image: radial-gradient(currentColor 1.6px, transparent 1.7px);
+  background-size: 22px 22px;
+}
+.tex-waffle {
+  background-image:
+    linear-gradient(currentColor 1.5px, transparent 1.5px),
+    linear-gradient(90deg, currentColor 1.5px, transparent 1.5px);
+  background-size: 26px 26px;
+}
+
+/* ── Motion preferences ────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
