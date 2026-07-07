@@ -27,7 +27,7 @@ export function VisionSection() {
         {/* mascot polaroid + founder quote */}
         <div className="relative lg:col-span-5">
           <Reveal>
-            <div className="mx-auto max-w-xs rotate-[2.5deg] rounded-[2rem] border-2 border-plum/10 bg-cream p-4 shadow-[10px_10px_0_0_rgba(56,40,44,0.14)]">
+            <div className="mx-auto max-w-xs rotate-[2.5deg] rounded-[2rem] border-2 border-plum/10 bg-cream p-4 shadow-[10px_10px_0_0_rgba(38,34,30,0.14)]">
               <div className="relative grid aspect-square place-items-center overflow-hidden rounded-2xl bg-peach">
                 <div className="tex-dots absolute inset-0 text-plum/[0.09]" />
                 <ApolloMascot className="relative h-40 w-40" />
@@ -39,7 +39,7 @@ export function VisionSection() {
           </Reveal>
 
           <Reveal>
-            <figure className="relative z-10 mx-auto -mt-6 max-w-sm -rotate-2 rounded-2xl border-2 border-plum/10 bg-gold px-6 py-5 shadow-[6px_6px_0_0_rgba(56,40,44,0.16)]">
+            <figure className="relative z-10 mx-auto -mt-6 max-w-sm -rotate-2 rounded-2xl border-2 border-plum/10 bg-gold px-6 py-5 shadow-[6px_6px_0_0_rgba(38,34,30,0.16)]">
               <PawPrint className="mb-2 h-6 w-6 text-plum/70" />
               <blockquote className="font-display text-base font-bold leading-snug text-plum">
                 {vision.founderNote}

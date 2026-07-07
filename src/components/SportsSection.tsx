@@ -30,7 +30,7 @@ function SportRow({
       <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
         {/* photo panel */}
         <div className={cn(flip && "lg:order-2")}>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border-2 border-plum/10 shadow-[10px_10px_0_0_rgba(56,40,44,0.12)]">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border-2 border-plum/10 shadow-[10px_10px_0_0_rgba(38,34,30,0.12)]">
             <Image
               src={image.src}
               alt={image.alt}

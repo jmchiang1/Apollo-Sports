@@ -61,29 +61,6 @@ export function FAQAccordion() {
           >
             {faq.heading}
           </Reveal>
-
-          <Reveal>
-            <div className="mt-8 rounded-3xl border-2 border-plum/10 bg-cream-2 p-6">
-              <div className="flex items-center gap-3">
-                <ApolloMascot className="h-11 w-11 shrink-0" />
-                <p className="font-display text-lg font-extrabold text-ink">
-                  Still curious?
-                </p>
-              </div>
-              <p className="mt-2 text-sm leading-relaxed text-muted">
-                Join the waitlist and we&apos;ll keep you posted on everything as
-                we get closer to opening.
-              </p>
-              <ButtonLink
-                href={hero.primaryCta.href}
-                variant="accent"
-                size="md"
-                className="mt-4"
-              >
-                {hero.primaryCta.label}
-              </ButtonLink>
-            </div>
-          </Reveal>
         </div>
 
         <Reveal>

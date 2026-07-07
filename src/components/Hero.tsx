@@ -1,9 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion, type Variants } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { hero } from "@/config/siteConfig";
 import { ButtonLink } from "./Button";
+import { IsoCourt } from "./IsoCourt";
+
+const COURTS = ["pickleball", "badminton"] as const;
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -19,6 +23,13 @@ const fadeUp: Variants = {
 
 export function Hero() {
   const reduce = useReducedMotion();
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    if (reduce) return;
+    const id = setInterval(() => setActive((a) => (a === 0 ? 1 : 0)), 4200);
+    return () => clearInterval(id);
+  }, [reduce]);
 
   return (
     <section
@@ -31,7 +42,7 @@ export function Hero() {
         className="pointer-events-none absolute -top-24 right-[-12%] h-[44rem] w-[44rem] rounded-full opacity-70 blur-3xl"
         style={{
           background:
-            "radial-gradient(circle, rgba(244,168,126,0.5) 0%, rgba(244,168,126,0) 62%)",
+            "radial-gradient(circle, rgba(224,166,58,0.26) 0%, rgba(224,166,58,0) 62%)",
         }}
       />
 
@@ -81,22 +92,32 @@ export function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* court illustration */}
+        {/* court illustration — alternates between pickleball & badminton */}
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={reduce ? { duration: 0 } : { duration: 1, ease: EASE, delay: 0.2 }}
           className="relative"
         >
-          <motion.img
-            src="/pickleball-court.svg"
-            alt="Illustration of an indoor racquet court"
+          <motion.div
             animate={reduce ? undefined : { y: [0, -10, 0] }}
             transition={
               reduce ? undefined : { duration: 7, ease: "easeInOut", repeat: Infinity }
             }
-            className="mx-auto w-full max-w-[520px] drop-shadow-[0_30px_50px_rgba(56,40,44,0.14)] lg:max-w-none lg:w-[130%]"
-          />
+            className="relative mx-auto aspect-[697/357] w-full max-w-[560px] drop-shadow-[0_30px_50px_rgba(38,34,30,0.14)] lg:max-w-none lg:w-[128%]"
+          >
+            {COURTS.map((sport, i) => (
+              <motion.div
+                key={sport}
+                aria-hidden={active !== i}
+                className="absolute inset-0"
+                animate={{ opacity: active === i ? 1 : 0 }}
+                transition={{ duration: 0.8, ease: EASE }}
+              >
+                <IsoCourt sport={sport} />
+              </motion.div>
+            ))}
+          </motion.div>
         </motion.div>
       </div>
     </section>

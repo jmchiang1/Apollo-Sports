@@ -37,7 +37,7 @@ export function LocationSection() {
 
         {/* playful map */}
         <Reveal>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border-2 border-plum/10 bg-cream-2 shadow-[10px_10px_0_0_rgba(56,40,44,0.1)]">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border-2 border-plum/10 bg-cream-2 shadow-[10px_10px_0_0_rgba(38,34,30,0.1)]">
             <div
               aria-hidden
               className="tex-waffle absolute inset-0 text-plum/[0.1]"

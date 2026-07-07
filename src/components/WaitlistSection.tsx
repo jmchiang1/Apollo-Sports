@@ -64,7 +64,7 @@ export function WaitlistSection() {
 
         {/* form */}
         <Reveal>
-          <div className="rounded-[2.5rem] border-2 border-plum/10 bg-cream p-6 shadow-[12px_12px_0_0_rgba(56,40,44,0.16)] sm:p-9">
+          <div className="rounded-[2.5rem] border-2 border-plum/10 bg-cream p-6 shadow-[12px_12px_0_0_rgba(38,34,30,0.16)] sm:p-9">
             <WaitlistForm />
           </div>
         </Reveal>

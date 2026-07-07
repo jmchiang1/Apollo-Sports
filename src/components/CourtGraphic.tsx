@@ -102,7 +102,7 @@ export function CourtGraphic({ className }: { className?: string }) {
       {/* a stray pickleball, lower court */}
       <g transform="translate(74 356)">
         <circle r="9" fill="#f4a87e" />
-        <g fill="rgba(56,40,44,0.28)">
+        <g fill="rgba(38,34,30,0.28)">
           <circle cx="0" cy="-4.6" r="1.15" />
           <circle cx="-4" cy="-1.6" r="1.15" />
           <circle cx="4" cy="-1.6" r="1.15" />

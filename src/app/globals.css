@@ -6,26 +6,26 @@
    to Apollo, the English Cream Golden Retriever. Tailwind v4 CSS-first config.
    ──────────────────────────────────────────────────────────────────────── */
 @theme {
-  /* Warm neutrals */
-  --color-cream: #f7efe0; /* base canvas */
-  --color-cream-2: #f0e4cf; /* deeper cream / tints */
-  --color-ink: #2e2024; /* primary text on light */
-  --color-muted: #7c6a61; /* secondary text on light */
+  /* Cream / warm-neutral canvas */
+  --color-cream: #f7f3ea; /* base canvas */
+  --color-cream-2: #ece5d6; /* deeper cream / tints */
+  --color-ink: #262320; /* primary text on light (warm charcoal) */
+  --color-muted: #726c61; /* secondary text on light */
 
-  /* Playful block colors */
-  --color-peach: #f4a87e; /* big blocks + warmth */
-  --color-peach-soft: #f9cdb0; /* peach tint */
-  --color-rose: #eabfc4; /* soft pink blocks */
-  --color-rose-soft: #f5dee1; /* rose tint */
+  /* Soft neutral blocks (was pink/orange — now cream/greige) */
+  --color-peach: #e6dcc8; /* the deeper neutral block */
+  --color-peach-soft: #f1ebdd; /* light neutral tint */
+  --color-rose: #efe8db; /* the lighter neutral block */
+  --color-rose-soft: #f5efe4; /* neutral tint */
 
-  /* Caramel gold — the Apollo namesake accent */
-  --color-gold: #e4a835;
+  /* Caramel gold — the lone accent, the Apollo namesake */
+  --color-gold: #e0a63a;
   --color-gold-deep: #a9761a; /* gold text on light surfaces */
-  --color-gold-soft: #f4dca6;
+  --color-gold-soft: #f2dcac;
 
-  /* Dark anchor */
-  --color-plum: #38282c;
-  --color-plum-deep: #291d20;
+  /* Dark anchor — warm charcoal (was brown-plum) */
+  --color-plum: #2a2622;
+  --color-plum-deep: #201d18;
 
   /* ── Version 2 (luxury): forest / butter / brass ── */
   --color-forest: #24311d; /* deep hunter green — primary dark */

@@ -11,7 +11,7 @@ const base =
 export const buttonVariants = {
   // Deep plum — the reliable, high-contrast action on any light block.
   primary:
-    "bg-plum text-cream shadow-[0_5px_0_0_#291d20] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#291d20] active:shadow-[0_2px_0_0_#291d20]",
+    "bg-plum text-cream shadow-[0_5px_0_0_#201d18] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#201d18] active:shadow-[0_2px_0_0_#201d18]",
   // Caramel gold — warm, inviting (the Apollo namesake). The signature CTA.
   accent:
     "bg-gold text-plum shadow-[0_5px_0_0_#a9761a] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#a9761a] active:shadow-[0_2px_0_0_#a9761a]",

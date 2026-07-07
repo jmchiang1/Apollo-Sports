@@ -25,10 +25,10 @@ export const brand = {
 
 /** Placeholders only Jonathan confirms. Rendered as visible [TODO] tokens. */
 export const todo = {
-  address: "[TODO: Facility street address]",
+  address: "TBD",
   courts: "[TODO: exact court count & mix — planning target ~6]",
   pricing: "[TODO: pricing]",
-  hours: "[TODO: hours of operation]",
+  hours: "24/7",
   phone: "1 (917) 828 - 0104",
   email: "apollosports@gmail.com",
   opening: "Opening 2026", // brief-sanctioned soft default; confirm exact season
