@@ -78,13 +78,33 @@ export const sports = {
       lead: true,
       tagline: "The lead sport.",
       body: "Regulation courts with the ceiling height and lighting the sport actually needs. Singles, doubles, mixed — from your first rally to competitive league play. This is the club badminton on Long Island deserves.",
+      features: [
+        "Regulation courts & true ceiling height",
+        "Singles, doubles & mixed",
+        "First rally to competitive league play",
+      ],
     },
     {
       name: "Pickleball",
       lead: false,
       tagline: "All-season, all-weather.",
       body: "Dedicated indoor courts, all-weather, all-season. Drop in, join a game, or bring your crew. Perfect for beginners and addicts alike.",
+      features: [
+        "Dedicated indoor courts",
+        "All-weather, all-season play",
+        "Drop in or bring your crew",
+      ],
     },
+  ],
+} as const;
+
+/** Big-number stat strip. `courts` value is a planning estimate (see todo). */
+export const stats = {
+  items: [
+    { value: "~6", label: "Courts", note: "planning target" },
+    { value: "2", label: "Racquet sports" },
+    { value: "All", label: "Levels welcome" },
+    { value: "'26", label: "Opening" },
   ],
 } as const;
 
@@ -170,6 +190,20 @@ export const waitlist = {
   button: "Notify Me",
   success: "You're on the list. We'll be in touch. 🏸",
   sportsOptions: ["Badminton", "Pickleball", "Both"],
+  steps: [
+    {
+      title: "Drop your email",
+      body: "Ten seconds, no commitment. You're on the list.",
+    },
+    {
+      title: "Grab founding perks",
+      body: "Waitlist members get founding-member rates and first-access booking.",
+    },
+    {
+      title: "Play opening day",
+      body: "We'll tell you the moment the doors open in 2026.",
+    },
+  ],
 } as const;
 
 export const faq = {

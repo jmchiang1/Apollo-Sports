@@ -3,34 +3,75 @@ import { SectionWrapper, Reveal } from "./Reveal";
 import { WaitlistForm } from "./WaitlistForm";
 import { Shuttlecock } from "./Shuttlecock";
 import { PickleballDot } from "./PickleballDot";
-import { PawPrint } from "./PawPrint";
+import { ApolloMascot } from "./ApolloMascot";
 
 export function WaitlistSection() {
   return (
     <SectionWrapper id="waitlist" className="relative overflow-hidden bg-peach">
-      {/* scattered motifs around the card */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <Shuttlecock className="absolute left-[6%] top-[14%] h-12 w-12 rotate-[-16deg] text-peach-soft" />
-        <PickleballDot className="absolute right-[8%] top-[20%] h-10 w-10 text-peach-soft" />
-        <PawPrint className="absolute bottom-[12%] left-[10%] h-10 w-10 rotate-12 text-peach-soft" />
-        <PawPrint className="absolute bottom-[16%] right-[9%] h-8 w-8 -rotate-12 text-peach-soft" />
+        <Shuttlecock className="absolute left-[5%] top-[12%] h-12 w-12 rotate-[-16deg] text-peach-soft" />
+        <PickleballDot className="absolute right-[6%] bottom-[14%] h-10 w-10 text-peach-soft" />
       </div>
 
-      <Reveal className="relative mx-auto max-w-3xl">
-        <div className="relative rounded-[2.5rem] border-2 border-plum/10 bg-cream p-7 shadow-[12px_12px_0_0_rgba(56,40,44,0.16)] sm:p-12">
-          <div className="text-center">
-            <p className="eyebrow">{waitlist.eyebrow}</p>
-            <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-              {waitlist.heading}
-            </h2>
-            <p className="mx-auto mt-4 max-w-md text-muted">{waitlist.body}</p>
-          </div>
+      <div className="relative grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+        {/* how it works */}
+        <div>
+          <Reveal as="p" className="eyebrow text-plum/60">
+            {waitlist.eyebrow}
+          </Reveal>
+          <Reveal
+            as="h2"
+            className="mt-4 font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl"
+          >
+            {waitlist.heading}
+          </Reveal>
+          <Reveal as="p" className="mt-4 max-w-md text-lg leading-relaxed text-ink/75">
+            {waitlist.body}
+          </Reveal>
 
-          <div className="mx-auto mt-8 max-w-xl">
+          <Reveal>
+            <ol className="mt-9 space-y-0">
+              {waitlist.steps.map((step, i) => {
+                const last = i === waitlist.steps.length - 1;
+                return (
+                  <li key={step.title} className="flex gap-4">
+                    <div className="flex flex-col items-center">
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-plum font-display text-lg font-extrabold text-cream">
+                        {i + 1}
+                      </span>
+                      {!last && <span className="my-1 w-[3px] flex-1 rounded bg-plum/20" />}
+                    </div>
+                    <div className={last ? "pb-0" : "pb-7"}>
+                      <h3 className="font-display text-lg font-extrabold text-ink">
+                        {step.title}
+                      </h3>
+                      <p className="mt-1 max-w-sm text-[0.97rem] leading-relaxed text-ink/70">
+                        {step.body}
+                      </p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          </Reveal>
+
+          <Reveal>
+            <div className="mt-6 flex items-center gap-3">
+              <ApolloMascot className="h-10 w-10 shrink-0" />
+              <span className="font-display text-sm font-bold text-plum/70">
+                Apollo&apos;s already on the list. 🐾
+              </span>
+            </div>
+          </Reveal>
+        </div>
+
+        {/* form */}
+        <Reveal>
+          <div className="rounded-[2.5rem] border-2 border-plum/10 bg-cream p-6 shadow-[12px_12px_0_0_rgba(56,40,44,0.16)] sm:p-9">
             <WaitlistForm />
           </div>
-        </div>
-      </Reveal>
+        </Reveal>
+      </div>
     </SectionWrapper>
   );
 }

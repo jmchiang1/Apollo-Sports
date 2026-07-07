@@ -1,7 +1,9 @@
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
+import { Marquee } from "@/components/Marquee";
 import { VisionSection } from "@/components/VisionSection";
 import { SportsSection } from "@/components/SportsSection";
+import { StatsBand } from "@/components/StatsBand";
 import { ProgramsSection } from "@/components/ProgramsSection";
 import { WhyUsGrid } from "@/components/WhyUsGrid";
 import { LocationSection } from "@/components/LocationSection";
@@ -15,8 +17,10 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <Hero />
+        <Marquee />
         <VisionSection />
         <SportsSection />
+        <StatsBand />
         <ProgramsSection />
         <WhyUsGrid />
         <LocationSection />

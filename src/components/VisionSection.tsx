@@ -1,42 +1,52 @@
 import { vision } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
-import { PawPrint } from "./PawPrint";
+import { ApolloMascot } from "./ApolloMascot";
 import { Shuttlecock } from "./Shuttlecock";
+import { PawPrint } from "./PawPrint";
 
 export function VisionSection() {
   return (
     <SectionWrapper id="vision" className="relative overflow-hidden bg-rose">
-      {/* decorative motifs */}
-      <Shuttlecock
-        aria-hidden
-        className="pointer-events-none absolute right-[6%] top-10 h-12 w-12 rotate-[24deg] text-rose-soft"
-      />
-
-      <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-        <div>
+      <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+        {/* copy */}
+        <div className="lg:col-span-7">
           <Reveal as="p" className="eyebrow">
             {vision.eyebrow}
           </Reveal>
           <Reveal
             as="h2"
-            className="mt-4 font-display text-3xl font-extrabold leading-[1.02] tracking-tight text-ink sm:text-4xl lg:text-[2.9rem]"
+            className="mt-4 font-display text-4xl font-extrabold leading-[1.0] tracking-tight text-ink sm:text-5xl lg:text-[3.4rem]"
           >
             {vision.heading}
           </Reveal>
+          <div className="mt-7 max-w-xl space-y-5">
+            {vision.paragraphs.map((p, i) => (
+              <Reveal as="p" key={i} className="text-lg leading-relaxed text-ink/80">
+                {p}
+              </Reveal>
+            ))}
+          </div>
         </div>
 
-        <div className="space-y-6">
-          {vision.paragraphs.map((p, i) => (
-            <Reveal as="p" key={i} className="text-lg leading-relaxed text-ink/80">
-              {p}
-            </Reveal>
-          ))}
+        {/* mascot polaroid + founder quote */}
+        <div className="relative lg:col-span-5">
           <Reveal>
-            <figure className="mt-4 flex items-start gap-4 rounded-3xl border-2 border-plum/10 bg-cream p-6 shadow-[6px_6px_0_0_rgba(56,40,44,0.1)]">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gold text-plum">
-                <PawPrint className="h-6 w-6" />
-              </span>
-              <blockquote className="font-display text-lg font-semibold leading-snug text-ink">
+            <div className="mx-auto max-w-xs rotate-[2.5deg] rounded-[2rem] border-2 border-plum/10 bg-cream p-4 shadow-[10px_10px_0_0_rgba(56,40,44,0.14)]">
+              <div className="relative grid aspect-square place-items-center overflow-hidden rounded-2xl bg-peach">
+                <div className="tex-dots absolute inset-0 text-plum/[0.09]" />
+                <ApolloMascot className="relative h-40 w-40" />
+                <Shuttlecock className="absolute right-4 top-4 h-8 w-8 text-peach-soft" />
+              </div>
+              <p className="mt-3 text-center font-display text-sm font-bold text-ink">
+                Apollo · Chief Morale Officer 🐾
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal>
+            <figure className="relative z-10 mx-auto -mt-6 max-w-sm -rotate-2 rounded-2xl border-2 border-plum/10 bg-gold px-6 py-5 shadow-[6px_6px_0_0_rgba(56,40,44,0.16)]">
+              <PawPrint className="mb-2 h-6 w-6 text-plum/70" />
+              <blockquote className="font-display text-base font-bold leading-snug text-plum">
                 {vision.founderNote}
               </blockquote>
             </figure>

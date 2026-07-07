@@ -102,6 +102,16 @@ body {
   background-size: 26px 26px;
 }
 
+/* Infinite marquee (two identical rows → translate one row width) */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 /* ── Motion preferences ────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   html {
