@@ -98,12 +98,12 @@ export function IsoCourt({
 
   return (
     <svg
-      viewBox="0 0 697 357"
+      viewBox="0 0 701 447"
       className={cn("h-full w-full", className)}
       role="img"
       aria-label={`Illustration of a ${sport} court`}
     >
-      <g transform="translate(22 200)">
+      <g transform="translate(24 288)">
         {/* court slab sides (3D thickness) */}
         <polygon
           points={`${s(A)} ${s(D)} ${D.x},${D.y + DEPTH} ${A.x},${A.y + DEPTH}`}

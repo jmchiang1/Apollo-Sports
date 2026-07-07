@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Plus } from "lucide-react";
-import { faq, hero } from "@/config/siteConfig";
+import { faq } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { TodoText } from "./Todo";
 import { cn } from "@/lib/cn";
-import { ButtonLink } from "./Button";
-import { ApolloMascot } from "./ApolloMascot";
+import { DogPeeking } from "./DogPeeking";
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
@@ -52,7 +51,11 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 
 export function FAQAccordion() {
   return (
-    <SectionWrapper id="faq" className="bg-cream">
+    <SectionWrapper id="faq" className="relative overflow-hidden bg-cream">
+      <DogPeeking
+        aria-hidden
+        className="pointer-events-none absolute -bottom-4 right-6 h-36 w-auto text-plum sm:right-12 sm:h-44"
+      />
       <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
         <div>
           <Reveal

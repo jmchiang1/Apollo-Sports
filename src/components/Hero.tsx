@@ -34,7 +34,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative overflow-hidden bg-cream pt-28 pb-16 sm:pt-32 md:pt-40 md:pb-24"
+      className="relative flex min-h-[90vh] items-center overflow-hidden bg-cream pt-28 pb-16 sm:pt-28"
     >
       {/* warm peach glow */}
       <div
@@ -46,7 +46,7 @@ export function Hero() {
         }}
       />
 
-      <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-6">
+      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-6">
         {/* copy */}
         <motion.div
           initial={reduce ? "visible" : "hidden"}
@@ -104,7 +104,7 @@ export function Hero() {
             transition={
               reduce ? undefined : { duration: 7, ease: "easeInOut", repeat: Infinity }
             }
-            className="relative mx-auto aspect-[697/357] w-full max-w-[560px] drop-shadow-[0_30px_50px_rgba(38,34,30,0.14)] lg:max-w-none lg:w-[128%]"
+            className="relative mx-auto aspect-[701/447] w-full max-w-[520px] drop-shadow-[0_30px_50px_rgba(38,34,30,0.14)] lg:mx-0 lg:ml-auto lg:max-w-[640px]"
           >
             {COURTS.map((sport, i) => (
               <motion.div

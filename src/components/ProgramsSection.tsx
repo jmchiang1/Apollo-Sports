@@ -1,10 +1,15 @@
 import { programs } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { iconMap, type IconName } from "./icons";
+import { DogRunning } from "./DogRunning";
 
 export function ProgramsSection() {
   return (
-    <SectionWrapper id="programs" className="bg-cream">
+    <SectionWrapper id="programs" className="relative overflow-hidden bg-cream">
+      <DogRunning
+        aria-hidden
+        className="pointer-events-none absolute right-4 top-4 hidden h-28 w-auto text-plum sm:block sm:h-32 lg:right-8"
+      />
       <div className="max-w-2xl">
         <Reveal
           as="h2"

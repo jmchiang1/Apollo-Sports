@@ -1,6 +1,6 @@
 import { vision } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
-import { ApolloMascot } from "./ApolloMascot";
+import { DogPawing } from "./DogPawing";
 import { PawPrint } from "./PawPrint";
 
 export function VisionSection() {
@@ -30,7 +30,7 @@ export function VisionSection() {
             <div className="mx-auto max-w-xs rotate-[2.5deg] rounded-[2rem] border-2 border-plum/10 bg-cream p-4 shadow-[10px_10px_0_0_rgba(38,34,30,0.14)]">
               <div className="relative grid aspect-square place-items-center overflow-hidden rounded-2xl bg-peach">
                 <div className="tex-dots absolute inset-0 text-plum/[0.09]" />
-                <ApolloMascot className="relative h-40 w-40" />
+                <DogPawing className="relative h-44 w-auto text-plum" />
               </div>
               <p className="mt-3 text-center font-display text-sm font-bold text-ink">
                 Apollo · Chief Morale Officer 🐾
