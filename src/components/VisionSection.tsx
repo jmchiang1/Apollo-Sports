@@ -1,7 +1,6 @@
 import { vision } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { ApolloMascot } from "./ApolloMascot";
-import { Shuttlecock } from "./Shuttlecock";
 import { PawPrint } from "./PawPrint";
 
 export function VisionSection() {
@@ -10,12 +9,9 @@ export function VisionSection() {
       <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
         {/* copy */}
         <div className="lg:col-span-7">
-          <Reveal as="p" className="eyebrow">
-            {vision.eyebrow}
-          </Reveal>
           <Reveal
             as="h2"
-            className="mt-4 font-display text-4xl font-extrabold leading-[1.0] tracking-tight text-ink sm:text-5xl lg:text-[3.4rem]"
+            className="font-display text-4xl font-extrabold leading-[1.0] tracking-tight text-ink sm:text-5xl lg:text-[3.4rem]"
           >
             {vision.heading}
           </Reveal>
@@ -35,7 +31,6 @@ export function VisionSection() {
               <div className="relative grid aspect-square place-items-center overflow-hidden rounded-2xl bg-peach">
                 <div className="tex-dots absolute inset-0 text-plum/[0.09]" />
                 <ApolloMascot className="relative h-40 w-40" />
-                <Shuttlecock className="absolute right-4 top-4 h-8 w-8 text-peach-soft" />
               </div>
               <p className="mt-3 text-center font-display text-sm font-bold text-ink">
                 Apollo · Chief Morale Officer 🐾

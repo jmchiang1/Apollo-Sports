@@ -55,12 +55,9 @@ export function FAQAccordion() {
     <SectionWrapper id="faq" className="bg-cream">
       <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
         <div>
-          <Reveal as="p" className="eyebrow">
-            {faq.eyebrow}
-          </Reveal>
           <Reveal
             as="h2"
-            className="mt-4 font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[2.9rem]"
+            className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[2.9rem]"
           >
             {faq.heading}
           </Reveal>

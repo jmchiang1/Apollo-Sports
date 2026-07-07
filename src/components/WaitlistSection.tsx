@@ -1,27 +1,24 @@
 import { waitlist } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { WaitlistForm } from "./WaitlistForm";
-import { Shuttlecock } from "./Shuttlecock";
-import { PickleballDot } from "./PickleballDot";
 import { ApolloMascot } from "./ApolloMascot";
+import { OverlayGraphic } from "./OverlayGraphic";
 
 export function WaitlistSection() {
   return (
     <SectionWrapper id="waitlist" className="relative overflow-hidden bg-peach">
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <Shuttlecock className="absolute left-[5%] top-[12%] h-12 w-12 rotate-[-16deg] text-peach-soft" />
-        <PickleballDot className="absolute right-[6%] bottom-[14%] h-10 w-10 text-peach-soft" />
-      </div>
+      {/* pickleball watermark bleeding off the bottom-right corner */}
+      <OverlayGraphic
+        src="/pickleball.svg"
+        className="-bottom-24 -right-20 h-96 w-96 rotate-12"
+      />
 
       <div className="relative grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
         {/* how it works */}
         <div>
-          <Reveal as="p" className="eyebrow text-plum/60">
-            {waitlist.eyebrow}
-          </Reveal>
           <Reveal
             as="h2"
-            className="mt-4 font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl"
+            className="font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl"
           >
             {waitlist.heading}
           </Reveal>

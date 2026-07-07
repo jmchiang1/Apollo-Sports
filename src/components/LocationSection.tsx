@@ -12,12 +12,9 @@ export function LocationSection() {
       <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
         {/* copy */}
         <div>
-          <Reveal as="p" className="eyebrow">
-            {location.eyebrow}
-          </Reveal>
           <Reveal
             as="h2"
-            className="mt-4 font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[3rem]"
+            className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[3rem]"
           >
             {location.heading}
           </Reveal>

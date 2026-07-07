@@ -3,7 +3,6 @@ import { footer, nav, todo } from "@/config/siteConfig";
 import { Wordmark } from "./Wordmark";
 import { TodoText } from "./Todo";
 import { InstagramIcon, FacebookIcon } from "./SocialIcons";
-import { ApolloMascot } from "./ApolloMascot";
 
 export function Footer() {
   return (
@@ -28,9 +27,6 @@ export function Footer() {
                 className="grid h-10 w-10 place-items-center rounded-full text-cream/70 ring-1 ring-cream/15 transition-colors hover:text-gold hover:ring-cream/40"
               >
                 <FacebookIcon className="h-5 w-5" />
-              </span>
-              <span className="text-xs text-cream/45">
-                <TodoText>{footer.social.instagram}</TodoText>
               </span>
             </div>
           </div>
@@ -78,14 +74,6 @@ export function Footer() {
             Made in Nassau County · {todo.opening} · 🐾
           </p>
         </div>
-      </div>
-
-      {/* giant wordmark finale */}
-      <div className="relative flex items-center justify-center gap-4 border-t border-cream/10 py-8">
-        <ApolloMascot className="h-12 w-12 shrink-0 sm:h-16 sm:w-16" />
-        <span className="font-display text-[clamp(3rem,14vw,10rem)] font-extrabold leading-none tracking-tight text-cream/10">
-          APOLLO
-        </span>
       </div>
     </footer>
   );

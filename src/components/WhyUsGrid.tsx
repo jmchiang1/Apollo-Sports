@@ -1,7 +1,7 @@
 import { whyUs } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { iconMap, type IconName } from "./icons";
-import { Shuttlecock } from "./Shuttlecock";
+import { OverlayGraphic } from "./OverlayGraphic";
 import { ApolloMascot } from "./ApolloMascot";
 
 export function WhyUsGrid() {
@@ -18,18 +18,16 @@ export function WhyUsGrid() {
             "radial-gradient(circle, rgba(228,168,53,0.5) 0%, rgba(228,168,53,0) 65%)",
         }}
       />
-      <Shuttlecock
-        aria-hidden
-        className="pointer-events-none absolute right-[6%] top-12 h-12 w-12 rotate-[20deg] text-cream/10"
+      <OverlayGraphic
+        src="/birdie.svg"
+        invert
+        className="-left-16 -top-24 h-96 w-80 rotate-[35deg] opacity-80"
       />
 
       <div className="relative max-w-2xl">
-        <Reveal as="p" className="text-xs font-bold uppercase tracking-[0.16em] text-gold">
-          {whyUs.eyebrow}
-        </Reveal>
         <Reveal
           as="h2"
-          className="mt-4 font-display text-3xl font-extrabold tracking-tight text-cream sm:text-4xl lg:text-[3rem]"
+          className="font-display text-3xl font-extrabold tracking-tight text-cream sm:text-4xl lg:text-[3rem]"
         >
           {whyUs.heading}
         </Reveal>

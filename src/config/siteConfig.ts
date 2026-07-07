@@ -18,7 +18,7 @@ export const brand = {
   name: "Apollo Racquet Club",
   shortName: "Apollo",
   legalEntity: "Apollo Sports LLC",
-  tagline: "Nassau County's badminton-led indoor racquet club.",
+  tagline: "Great Neck's premier badminton and pickleball club",
   // Named after Apollo — a Nassau local's English Cream Golden Retriever.
   // Drives the warm cream + caramel-gold palette.
 } as const;
@@ -29,8 +29,8 @@ export const todo = {
   courts: "[TODO: exact court count & mix — planning target ~6]",
   pricing: "[TODO: pricing]",
   hours: "[TODO: hours of operation]",
-  phone: "[TODO: phone number]",
-  email: "[TODO: contact email]",
+  phone: "1 (917) 828 - 0104",
+  email: "apollosports@gmail.com",
   opening: "Opening 2026", // brief-sanctioned soft default; confirm exact season
   social: {
     instagram: "[TODO: Instagram handle]",
@@ -50,9 +50,9 @@ export const nav = [
 
 export const hero = {
   eyebrow: `Coming to Nassau County · ${todo.opening}`,
-  headline: "Badminton has a home on Long Island.",
+  headline: "Great Neck's Premier Racket Club",
   subhead:
-    "A badminton-led indoor racquet club in the heart of Nassau County — with pickleball, coaching, open play, and leagues for every level.",
+    "A badminton and pickleball led indoor racquet club in the heart of Nassau County; private bookings, open play, coaching and leagues for every level!",
   primaryCta: { label: "Join the Waitlist", href: "#waitlist" },
   secondaryCta: { label: "See what we're building", href: "#vision" },
 } as const;
@@ -75,6 +75,7 @@ export const sports = {
   cards: [
     {
       name: "Badminton",
+      courts: 4,
       lead: true,
       tagline: "The lead sport.",
       body: "Regulation courts with the ceiling height and lighting the sport actually needs. Singles, doubles, mixed — from your first rally to competitive league play. This is the club badminton on Long Island deserves.",
@@ -86,6 +87,7 @@ export const sports = {
     },
     {
       name: "Pickleball",
+      courts: 2,
       lead: false,
       tagline: "All-season, all-weather.",
       body: "Dedicated indoor courts, all-weather, all-season. Drop in, join a game, or bring your crew. Perfect for beginners and addicts alike.",

@@ -11,9 +11,28 @@ and youth programming are secondary layers.
 > it in **one line**: `brand.name` in
 > [`src/config/siteConfig.ts`](src/config/siteConfig.ts).
 
-The look is **playful-warm / retro-casual** (inspired by PKLYN): alternating
-flat color-block sections, chunky rounded pill buttons with hard offset shadows,
-and scattered shuttlecock / pickleball / paw-print motifs.
+### Two versions + a live toggle
+
+The site ships **two full design versions** with a floating **Playful | Luxury**
+toggle (bottom-center). The choice persists in `localStorage` and can be
+deep-linked with `?v=luxury`.
+
+- **V1 — Playful** (`components/SiteOriginal.tsx`): warm/retro-casual, PKLYN-
+  inspired. Flat color-block sections (cream/peach/rose/plum), chunky pill
+  buttons with hard offset shadows, Apollo the retriever mascot + scattered
+  shuttlecock/pickleball/paw motifs. Fonts: Bricolage Grotesque + Figtree.
+- **V2 — Luxury** (`components/luxe/`): refined/upscale, Velto-inspired. Deep
+  forest-green + butter-cream + brass, elegant serif display, thin gold rules,
+  the triangular Apollo logo mark. Fonts: **Playfair Display** (stand-in for the
+  logo's **Didot**) + **Montserrat** (stand-in for **Avenir Next**).
+
+> **Fonts:** Didot and Avenir Next are licensed and not on Google Fonts, so V2
+> uses the closest free web equivalents. To use the real faces, drop the files
+> in and switch to `next/font/local` in `src/app/layout.tsx` (one place).
+
+`src/app/page.tsx` → `<SiteSwitcher>` picks the version and renders the toggle.
+Both versions share the same `siteConfig.ts` content and the `/api/waitlist`
+endpoint, so they never drift.
 
 ## Stack
 
