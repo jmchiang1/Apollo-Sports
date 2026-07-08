@@ -6,43 +6,30 @@ import { InstagramIcon, FacebookIcon } from "./SocialIcons";
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-plum text-cream">
-      <div className="mx-auto max-w-6xl px-6 py-16 sm:px-8">
-        <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1.1fr]">
+    <footer className="footer">
+      <div className="footer-inner">
+        <div className="footer-grid">
           {/* brand */}
           <div>
             <Wordmark invert />
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/60">
-              {footer.tagline}
-            </p>
-            <div className="mt-6 flex items-center gap-3">
-              <span
-                title="Handle coming soon"
-                className="grid h-10 w-10 place-items-center rounded-full text-cream/70 ring-1 ring-cream/15 transition-colors hover:text-gold hover:ring-cream/40"
-              >
-                <InstagramIcon className="h-5 w-5" />
+            <p className="footer-tagline">{footer.tagline}</p>
+            <div className="footer-socials">
+              <span title="Handle coming soon" className="footer-social">
+                <InstagramIcon className="footer-social-icon" />
               </span>
-              <span
-                title="Handle coming soon"
-                className="grid h-10 w-10 place-items-center rounded-full text-cream/70 ring-1 ring-cream/15 transition-colors hover:text-gold hover:ring-cream/40"
-              >
-                <FacebookIcon className="h-5 w-5" />
+              <span title="Handle coming soon" className="footer-social">
+                <FacebookIcon className="footer-social-icon" />
               </span>
             </div>
           </div>
 
           {/* explore */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-[0.16em] text-cream/40">
-              Explore
-            </h4>
-            <ul className="mt-4 space-y-3">
+            <h4 className="footer-col-title">Explore</h4>
+            <ul className="footer-links">
               {nav.map((item) => (
                 <li key={item.href}>
-                  <a
-                    href={item.href}
-                    className="text-sm font-medium text-cream/70 transition-colors hover:text-gold"
-                  >
+                  <a href={item.href} className="footer-link">
                     {item.label}
                   </a>
                 </li>
@@ -52,25 +39,23 @@ export function Footer() {
 
           {/* contact */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-[0.16em] text-cream/40">
-              Contact
-            </h4>
-            <ul className="mt-4 space-y-3 text-sm text-cream/70">
-              <li className="flex items-center gap-2.5">
-                <Mail className="h-4 w-4 shrink-0 text-gold" />
+            <h4 className="footer-col-title">Contact</h4>
+            <ul className="footer-contact-list">
+              <li className="footer-contact-item">
+                <Mail className="footer-contact-icon" />
                 <TodoText>{footer.contact.email}</TodoText>
               </li>
-              <li className="flex items-center gap-2.5">
-                <Phone className="h-4 w-4 shrink-0 text-gold" />
+              <li className="footer-contact-item">
+                <Phone className="footer-contact-icon" />
                 <TodoText>{footer.contact.phone}</TodoText>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-3 border-t border-cream/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-cream/50">{footer.legal}</p>
-          <p className="text-xs text-cream/40">
+        <div className="footer-bottom">
+          <p className="footer-legal">{footer.legal}</p>
+          <p className="footer-note">
             Made in Nassau County · {todo.opening} · 🐾
           </p>
         </div>

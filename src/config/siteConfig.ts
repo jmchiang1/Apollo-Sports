@@ -38,8 +38,25 @@ export const todo = {
   },
 } as const;
 
-/** Anchor navigation — id must match each section's element id. */
+/**
+ * Anchor navigation — id must match each section's element id.
+ *
+ * The two site versions expose slightly different sections, so they carry
+ * their own nav lists: v1 (`nav`) has a Pricing section; the luxury build
+ * (`navLuxe`) still leads with Why Us. Keep each in sync with its site's
+ * actual section ids.
+ */
 export const nav = [
+  { label: "Vision", href: "#vision" },
+  { label: "Sports", href: "#sports" },
+  { label: "Programs", href: "#programs" },
+  { label: "Pricing", href: "#pricing" },
+  { label: "Location", href: "#location" },
+  { label: "FAQ", href: "#faq" },
+] as const;
+
+/** Luxury (v2) nav — mirrors `nav` but keeps the Why Us section. */
+export const navLuxe = [
   { label: "Vision", href: "#vision" },
   { label: "Sports", href: "#sports" },
   { label: "Programs", href: "#programs" },
@@ -122,7 +139,7 @@ export const programs = {
     {
       name: "Memberships",
       body: "The best way to play. Priority booking, member rates, and community perks.",
-      note: todo.pricing,
+      note: "From $129/mo", // PLACEHOLDER — confirm before launch
       icon: "BadgeCheck",
     },
     {
@@ -139,6 +156,72 @@ export const programs = {
       name: "Youth Programming",
       body: "After-school, weekend, and holiday programs to build the next generation of players.",
       icon: "Sparkles",
+    },
+  ],
+} as const;
+
+/**
+ * Membership & rates.
+ *
+ * ⚠️ PLACEHOLDER PRICING — NOT CONFIRMED. The figures below are estimates
+ * benchmarked against comparable NY-metro / Long Island indoor badminton &
+ * pickleball clubs (membership ~$99–$179/mo; whole-court rentals ~$30–$60/hr;
+ * open-play drop-ins ~$15–$30). They're here so the section reads as a real
+ * pricing page, but Jonathan must confirm each number before launch. The
+ * on-page `note` already tells visitors pricing is still being finalized.
+ */
+export const pricing = {
+  eyebrow: "Membership & Rates",
+  heading: "Ways to play — and what they'll cost.",
+  note: "Waitlist members lock in founding rates. Exact pricing is being finalized ahead of our 2026 opening.",
+  plans: [
+    {
+      name: "Membership",
+      tagline: "The best way to play.",
+      price: "$129", // PLACEHOLDER — confirm before launch
+      unit: "per month",
+      featured: true,
+      badge: "Most popular",
+      icon: "BadgeCheck",
+      cta: { label: "Join the Waitlist", href: "#waitlist" },
+      features: [
+        "Priority court booking",
+        "Member rates on every court hour",
+        "Included open-play sessions",
+        "Guest passes & member-only events",
+      ],
+    },
+    {
+      name: "Private Court Booking",
+      tagline: "Reserve the whole court.",
+      price: "$40", // PLACEHOLDER — confirm before launch
+      unit: "per hour",
+      featured: false,
+      badge: "",
+      icon: "CalendarClock",
+      cta: { label: "Get booking updates", href: "#waitlist" },
+      features: [
+        "Badminton or pickleball courts",
+        "Book by the hour, online",
+        "Peak & off-peak rates",
+        "Room for a full doubles crew",
+      ],
+    },
+    {
+      name: "Open Play",
+      tagline: "Show up and get matched.",
+      price: "$25", // PLACEHOLDER — confirm before launch
+      unit: "per drop-in",
+      featured: false,
+      badge: "",
+      icon: "Users",
+      cta: { label: "Get booking updates", href: "#waitlist" },
+      features: [
+        "Rated sessions by skill level",
+        "Both sports, all levels",
+        "No partner needed",
+        "Member & drop-in pricing",
+      ],
     },
   ],
 } as const;
@@ -234,7 +317,7 @@ export const faq = {
     },
     {
       q: "How much will membership cost?",
-      a: `Pricing is still being set (${todo.pricing}) — waitlist members get founding rates.`,
+      a: "Early estimates: memberships around $129/month, whole-court rentals about $40/hour, and open-play drop-ins around $25. Final pricing is still being set — waitlist members lock in the lowest founding rates.",
     },
   ],
 } as const;
@@ -254,10 +337,12 @@ export const siteConfig = {
   brand,
   todo,
   nav,
+  navLuxe,
   hero,
   vision,
   sports,
   programs,
+  pricing,
   whyUs,
   location,
   waitlist,

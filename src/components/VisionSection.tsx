@@ -5,19 +5,16 @@ import { PawPrint } from "./PawPrint";
 
 export function VisionSection() {
   return (
-    <SectionWrapper id="vision" className="relative overflow-hidden bg-rose">
-      <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+    <SectionWrapper id="vision" className="vision-section">
+      <div className="vision-grid">
         {/* copy */}
-        <div className="lg:col-span-7">
-          <Reveal
-            as="h2"
-            className="font-display text-4xl font-extrabold leading-[1.0] tracking-tight text-ink sm:text-5xl lg:text-[3.4rem]"
-          >
+        <div className="vision-copy">
+          <Reveal as="h2" className="vision-heading">
             {vision.heading}
           </Reveal>
-          <div className="mt-7 max-w-xl space-y-5">
+          <div className="vision-paragraphs">
             {vision.paragraphs.map((p, i) => (
-              <Reveal as="p" key={i} className="text-lg leading-relaxed text-ink/80">
+              <Reveal as="p" key={i} className="vision-paragraph">
                 {p}
               </Reveal>
             ))}
@@ -25,23 +22,23 @@ export function VisionSection() {
         </div>
 
         {/* mascot polaroid + founder quote */}
-        <div className="relative lg:col-span-5">
+        <div className="vision-media">
           <Reveal>
-            <div className="mx-auto max-w-xs rotate-[2.5deg] rounded-[2rem] border-2 border-plum/10 bg-cream p-4 shadow-[10px_10px_0_0_rgba(38,34,30,0.14)]">
-              <div className="relative grid aspect-square place-items-center overflow-hidden rounded-2xl bg-peach">
-                <div className="tex-dots absolute inset-0 text-plum/[0.09]" />
-                <DogPawing className="relative h-44 w-auto text-plum" />
+            <div className="vision-polaroid">
+              <div className="vision-polaroid-frame">
+                <div className="tex-dots vision-polaroid-tex" />
+                <DogPawing className="vision-polaroid-dog" />
               </div>
-              <p className="mt-3 text-center font-display text-sm font-bold text-ink">
+              <p className="vision-polaroid-caption">
                 Apollo · Chief Morale Officer 🐾
               </p>
             </div>
           </Reveal>
 
           <Reveal>
-            <figure className="relative z-10 mx-auto -mt-6 max-w-sm -rotate-2 rounded-2xl border-2 border-plum/10 bg-gold px-6 py-5 shadow-[6px_6px_0_0_rgba(38,34,30,0.16)]">
-              <PawPrint className="mb-2 h-6 w-6 text-plum/70" />
-              <blockquote className="font-display text-base font-bold leading-snug text-plum">
+            <figure className="vision-quote">
+              <PawPrint className="vision-quote-icon" />
+              <blockquote className="vision-quote-text">
                 {vision.founderNote}
               </blockquote>
             </figure>

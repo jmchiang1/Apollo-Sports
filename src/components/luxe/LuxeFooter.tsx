@@ -1,5 +1,5 @@
 import { Mail, Phone } from "lucide-react";
-import { footer, nav, todo, brand } from "@/config/siteConfig";
+import { footer, navLuxe as nav, todo, brand } from "@/config/siteConfig";
 import { LuxeWordmark } from "./LuxeWordmark";
 import { ApolloMark } from "./ApolloMark";
 import { TodoText } from "@/components/Todo";

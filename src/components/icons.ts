@@ -1,6 +1,7 @@
 import {
   Users,
   BadgeCheck,
+  CalendarClock,
   GraduationCap,
   Trophy,
   Sparkles,
@@ -15,6 +16,7 @@ import {
 export const iconMap = {
   Users,
   BadgeCheck,
+  CalendarClock,
   GraduationCap,
   Trophy,
   Sparkles,

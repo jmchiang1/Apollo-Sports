@@ -1,59 +1,70 @@
-import Image from "next/image";
 import { Check } from "lucide-react";
 import { sports } from "@/config/siteConfig";
 import { cn } from "@/lib/cn";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { OverlayGraphic } from "./OverlayGraphic";
+import { IsoCourt } from "./IsoCourt";
 
-const CARD_IMAGES = [
-  { src: "/court-badminton.jpg", alt: "Indoor badminton court with rackets and shuttlecocks" },
-  { src: "/court-pickleball.jpg", alt: "A player rallying on an indoor pickleball court" },
-];
+type Sport = "badminton" | "pickleball";
+
+/**
+ * A cluster of small isometric courts standing in for a stock photo — one court
+ * per real court the club will have (4 badminton / 2 pickleball), reusing the
+ * hero's IsoCourt illustration so the section stays fully on-brand.
+ */
+function CourtCluster({ sport, count }: { sport: Sport; count: number }) {
+  return (
+    <div className="sports-cluster">
+      <div
+        className={cn(
+          "sports-cluster-grid",
+          count > 2 ? "sports-cluster-grid-multi" : "sports-cluster-grid-single",
+        )}
+      >
+        {Array.from({ length: count }).map((_, i) => (
+          <IsoCourt key={i} sport={sport} className="sports-cluster-court" />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function SportRow({
   title,
   body,
   features,
   lead,
-  image,
+  sport,
+  courts,
 }: {
   title: string;
   body: string;
   features: readonly string[];
   lead: boolean;
-  image: { src: string; alt: string };
+  sport: Sport;
+  courts: number;
 }) {
   const flip = !lead; // second row mirrors
 
   return (
     <Reveal>
-      <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
-        {/* photo panel */}
-        <div className={cn(flip && "lg:order-2")}>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border-2 border-plum/10 shadow-[10px_10px_0_0_rgba(38,34,30,0.12)]">
-            <Image
-              src={image.src}
-              alt={image.alt}
-              fill
-              sizes="(max-width: 1024px) 100vw, 45vw"
-              className="object-cover"
-            />
-          </div>
+      <div className="sports-row">
+        {/* court cluster */}
+        <div className={cn(flip && "sports-row-media-flip")}>
+          <CourtCluster sport={sport} count={courts} />
         </div>
 
         {/* text */}
-        <div className={cn(flip && "lg:order-1")}>
-          <h3 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-            {title}
-          </h3>
-          <p className="mt-4 max-w-lg text-lg leading-relaxed text-ink/75">{body}</p>
-          <ul className="mt-6 space-y-3">
+        <div className={cn(flip && "sports-row-text-flip")}>
+          <h3 className="sports-row-title">{title}</h3>
+          <p className="sports-row-body">{body}</p>
+          <ul className="sports-features">
             {features.map((f) => (
-              <li key={f} className="flex items-center gap-3">
-                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold text-plum">
-                  <Check className="h-4 w-4" strokeWidth={3} />
+              <li key={f} className="sports-feature">
+                <span className="sports-feature-check">
+                  <Check className="sports-feature-icon" strokeWidth={3} />
                 </span>
-                <span className="font-semibold text-ink">{f}</span>
+                <span className="sports-feature-label">{f}</span>
               </li>
             ))}
           </ul>
@@ -65,32 +76,27 @@ function SportRow({
 
 export function SportsSection() {
   return (
-    <SectionWrapper id="sports" className="relative overflow-hidden bg-peach">
+    <SectionWrapper id="sports" className="sports-section">
       {/* big pickleball watermark bleeding off the top-right corner */}
-      <OverlayGraphic
-        src="/pickleball.svg"
-        className="-right-20 -top-24 h-96 w-96 rotate-12"
-      />
+      <OverlayGraphic src="/pickleball.svg" className="sports-pickleball" />
 
-      <div className="relative">
-        <div className="max-w-2xl">
-          <Reveal
-            as="h2"
-            className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[3rem]"
-          >
+      <div className="sports-inner">
+        <div className="sports-heading-wrap">
+          <Reveal as="h2" className="sports-heading">
             {sports.heading}
           </Reveal>
         </div>
 
-        <div className="mt-14 space-y-14 sm:mt-16 sm:space-y-20">
-          {sports.cards.map((card, i) => (
+        <div className="sports-rows">
+          {sports.cards.map((card) => (
             <SportRow
               key={card.name}
               title={`${card.courts} ${card.name} courts`}
               body={card.body}
               features={card.features}
               lead={card.lead}
-              image={CARD_IMAGES[i]}
+              sport={card.name.toLowerCase() as Sport}
+              courts={card.courts}
             />
           ))}
         </div>

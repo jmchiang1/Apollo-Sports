@@ -1,31 +1,27 @@
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
-const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-200 disabled:opacity-60 disabled:pointer-events-none active:translate-y-[3px]";
+const base = "btn";
 
 /**
  * Chunky pill buttons with a solid offset "hard shadow" that presses down on
  * click — the retro-casual sticker feel borrowed from the reference sites.
+ * Each variant/size maps to a semantic class defined in globals.css.
  */
 export const buttonVariants = {
   // Deep plum — the reliable, high-contrast action on any light block.
-  primary:
-    "bg-plum text-cream shadow-[0_5px_0_0_#201d18] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#201d18] active:shadow-[0_2px_0_0_#201d18]",
+  primary: "btn-primary",
   // Caramel gold — warm, inviting (the Apollo namesake). The signature CTA.
-  accent:
-    "bg-gold text-plum shadow-[0_5px_0_0_#a9761a] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#a9761a] active:shadow-[0_2px_0_0_#a9761a]",
+  accent: "btn-accent",
   // Cream — for use on dark plum sections.
-  cream:
-    "bg-cream text-plum shadow-[0_5px_0_0_rgba(0,0,0,0.28)] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_rgba(0,0,0,0.28)] active:shadow-[0_2px_0_0_rgba(0,0,0,0.28)]",
+  cream: "btn-cream",
   // Quiet outline.
-  outline:
-    "text-plum ring-2 ring-inset ring-plum/25 hover:ring-plum/50 hover:bg-plum/[0.04] active:translate-y-0",
+  outline: "btn-outline",
 } as const;
 
 export const buttonSizes = {
-  md: "px-5 py-2.5 text-sm",
-  lg: "px-8 py-4 text-[1.02rem]",
+  md: "btn-md",
+  lg: "btn-lg",
 } as const;
 
 export function buttonClass({

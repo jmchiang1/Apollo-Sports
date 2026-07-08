@@ -51,19 +51,13 @@ export function SectionWrapper({
   const reduce = useReducedMotion();
 
   return (
-    <section
-      id={id}
-      className={cn("relative scroll-mt-24 py-20 sm:py-28 md:py-32", className)}
-    >
+    <section id={id} className={cn("section", className)}>
       <motion.div
         variants={containerVariants}
         initial={reduce ? "visible" : "hidden"}
         whileInView="visible"
         viewport={{ once: true, margin: "-90px" }}
-        className={cn(
-          contained && "mx-auto w-full max-w-6xl px-6 sm:px-8",
-          containerClassName,
-        )}
+        className={cn(contained && "section-inner", containerClassName)}
       >
         {children}
       </motion.div>

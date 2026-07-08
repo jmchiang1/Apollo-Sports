@@ -13,21 +13,16 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b-2 border-plum/10">
+    <div className="faq-item">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-4 py-5 text-left"
+        className="faq-question"
       >
-        <span className="font-display text-lg font-extrabold text-ink">{q}</span>
-        <span
-          className={cn(
-            "grid h-8 w-8 shrink-0 place-items-center rounded-full bg-cream-2 text-gold-deep transition-all duration-300",
-            open && "rotate-45 bg-gold text-plum",
-          )}
-        >
-          <Plus className="h-4 w-4" strokeWidth={2.5} />
+        <span className="faq-question-text">{q}</span>
+        <span className={cn("faq-toggle", open && "faq-toggle-open")}>
+          <Plus className="faq-toggle-icon" strokeWidth={2.5} />
         </span>
       </button>
       <AnimatePresence initial={false}>
@@ -37,9 +32,9 @@ function FAQItem({ q, a }: { q: string; a: string }) {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden"
+            className="faq-answer-wrap"
           >
-            <p className="pb-5 pr-8 text-[1.02rem] leading-relaxed text-muted">
+            <p className="faq-answer">
               <TodoText>{a}</TodoText>
             </p>
           </motion.div>
@@ -51,23 +46,20 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 
 export function FAQAccordion() {
   return (
-    <SectionWrapper id="faq" className="relative overflow-hidden bg-cream">
-      <DogPeeking
-        aria-hidden
-        className="pointer-events-none absolute -bottom-4 right-6 h-36 w-auto text-plum sm:right-12 sm:h-44"
-      />
-      <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+    <SectionWrapper id="faq" className="faq-section">
+      <div aria-hidden className="faq-peeking-wrap">
+        <DogPeeking className="peeking-dog" />
+      </div>
+
+      <div className="faq-grid">
         <div>
-          <Reveal
-            as="h2"
-            className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[2.9rem]"
-          >
+          <Reveal as="h2" className="faq-heading">
             {faq.heading}
           </Reveal>
         </div>
 
         <Reveal>
-          <div className="border-t-2 border-plum/10">
+          <div className="faq-list">
             {faq.items.map((item) => (
               <FAQItem key={item.q} q={item.q} a={item.a} />
             ))}

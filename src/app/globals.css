@@ -124,6 +124,805 @@ body {
   font-weight: 500;
 }
 
+/* ── Semantic component classes ────────────────────────────────────────────
+   Readable, kebab-case class names for the markup — each bundles its Tailwind
+   utilities via @apply so the rendered HTML shows e.g. class="faq-section"
+   instead of a long utility string.
+   ────────────────────────────────────────────────────────────────────────── */
+@layer components {
+  /* section shell (SectionWrapper) */
+  .section {
+    @apply relative scroll-mt-24 py-20 sm:py-28 md:py-32;
+  }
+  .section-inner {
+    @apply mx-auto w-full max-w-6xl px-6 sm:px-8;
+  }
+
+  /* FAQ ("Good questions.") */
+  .faq-section {
+    @apply relative overflow-hidden bg-cream;
+  }
+  .faq-grid {
+    @apply grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16;
+  }
+  .faq-heading {
+    @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[2.9rem];
+  }
+  .faq-list {
+    @apply border-t-2 border-plum/10;
+  }
+  .faq-item {
+    @apply border-b-2 border-plum/10;
+  }
+  .faq-question {
+    @apply flex w-full items-center justify-between gap-4 py-5 text-left;
+  }
+  .faq-question-text {
+    @apply font-display text-lg font-extrabold text-ink;
+  }
+  .faq-toggle {
+    @apply grid h-8 w-8 shrink-0 place-items-center rounded-full bg-cream-2 text-gold-deep transition-all duration-300;
+  }
+  .faq-toggle-open {
+    @apply rotate-45 bg-gold text-plum;
+  }
+  .faq-toggle-icon {
+    @apply h-4 w-4;
+  }
+  .faq-answer-wrap {
+    @apply overflow-hidden;
+  }
+  .faq-answer {
+    @apply pb-5 pr-8 text-[1.02rem] leading-relaxed text-muted;
+  }
+  /* centred anchor so the dog lines up with the container (heading) edge */
+  .faq-peeking-wrap {
+    @apply pointer-events-none absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl;
+  }
+  .peeking-dog {
+    @apply pointer-events-none absolute -bottom-4 left-6 h-36 w-auto text-plum sm:left-8 sm:h-44;
+  }
+
+  /* ── Buttons ─────────────────────────────────────────────────────────── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-200 disabled:opacity-60 disabled:pointer-events-none active:translate-y-[3px];
+  }
+  .btn-primary {
+    @apply bg-plum text-cream shadow-[0_5px_0_0_#201d18] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#201d18] active:shadow-[0_2px_0_0_#201d18];
+  }
+  .btn-accent {
+    @apply bg-gold text-plum shadow-[0_5px_0_0_#a9761a] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#a9761a] active:shadow-[0_2px_0_0_#a9761a];
+  }
+  .btn-cream {
+    @apply bg-cream text-plum shadow-[0_5px_0_0_rgba(0,0,0,0.28)] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_rgba(0,0,0,0.28)] active:shadow-[0_2px_0_0_rgba(0,0,0,0.28)];
+  }
+  .btn-outline {
+    @apply text-plum ring-2 ring-inset ring-plum/25 hover:ring-plum/50 hover:bg-plum/[0.04] active:translate-y-0;
+  }
+  .btn-md {
+    @apply px-5 py-2.5 text-sm;
+  }
+  .btn-lg {
+    @apply px-8 py-4 text-[1.02rem];
+  }
+
+  /* ── Decorative overlay graphic (birdie / pickleball watermarks) ─────── */
+  .overlay-graphic {
+    @apply pointer-events-none absolute bg-contain bg-center bg-no-repeat;
+  }
+
+  /* ── TODO placeholder tokens ─────────────────────────────────────────── */
+  .todo-token {
+    @apply mx-0.5 whitespace-normal rounded-md bg-gold-soft/80 px-1.5 py-0.5 align-baseline text-[0.85em] font-semibold tracking-tight text-gold-deep ring-1 ring-gold/50;
+  }
+  .todo-badge {
+    @apply inline-flex items-center rounded-md bg-gold-soft/80 px-2 py-1 text-sm font-semibold text-gold-deep ring-1 ring-gold/50;
+  }
+
+  /* ── Header ──────────────────────────────────────────────────────────── */
+  .header-bar {
+    @apply fixed inset-x-0 top-0 z-50 transition-all duration-500;
+  }
+  .header-bar-scrolled {
+    @apply border-b border-plum/10 bg-cream/90 backdrop-blur-md;
+  }
+  .header-bar-top {
+    @apply border-b border-transparent bg-cream/0;
+  }
+  .header-inner {
+    @apply mx-auto flex max-w-6xl items-center justify-between px-6 transition-all duration-500 sm:px-8;
+  }
+  .header-inner-scrolled {
+    @apply h-16;
+  }
+  .header-inner-top {
+    @apply h-20;
+  }
+  .header-brand {
+    @apply shrink-0;
+  }
+  .header-nav {
+    @apply hidden items-center gap-8 md:flex;
+  }
+  .header-nav-link {
+    @apply relative text-sm font-semibold text-ink/70 transition-colors hover:text-ink;
+  }
+  .header-nav-underline {
+    @apply absolute -bottom-1.5 left-0 h-[3px] w-full origin-left scale-x-0 rounded-full bg-gold transition-transform duration-300 ease-out group-hover:scale-x-100;
+  }
+  .header-actions {
+    @apply flex items-center gap-2;
+  }
+  .header-cta {
+    @apply hidden sm:inline-flex;
+  }
+  .header-menu-btn {
+    @apply grid h-10 w-10 place-items-center rounded-full text-ink transition-colors hover:bg-plum/[0.06] md:hidden;
+  }
+  .header-icon {
+    @apply h-5 w-5;
+  }
+  .header-overlay {
+    @apply fixed inset-0 z-50 bg-cream md:hidden;
+  }
+  .header-overlay-top {
+    @apply flex h-20 items-center justify-between px-6;
+  }
+  .header-overlay-close {
+    @apply grid h-10 w-10 place-items-center rounded-full text-ink transition-colors hover:bg-plum/[0.06];
+  }
+  .header-overlay-nav {
+    @apply flex flex-col gap-1 px-6 pt-6;
+  }
+  .header-overlay-link {
+    @apply border-b border-plum/10 py-4 font-display text-3xl font-extrabold text-ink;
+  }
+  .header-overlay-cta-wrap {
+    @apply pt-8;
+  }
+  .header-overlay-cta {
+    @apply w-full;
+  }
+
+  /* ── Wordmark ────────────────────────────────────────────────────────── */
+  .wordmark {
+    @apply inline-flex items-center gap-2.5 font-display text-xl font-extrabold tracking-tight sm:text-2xl;
+  }
+  .wordmark-cream {
+    @apply text-cream;
+  }
+  .wordmark-ink {
+    @apply text-ink;
+  }
+  .wordmark-logo {
+    @apply h-9 w-auto sm:h-10;
+  }
+  .wordmark-text {
+    @apply leading-none whitespace-nowrap;
+  }
+
+  /* ── Hero ────────────────────────────────────────────────────────────── */
+  .hero-section {
+    @apply relative flex min-h-[90vh] items-center overflow-hidden bg-cream pt-28 pb-16 sm:pt-28;
+  }
+  .hero-glow {
+    @apply pointer-events-none absolute -top-24 right-[-12%] h-[44rem] w-[44rem] rounded-full opacity-70 blur-3xl;
+  }
+  .hero-grid {
+    @apply relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-6;
+  }
+  .hero-copy {
+    @apply max-w-xl;
+  }
+  .hero-eyebrow {
+    @apply mb-6 inline-flex items-center rounded-full bg-cream-2 px-4 py-2 text-sm font-semibold text-ink ring-1 ring-plum/10;
+  }
+  .hero-headline {
+    @apply font-display text-[2.85rem] font-extrabold leading-[0.98] tracking-tight text-ink sm:text-6xl lg:text-[4.4rem];
+  }
+  .hero-subhead {
+    @apply mt-7 max-w-xl text-lg leading-relaxed text-muted;
+  }
+  .hero-actions {
+    @apply mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center;
+  }
+  .hero-secondary {
+    @apply inline-flex items-center gap-2 text-[0.95rem] font-semibold text-ink transition-colors hover:text-gold-deep;
+  }
+  .hero-secondary-icon {
+    @apply h-4 w-4 transition-transform duration-300 group-hover:translate-x-1;
+  }
+  .hero-court {
+    @apply relative;
+  }
+  .hero-court-float {
+    @apply relative mx-auto aspect-[701/447] w-full max-w-[520px] drop-shadow-[0_30px_50px_rgba(38,34,30,0.14)] lg:mx-0 lg:ml-auto lg:max-w-[640px];
+  }
+  .hero-court-layer {
+    @apply absolute inset-0;
+  }
+
+  /* ── Vision ──────────────────────────────────────────────────────────── */
+  .vision-section {
+    @apply relative overflow-hidden bg-rose;
+  }
+  .vision-grid {
+    @apply grid items-center gap-12 lg:grid-cols-12 lg:gap-10;
+  }
+  .vision-copy {
+    @apply lg:col-span-7;
+  }
+  .vision-heading {
+    @apply font-display text-4xl font-extrabold leading-[1.0] tracking-tight text-ink sm:text-5xl lg:text-[3.4rem];
+  }
+  .vision-paragraphs {
+    @apply mt-7 max-w-xl space-y-5;
+  }
+  .vision-paragraph {
+    @apply text-lg leading-relaxed text-ink/80;
+  }
+  .vision-media {
+    @apply relative lg:col-span-5;
+  }
+  .vision-polaroid {
+    @apply mx-auto max-w-xs rotate-[2.5deg] rounded-[2rem] border-2 border-plum/10 bg-cream p-4 shadow-[10px_10px_0_0_rgba(38,34,30,0.14)];
+  }
+  .vision-polaroid-frame {
+    @apply relative grid aspect-square place-items-center overflow-hidden rounded-2xl bg-peach;
+  }
+  .vision-polaroid-tex {
+    @apply absolute inset-0 text-plum/[0.09];
+  }
+  .vision-polaroid-dog {
+    @apply relative h-44 w-auto text-plum;
+  }
+  .vision-polaroid-caption {
+    @apply mt-3 text-center font-display text-sm font-bold text-ink;
+  }
+  .vision-quote {
+    @apply relative z-10 mx-auto -mt-6 max-w-sm -rotate-2 rounded-2xl border-2 border-plum/10 bg-gold px-6 py-5 shadow-[6px_6px_0_0_rgba(38,34,30,0.16)];
+  }
+  .vision-quote-icon {
+    @apply mb-2 h-6 w-6 text-plum/70;
+  }
+  .vision-quote-text {
+    @apply font-display text-base font-bold leading-snug text-plum;
+  }
+
+  /* ── Sports ──────────────────────────────────────────────────────────── */
+  .sports-section {
+    @apply relative bg-peach;
+  }
+  .sports-pickleball {
+    @apply -right-20 -top-24 h-72 w-72 rotate-12;
+  }
+  .sports-inner {
+    @apply relative;
+  }
+  .sports-heading-wrap {
+    @apply max-w-2xl;
+  }
+  .sports-heading {
+    @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[3rem];
+  }
+  .sports-rows {
+    @apply mt-14 space-y-14 sm:mt-16 sm:space-y-20;
+  }
+  .sports-row {
+    @apply grid items-center gap-8 lg:grid-cols-2 lg:gap-12;
+  }
+  .sports-row-media-flip {
+    @apply lg:order-2;
+  }
+  .sports-row-text-flip {
+    @apply lg:order-1;
+  }
+  .sports-cluster {
+    @apply relative aspect-[4/3];
+  }
+  .sports-cluster-grid {
+    @apply relative grid h-full w-full grid-rows-2 place-items-center gap-x-4 gap-y-1 p-6 sm:p-8;
+  }
+  .sports-cluster-grid-multi {
+    @apply grid-cols-2;
+  }
+  .sports-cluster-grid-single {
+    @apply grid-cols-1;
+  }
+  .sports-cluster-court {
+    @apply drop-shadow-[0_12px_16px_rgba(38,34,30,0.14)];
+  }
+  .sports-row-title {
+    @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl;
+  }
+  .sports-row-body {
+    @apply mt-4 max-w-lg text-lg leading-relaxed text-ink/75;
+  }
+  .sports-features {
+    @apply mt-6 space-y-3;
+  }
+  .sports-feature {
+    @apply flex items-center gap-3;
+  }
+  .sports-feature-check {
+    @apply grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold text-plum;
+  }
+  .sports-feature-icon {
+    @apply h-4 w-4;
+  }
+  .sports-feature-label {
+    @apply font-semibold text-ink;
+  }
+
+  /* ── Stats band ──────────────────────────────────────────────────────── */
+  .stats-section {
+    @apply bg-plum text-cream;
+  }
+  .stats-grid {
+    @apply mx-auto grid max-w-6xl grid-cols-2 gap-x-8 gap-y-10 px-6 py-12 sm:grid-cols-4 sm:px-8 sm:py-14;
+  }
+  .stats-item {
+    @apply border-l-[3px] border-gold/40 pl-4;
+  }
+  .stats-value {
+    @apply font-display text-5xl font-extrabold leading-none tracking-tight text-gold sm:text-6xl;
+  }
+  .stats-label {
+    @apply mt-2 text-sm font-extrabold uppercase tracking-wide text-cream;
+  }
+  .stats-note {
+    @apply text-xs font-semibold text-cream/50;
+  }
+
+  /* ── Programs ────────────────────────────────────────────────────────── */
+  .programs-section {
+    @apply relative overflow-hidden bg-cream;
+  }
+  .programs-running-dog {
+    @apply pointer-events-none absolute right-6 top-8 hidden h-[200px] w-auto rotate-[35deg] text-plum sm:block lg:right-10;
+  }
+  .programs-heading-wrap {
+    @apply max-w-2xl;
+  }
+  .programs-heading {
+    @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[3rem];
+  }
+  .programs-list {
+    @apply mt-12 border-t-2 border-plum/10;
+  }
+  .programs-row {
+    @apply flex items-center gap-5 border-b-2 border-plum/10 py-6 transition-colors duration-300 hover:bg-cream-2/60 sm:gap-8 sm:px-4;
+  }
+  .programs-index {
+    @apply w-14 shrink-0 font-display text-4xl font-extrabold leading-none text-plum/20 transition-colors duration-300 group-hover:text-gold sm:w-24 sm:text-6xl;
+  }
+  .programs-row-body {
+    @apply flex-1;
+  }
+  .programs-title {
+    @apply font-display text-xl font-extrabold text-ink sm:text-2xl;
+  }
+  .programs-body {
+    @apply mt-1.5 max-w-2xl leading-relaxed text-muted;
+  }
+  .programs-icon-chip {
+    @apply hidden h-12 w-12 shrink-0 place-items-center rounded-2xl bg-plum text-gold transition-transform duration-300 group-hover:-rotate-6 sm:grid;
+  }
+  .programs-icon {
+    @apply h-6 w-6;
+  }
+
+  /* ── Pricing ─────────────────────────────────────────────────────────── */
+  .pricing-section {
+    @apply relative overflow-hidden bg-plum text-cream;
+  }
+  .pricing-pickleball {
+    @apply -bottom-24 -left-16 h-60 w-60 rotate-12 opacity-70;
+  }
+  .pricing-heading-wrap {
+    @apply relative max-w-2xl;
+  }
+  .pricing-heading {
+    @apply font-display text-3xl font-extrabold tracking-tight text-cream sm:text-4xl lg:text-[3rem];
+  }
+  .pricing-note {
+    @apply mt-4 text-lg leading-relaxed text-cream/60;
+  }
+  .pricing-grid {
+    @apply relative mt-14 grid items-stretch gap-6 lg:grid-cols-3;
+  }
+  .pricing-card {
+    @apply flex h-full flex-col rounded-3xl p-8 ring-1;
+  }
+  .pricing-card-featured {
+    @apply bg-cream/[0.1] ring-2 ring-gold lg:-translate-y-2;
+  }
+  .pricing-card-plain {
+    @apply bg-cream/[0.05] ring-cream/10;
+  }
+  .pricing-card-head {
+    @apply flex items-center justify-between gap-3;
+  }
+  .pricing-icon {
+    @apply grid h-12 w-12 shrink-0 place-items-center rounded-2xl;
+  }
+  .pricing-icon-featured {
+    @apply bg-gold text-plum;
+  }
+  .pricing-icon-plain {
+    @apply bg-cream/[0.07] text-gold ring-1 ring-cream/10;
+  }
+  .pricing-icon-glyph {
+    @apply h-6 w-6;
+  }
+  .pricing-badge {
+    @apply rounded-full bg-gold px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-plum;
+  }
+  .pricing-plan-name {
+    @apply mt-6 font-display text-2xl font-extrabold text-cream;
+  }
+  .pricing-plan-tagline {
+    @apply mt-1 text-sm font-semibold text-cream/55;
+  }
+  .pricing-price-row {
+    @apply mt-6 flex flex-wrap items-baseline gap-x-2 gap-y-1;
+  }
+  .pricing-price {
+    @apply font-display text-xl font-extrabold text-gold;
+  }
+  .pricing-unit {
+    @apply text-sm font-semibold text-cream/50;
+  }
+  .pricing-features {
+    @apply mt-6 space-y-3 border-t border-cream/10 pt-6;
+  }
+  .pricing-feature {
+    @apply flex items-start gap-3;
+  }
+  .pricing-feature-check {
+    @apply mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full;
+  }
+  .pricing-feature-check-featured {
+    @apply bg-gold text-plum;
+  }
+  .pricing-feature-check-plain {
+    @apply bg-cream/10 text-gold;
+  }
+  .pricing-feature-icon {
+    @apply h-3 w-3;
+  }
+  .pricing-feature-label {
+    @apply text-sm leading-relaxed text-cream/80;
+  }
+  .pricing-cta-wrap {
+    @apply mt-auto pt-8;
+  }
+  .pricing-cta {
+    @apply w-full;
+  }
+
+  /* ── Why us ──────────────────────────────────────────────────────────── */
+  .whyus-section {
+    @apply relative overflow-hidden bg-plum text-cream;
+  }
+  .whyus-glow {
+    @apply pointer-events-none absolute -bottom-40 -right-24 h-[36rem] w-[36rem] rounded-full opacity-40 blur-3xl;
+  }
+  .whyus-birdie {
+    @apply -left-16 -top-24 h-96 w-80 rotate-[35deg] opacity-80;
+  }
+  .whyus-heading-wrap {
+    @apply relative max-w-2xl;
+  }
+  .whyus-heading {
+    @apply font-display text-3xl font-extrabold tracking-tight text-cream sm:text-4xl lg:text-[3rem];
+  }
+  .whyus-grid {
+    @apply relative mt-14 grid gap-6 lg:grid-cols-5;
+  }
+  .whyus-feature-col {
+    @apply lg:col-span-2;
+  }
+  .whyus-feature-card {
+    @apply flex h-full flex-col justify-between gap-8 overflow-hidden rounded-3xl bg-cream/[0.06] p-8 ring-1 ring-cream/10;
+  }
+  .whyus-feature-chip {
+    @apply mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-gold text-plum;
+  }
+  .whyus-feature-icon {
+    @apply h-7 w-7;
+  }
+  .whyus-feature-title {
+    @apply font-display text-2xl font-extrabold text-cream sm:text-3xl;
+  }
+  .whyus-feature-body {
+    @apply mt-3 leading-relaxed text-cream/65;
+  }
+  .whyus-feature-footer {
+    @apply flex items-center gap-3 border-t border-cream/10 pt-5;
+  }
+  .whyus-mascot {
+    @apply h-11 w-11 shrink-0;
+  }
+  .whyus-mascot-note {
+    @apply font-display text-sm font-bold text-cream/70;
+  }
+  .whyus-list-col {
+    @apply lg:col-span-3;
+  }
+  .whyus-list {
+    @apply flex h-full flex-col divide-y divide-cream/10 rounded-3xl bg-cream/[0.04] ring-1 ring-cream/10;
+  }
+  .whyus-list-item {
+    @apply flex flex-1 items-start gap-4 p-6 sm:p-7;
+  }
+  .whyus-list-chip {
+    @apply grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-cream/[0.07] text-gold ring-1 ring-cream/10 transition-colors duration-300 group-hover:bg-gold group-hover:text-plum;
+  }
+  .whyus-list-icon {
+    @apply h-6 w-6;
+  }
+  .whyus-list-title {
+    @apply font-display text-lg font-extrabold text-cream;
+  }
+  .whyus-list-body {
+    @apply mt-1 text-sm leading-relaxed text-cream/60;
+  }
+
+  /* ── Location ────────────────────────────────────────────────────────── */
+  .location-section {
+    @apply bg-cream;
+  }
+  .location-grid {
+    @apply grid items-center gap-10 lg:grid-cols-2 lg:gap-16;
+  }
+  .location-heading {
+    @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[3rem];
+  }
+  .location-body {
+    @apply mt-5 max-w-lg text-lg leading-relaxed text-muted;
+  }
+  .location-pills {
+    @apply mt-7 flex flex-wrap gap-2.5;
+  }
+  .location-pill {
+    @apply rounded-full border-2 border-plum/10 px-4 py-1.5 text-sm font-semibold text-ink;
+  }
+  .location-map {
+    @apply relative aspect-[4/3] overflow-hidden rounded-[2rem] border-2 border-plum/10 bg-cream-2 shadow-[10px_10px_0_0_rgba(38,34,30,0.1)];
+  }
+  .location-map-tex {
+    @apply absolute inset-0 text-plum/[0.1];
+  }
+  .location-map-stripes {
+    @apply absolute -inset-8 rotate-[24deg];
+  }
+  .location-map-block {
+    @apply absolute left-6 top-6 h-20 w-28 rounded-xl bg-peach/40;
+  }
+  .location-map-paw {
+    @apply absolute bottom-6 right-8 h-9 w-9 rotate-12 text-rose;
+  }
+  .location-map-pin-wrap {
+    @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
+  }
+  .location-map-pin-stack {
+    @apply relative flex items-center justify-center;
+  }
+  .location-map-ping {
+    @apply absolute h-16 w-16 animate-ping rounded-full bg-gold/25;
+  }
+  .location-map-pin {
+    @apply grid h-12 w-12 place-items-center rounded-full bg-plum text-gold shadow-lg;
+  }
+  .location-map-pin-icon {
+    @apply h-5 w-5;
+  }
+  .location-map-label {
+    @apply absolute bottom-4 left-4 right-4 rounded-2xl border-2 border-plum/10 bg-cream px-4 py-2.5;
+  }
+  .location-map-label-text {
+    @apply font-display text-sm font-extrabold text-ink;
+  }
+  .location-cards {
+    @apply mt-10 grid gap-5 sm:grid-cols-3;
+  }
+  .location-card {
+    @apply flex h-full items-start gap-4 rounded-3xl border-2 border-plum/10 bg-cream-2 p-6;
+  }
+  .location-card-chip {
+    @apply grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gold text-plum;
+  }
+  .location-card-icon {
+    @apply h-5 w-5;
+  }
+  .location-card-label {
+    @apply text-xs font-extrabold uppercase tracking-[0.14em] text-gold-deep;
+  }
+  .location-card-value {
+    @apply mt-1 font-display text-base font-bold text-ink;
+  }
+  .location-card-sub {
+    @apply mt-0.5 text-sm text-muted;
+  }
+
+  /* ── Waitlist ────────────────────────────────────────────────────────── */
+  .waitlist-section {
+    @apply relative z-10 bg-peach;
+  }
+  .waitlist-pickleball {
+    @apply -top-24 -right-20 h-72 w-72 rotate-12;
+  }
+  .waitlist-birdie {
+    @apply -bottom-24 -left-32 h-[20rem] w-[16rem] -rotate-[18deg];
+  }
+  .waitlist-layout {
+    @apply relative grid items-center gap-10 lg:grid-cols-2 lg:gap-14;
+  }
+  .waitlist-heading {
+    @apply font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl;
+  }
+  .waitlist-body {
+    @apply mt-4 max-w-md text-lg leading-relaxed text-ink/75;
+  }
+  .waitlist-steps {
+    @apply mt-9 space-y-0;
+  }
+  .waitlist-step {
+    @apply flex gap-4;
+  }
+  .waitlist-step-rail {
+    @apply flex flex-col items-center;
+  }
+  .waitlist-step-number {
+    @apply grid h-11 w-11 shrink-0 place-items-center rounded-full bg-plum font-display text-lg font-extrabold text-cream;
+  }
+  .waitlist-step-connector {
+    @apply my-1 w-[3px] flex-1 rounded bg-plum/20;
+  }
+  .waitlist-step-body {
+    @apply pb-7;
+  }
+  .waitlist-step-body-last {
+    @apply pb-0;
+  }
+  .waitlist-step-title {
+    @apply font-display text-lg font-extrabold text-ink;
+  }
+  .waitlist-step-text {
+    @apply mt-1 max-w-sm text-[0.97rem] leading-relaxed text-ink/70;
+  }
+  .waitlist-mascot-row {
+    @apply mt-6 flex items-center gap-3;
+  }
+  .waitlist-mascot {
+    @apply h-10 w-10 shrink-0;
+  }
+  .waitlist-mascot-note {
+    @apply font-display text-sm font-bold text-plum/70;
+  }
+  .waitlist-form-card {
+    @apply rounded-[2.5rem] border-2 border-plum/10 bg-cream p-6 shadow-[12px_12px_0_0_rgba(38,34,30,0.16)] sm:p-9;
+  }
+
+  /* ── Waitlist form ───────────────────────────────────────────────────── */
+  .waitlist-form-input {
+    @apply w-full rounded-2xl border-2 border-plum/12 bg-cream-2 px-4 py-3 text-ink placeholder:text-muted/60 outline-none transition focus:border-gold focus:bg-cream focus:ring-4 focus:ring-gold/20;
+  }
+  .waitlist-form-label {
+    @apply mb-1.5 block text-sm font-bold text-ink;
+  }
+  .waitlist-form-success {
+    @apply flex flex-col items-center gap-4 rounded-3xl border-2 border-gold/40 bg-cream-2 px-6 py-10 text-center;
+  }
+  .waitlist-form-success-badge {
+    @apply grid h-20 w-20 place-items-center rounded-full bg-cream shadow-md;
+  }
+  .waitlist-form-success-mascot {
+    @apply h-14 w-14;
+  }
+  .waitlist-form-success-title {
+    @apply font-display text-xl font-extrabold text-ink;
+  }
+  .waitlist-form-success-note {
+    @apply text-sm text-muted;
+  }
+  .waitlist-form {
+    @apply grid gap-4 text-left;
+  }
+  .waitlist-form-fields {
+    @apply grid gap-4 sm:grid-cols-2;
+  }
+  .waitlist-form-label-muted {
+    @apply font-medium text-muted;
+  }
+  .waitlist-form-chips {
+    @apply flex flex-wrap gap-2;
+  }
+  .waitlist-form-chip {
+    @apply rounded-full border-2 px-4 py-2 text-sm font-bold transition;
+  }
+  .waitlist-form-chip-active {
+    @apply border-plum bg-plum text-cream;
+  }
+  .waitlist-form-chip-idle {
+    @apply border-plum/15 bg-cream-2 text-ink/80 hover:border-plum/40;
+  }
+  .waitlist-form-zip {
+    @apply sm:max-w-[10rem];
+  }
+  .waitlist-form-error {
+    @apply text-sm font-semibold text-[#c0392b];
+  }
+  .waitlist-form-submit {
+    @apply mt-1 w-full sm:w-auto;
+  }
+  .waitlist-form-submit-icon {
+    @apply h-4 w-4 animate-spin;
+  }
+  .waitlist-form-disclaimer {
+    @apply text-xs text-muted;
+  }
+
+  /* ── Footer ──────────────────────────────────────────────────────────── */
+  .footer {
+    @apply relative overflow-hidden bg-plum text-cream;
+  }
+  .footer-inner {
+    @apply mx-auto max-w-6xl px-6 py-16 sm:px-8;
+  }
+  .footer-grid {
+    @apply grid gap-10 md:grid-cols-[1.5fr_1fr_1.1fr];
+  }
+  .footer-tagline {
+    @apply mt-4 max-w-xs text-sm leading-relaxed text-cream/60;
+  }
+  .footer-socials {
+    @apply mt-6 flex items-center gap-3;
+  }
+  .footer-social {
+    @apply grid h-10 w-10 place-items-center rounded-full text-cream/70 ring-1 ring-cream/15 transition-colors hover:text-gold hover:ring-cream/40;
+  }
+  .footer-social-icon {
+    @apply h-5 w-5;
+  }
+  .footer-col-title {
+    @apply text-xs font-bold uppercase tracking-[0.16em] text-cream/40;
+  }
+  .footer-links {
+    @apply mt-4 space-y-3;
+  }
+  .footer-link {
+    @apply text-sm font-medium text-cream/70 transition-colors hover:text-gold;
+  }
+  .footer-contact-list {
+    @apply mt-4 space-y-3 text-sm text-cream/70;
+  }
+  .footer-contact-item {
+    @apply flex items-center gap-2.5;
+  }
+  .footer-contact-icon {
+    @apply h-4 w-4 shrink-0 text-gold;
+  }
+  .footer-bottom {
+    @apply mt-14 flex flex-col gap-3 border-t border-cream/10 pt-6 sm:flex-row sm:items-center sm:justify-between;
+  }
+  .footer-legal {
+    @apply text-xs text-cream/50;
+  }
+  .footer-note {
+    @apply text-xs text-cream/40;
+  }
+
+  /* ── SiteOriginal shell ──────────────────────────────────────────────── */
+  .site-shell {
+    @apply flex min-h-full flex-1 flex-col;
+  }
+  .site-main {
+    @apply flex-1;
+  }
+}
+
 /* Infinite marquee (two identical rows → translate one row width) */
 @keyframes marquee {
   from {

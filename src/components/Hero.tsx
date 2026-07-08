@@ -32,62 +32,44 @@ export function Hero() {
   }, [reduce]);
 
   return (
-    <section
-      id="top"
-      className="relative flex min-h-[90vh] items-center overflow-hidden bg-cream pt-28 pb-16 sm:pt-28"
-    >
+    <section id="top" className="hero-section">
       {/* warm peach glow */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-24 right-[-12%] h-[44rem] w-[44rem] rounded-full opacity-70 blur-3xl"
+        className="hero-glow"
         style={{
           background:
             "radial-gradient(circle, rgba(224,166,58,0.26) 0%, rgba(224,166,58,0) 62%)",
         }}
       />
 
-      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-6">
+      <div className="hero-grid">
         {/* copy */}
         <motion.div
           initial={reduce ? "visible" : "hidden"}
           animate="visible"
           variants={group}
-          className="max-w-xl"
+          className="hero-copy"
         >
-          <motion.p
-            variants={fadeUp}
-            className="mb-6 inline-flex items-center rounded-full bg-cream-2 px-4 py-2 text-sm font-semibold text-ink ring-1 ring-plum/10"
-          >
+          <motion.p variants={fadeUp} className="hero-eyebrow">
             {hero.eyebrow}
           </motion.p>
 
-          <motion.h1
-            variants={fadeUp}
-            className="font-display text-[2.85rem] font-extrabold leading-[0.98] tracking-tight text-ink sm:text-6xl lg:text-[4.4rem]"
-          >
+          <motion.h1 variants={fadeUp} className="hero-headline">
             {hero.headline}
           </motion.h1>
 
-          <motion.p
-            variants={fadeUp}
-            className="mt-7 max-w-xl text-lg leading-relaxed text-muted"
-          >
+          <motion.p variants={fadeUp} className="hero-subhead">
             {hero.subhead}
           </motion.p>
 
-          <motion.div
-            variants={fadeUp}
-            className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center"
-          >
+          <motion.div variants={fadeUp} className="hero-actions">
             <ButtonLink href={hero.primaryCta.href} variant="accent" size="lg">
               {hero.primaryCta.label}
             </ButtonLink>
-            <a
-              href={hero.secondaryCta.href}
-              className="group inline-flex items-center gap-2 text-[0.95rem] font-semibold text-ink transition-colors hover:text-gold-deep"
-            >
+            <a href={hero.secondaryCta.href} className="group hero-secondary">
               {hero.secondaryCta.label}
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight className="hero-secondary-icon" />
             </a>
           </motion.div>
         </motion.div>
@@ -97,20 +79,20 @@ export function Hero() {
           initial={reduce ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={reduce ? { duration: 0 } : { duration: 1, ease: EASE, delay: 0.2 }}
-          className="relative"
+          className="hero-court"
         >
           <motion.div
             animate={reduce ? undefined : { y: [0, -10, 0] }}
             transition={
               reduce ? undefined : { duration: 7, ease: "easeInOut", repeat: Infinity }
             }
-            className="relative mx-auto aspect-[701/447] w-full max-w-[520px] drop-shadow-[0_30px_50px_rgba(38,34,30,0.14)] lg:mx-0 lg:ml-auto lg:max-w-[640px]"
+            className="hero-court-float"
           >
             {COURTS.map((sport, i) => (
               <motion.div
                 key={sport}
                 aria-hidden={active !== i}
-                className="absolute inset-0"
+                className="hero-court-layer"
                 animate={{ opacity: active === i ? 1 : 0 }}
                 transition={{ duration: 0.8, ease: EASE }}
               >

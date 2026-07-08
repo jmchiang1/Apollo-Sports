@@ -28,7 +28,7 @@ export function TodoText({
           <mark
             key={i}
             title="Placeholder — confirm before launch"
-            className="mx-0.5 whitespace-normal rounded-md bg-gold-soft/80 px-1.5 py-0.5 align-baseline text-[0.85em] font-semibold tracking-tight text-gold-deep ring-1 ring-gold/50"
+            className="todo-token"
           >
             {part}
           </mark>
@@ -51,10 +51,7 @@ export function TodoBadge({
   return (
     <span
       title="Placeholder — confirm before launch"
-      className={cn(
-        "inline-flex items-center rounded-md bg-gold-soft/80 px-2 py-1 text-sm font-semibold text-gold-deep ring-1 ring-gold/50",
-        className,
-      )}
+      className={cn("todo-badge", className)}
     >
       {label}
     </span>

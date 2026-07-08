@@ -17,10 +17,7 @@ export function OverlayGraphic({
   return (
     <div
       aria-hidden
-      className={cn(
-        "pointer-events-none absolute bg-contain bg-center bg-no-repeat",
-        className,
-      )}
+      className={cn("overlay-graphic", className)}
       style={{
         backgroundImage: `url(${src})`,
         ...(invert ? { filter: "invert(1)" } : null),

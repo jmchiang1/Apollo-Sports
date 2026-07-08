@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
-import { brand, hero, nav } from "@/config/siteConfig";
+import { brand, hero, navLuxe as nav } from "@/config/siteConfig";
 import { cn } from "@/lib/cn";
 import { LuxeWordmark } from "./LuxeWordmark";
 import { LuxeButtonLink } from "./LuxeButton";

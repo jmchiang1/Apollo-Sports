@@ -12,10 +12,9 @@ type Status = "idle" | "submitting" | "success" | "error";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const inputClass =
-  "w-full rounded-2xl border-2 border-plum/12 bg-cream-2 px-4 py-3 text-ink placeholder:text-muted/60 outline-none transition focus:border-gold focus:bg-cream focus:ring-4 focus:ring-gold/20";
+const inputClass = "waitlist-form-input";
 
-const labelClass = "mb-1.5 block text-sm font-bold text-ink";
+const labelClass = "waitlist-form-label";
 
 export function WaitlistForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -73,20 +72,20 @@ export function WaitlistForm() {
             key="success"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center gap-4 rounded-3xl border-2 border-gold/40 bg-cream-2 px-6 py-10 text-center"
+            className="waitlist-form-success"
           >
             <motion.span
               initial={{ scale: 0, rotate: -12 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 220, damping: 14, delay: 0.05 }}
-              className="grid h-20 w-20 place-items-center rounded-full bg-cream shadow-md"
+              className="waitlist-form-success-badge"
             >
-              <ApolloMascot className="h-14 w-14" />
+              <ApolloMascot className="waitlist-form-success-mascot" />
             </motion.span>
-            <p className="font-display text-xl font-extrabold text-ink">
-              {waitlist.success}
+            <p className="waitlist-form-success-title">{waitlist.success}</p>
+            <p className="waitlist-form-success-note">
+              Apollo says welcome to the pack. 🐾
             </p>
-            <p className="text-sm text-muted">Apollo says welcome to the pack. 🐾</p>
           </motion.div>
         ) : (
           <motion.form
@@ -95,9 +94,9 @@ export function WaitlistForm() {
             noValidate
             initial={false}
             exit={{ opacity: 0 }}
-            className="grid gap-4 text-left"
+            className="waitlist-form"
           >
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="waitlist-form-fields">
               <div>
                 <label htmlFor="wl-name" className={labelClass}>
                   Name
@@ -129,9 +128,9 @@ export function WaitlistForm() {
             <fieldset>
               <legend className={labelClass}>
                 Sports you play{" "}
-                <span className="font-medium text-muted">(optional)</span>
+                <span className="waitlist-form-label-muted">(optional)</span>
               </legend>
-              <div className="flex flex-wrap gap-2">
+              <div className="waitlist-form-chips">
                 {waitlist.sportsOptions.map((opt) => {
                   const active = sport === opt;
                   return (
@@ -141,10 +140,10 @@ export function WaitlistForm() {
                       aria-pressed={active}
                       onClick={() => setSport(active ? "" : opt)}
                       className={cn(
-                        "rounded-full border-2 px-4 py-2 text-sm font-bold transition",
+                        "waitlist-form-chip",
                         active
-                          ? "border-plum bg-plum text-cream"
-                          : "border-plum/15 bg-cream-2 text-ink/80 hover:border-plum/40",
+                          ? "waitlist-form-chip-active"
+                          : "waitlist-form-chip-idle",
                       )}
                     >
                       {opt}
@@ -154,9 +153,9 @@ export function WaitlistForm() {
               </div>
             </fieldset>
 
-            <div className="sm:max-w-[10rem]">
+            <div className="waitlist-form-zip">
               <label htmlFor="wl-zip" className={labelClass}>
-                Zip code <span className="font-medium text-muted">(optional)</span>
+                Zip code <span className="waitlist-form-label-muted">(optional)</span>
               </label>
               <input
                 id="wl-zip"
@@ -170,7 +169,7 @@ export function WaitlistForm() {
             </div>
 
             {status === "error" && (
-              <p className="text-sm font-semibold text-[#c0392b]" role="alert">
+              <p className="waitlist-form-error" role="alert">
                 {error}
               </p>
             )}
@@ -181,12 +180,12 @@ export function WaitlistForm() {
               className={buttonClass({
                 variant: "accent",
                 size: "lg",
-                className: "mt-1 w-full sm:w-auto",
+                className: "waitlist-form-submit",
               })}
             >
               {status === "submitting" ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="waitlist-form-submit-icon" />
                   Joining…
                 </>
               ) : (
@@ -194,7 +193,7 @@ export function WaitlistForm() {
               )}
             </button>
 
-            <p className="text-xs text-muted">
+            <p className="waitlist-form-disclaimer">
               No spam — just news about the club. Unsubscribe anytime.
             </p>
           </motion.form>

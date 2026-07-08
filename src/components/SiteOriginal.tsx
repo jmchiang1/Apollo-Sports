@@ -4,7 +4,7 @@ import { VisionSection } from "@/components/VisionSection";
 import { SportsSection } from "@/components/SportsSection";
 import { StatsBand } from "@/components/StatsBand";
 import { ProgramsSection } from "@/components/ProgramsSection";
-import { WhyUsGrid } from "@/components/WhyUsGrid";
+import { PricingSection } from "@/components/PricingSection";
 import { LocationSection } from "@/components/LocationSection";
 import { WaitlistSection } from "@/components/WaitlistSection";
 import { FAQAccordion } from "@/components/FAQAccordion";
@@ -13,15 +13,15 @@ import { Footer } from "@/components/Footer";
 /** Version 1 — the playful, PKLYN-style site. */
 export function SiteOriginal() {
   return (
-    <div className="flex min-h-full flex-1 flex-col">
+    <div className="site-shell">
       <Header />
-      <main className="flex-1">
+      <main className="site-main">
         <Hero />
         <VisionSection />
         <SportsSection />
         <StatsBand />
         <ProgramsSection />
-        <WhyUsGrid />
+        <PricingSection />
         <LocationSection />
         <WaitlistSection />
         <FAQAccordion />

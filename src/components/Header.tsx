@@ -29,41 +29,35 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-        scrolled
-          ? "border-b border-plum/10 bg-cream/90 backdrop-blur-md"
-          : "border-b border-transparent bg-cream/0",
+        "header-bar",
+        scrolled ? "header-bar-scrolled" : "header-bar-top",
       )}
     >
       <div
         className={cn(
-          "mx-auto flex max-w-6xl items-center justify-between px-6 transition-all duration-500 sm:px-8",
-          scrolled ? "h-16" : "h-20",
+          "header-inner",
+          scrolled ? "header-inner-scrolled" : "header-inner-top",
         )}
       >
-        <a href="#top" aria-label={`${brand.name} — back to top`} className="shrink-0">
+        <a href="#top" aria-label={`${brand.name} — back to top`} className="header-brand">
           <Wordmark />
         </a>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="header-nav">
           {nav.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="group relative text-sm font-semibold text-ink/70 transition-colors hover:text-ink"
-            >
+            <a key={item.href} href={item.href} className="group header-nav-link">
               {item.label}
-              <span className="absolute -bottom-1.5 left-0 h-[3px] w-full origin-left scale-x-0 rounded-full bg-gold transition-transform duration-300 ease-out group-hover:scale-x-100" />
+              <span className="header-nav-underline" />
             </a>
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="header-actions">
           <ButtonLink
             href={hero.primaryCta.href}
             variant="accent"
             size="md"
-            className="hidden sm:inline-flex"
+            className="header-cta"
           >
             {hero.primaryCta.label}
           </ButtonLink>
@@ -71,9 +65,9 @@ export function Header() {
             type="button"
             onClick={() => setOpen(true)}
             aria-label="Open menu"
-            className="grid h-10 w-10 place-items-center rounded-full text-ink transition-colors hover:bg-plum/[0.06] md:hidden"
+            className="header-menu-btn"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="header-icon" />
           </button>
         </div>
       </div>
@@ -85,17 +79,17 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-50 bg-cream md:hidden"
+            className="header-overlay"
           >
-            <div className="flex h-20 items-center justify-between px-6">
+            <div className="header-overlay-top">
               <Wordmark />
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
-                className="grid h-10 w-10 place-items-center rounded-full text-ink transition-colors hover:bg-plum/[0.06]"
+                className="header-overlay-close"
               >
-                <X className="h-5 w-5" />
+                <X className="header-icon" />
               </button>
             </div>
 
@@ -106,7 +100,7 @@ export function Header() {
                 hidden: {},
                 visible: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } },
               }}
-              className="flex flex-col gap-1 px-6 pt-6"
+              className="header-overlay-nav"
             >
               {nav.map((item) => (
                 <motion.a
@@ -117,7 +111,7 @@ export function Header() {
                     hidden: { opacity: 0, y: 12 },
                     visible: { opacity: 1, y: 0 },
                   }}
-                  className="border-b border-plum/10 py-4 font-display text-3xl font-extrabold text-ink"
+                  className="header-overlay-link"
                 >
                   {item.label}
                 </motion.a>
@@ -127,14 +121,14 @@ export function Header() {
                   hidden: { opacity: 0, y: 12 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                className="pt-8"
+                className="header-overlay-cta-wrap"
               >
                 <ButtonLink
                   href={hero.primaryCta.href}
                   variant="accent"
                   size="lg"
                   onClick={() => setOpen(false)}
-                  className="w-full"
+                  className="header-overlay-cta"
                 >
                   {hero.primaryCta.label}
                 </ButtonLink>

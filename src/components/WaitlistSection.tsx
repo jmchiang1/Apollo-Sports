@@ -6,45 +6,38 @@ import { OverlayGraphic } from "./OverlayGraphic";
 
 export function WaitlistSection() {
   return (
-    <SectionWrapper id="waitlist" className="relative overflow-hidden bg-peach">
-      {/* pickleball watermark bleeding off the bottom-right corner */}
-      <OverlayGraphic
-        src="/pickleball.svg"
-        className="-bottom-24 -right-20 h-96 w-96 rotate-12"
-      />
+    <SectionWrapper id="waitlist" className="waitlist-section">
+      {/* decorative watermarks that spill into the neighbouring sections */}
+      <OverlayGraphic src="/pickleball.svg" className="waitlist-pickleball" />
+      <OverlayGraphic src="/birdie.svg" className="waitlist-birdie" />
 
-      <div className="relative grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+      <div className="waitlist-layout">
         {/* how it works */}
         <div>
-          <Reveal
-            as="h2"
-            className="font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl"
-          >
+          <Reveal as="h2" className="waitlist-heading">
             {waitlist.heading}
           </Reveal>
-          <Reveal as="p" className="mt-4 max-w-md text-lg leading-relaxed text-ink/75">
+          <Reveal as="p" className="waitlist-body">
             {waitlist.body}
           </Reveal>
 
           <Reveal>
-            <ol className="mt-9 space-y-0">
+            <ol className="waitlist-steps">
               {waitlist.steps.map((step, i) => {
-                const last = i === waitlist.steps.length - 1;
+                const isLast = i === waitlist.steps.length - 1;
                 return (
-                  <li key={step.title} className="flex gap-4">
-                    <div className="flex flex-col items-center">
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-plum font-display text-lg font-extrabold text-cream">
-                        {i + 1}
-                      </span>
-                      {!last && <span className="my-1 w-[3px] flex-1 rounded bg-plum/20" />}
+                  <li key={step.title} className="waitlist-step">
+                    <div className="waitlist-step-rail">
+                      <span className="waitlist-step-number">{i + 1}</span>
+                      {!isLast && <span className="waitlist-step-connector" />}
                     </div>
-                    <div className={last ? "pb-0" : "pb-7"}>
-                      <h3 className="font-display text-lg font-extrabold text-ink">
-                        {step.title}
-                      </h3>
-                      <p className="mt-1 max-w-sm text-[0.97rem] leading-relaxed text-ink/70">
-                        {step.body}
-                      </p>
+                    <div
+                      className={
+                        isLast ? "waitlist-step-body-last" : "waitlist-step-body"
+                      }
+                    >
+                      <h3 className="waitlist-step-title">{step.title}</h3>
+                      <p className="waitlist-step-text">{step.body}</p>
                     </div>
                   </li>
                 );
@@ -53,9 +46,9 @@ export function WaitlistSection() {
           </Reveal>
 
           <Reveal>
-            <div className="mt-6 flex items-center gap-3">
-              <ApolloMascot className="h-10 w-10 shrink-0" />
-              <span className="font-display text-sm font-bold text-plum/70">
+            <div className="waitlist-mascot-row">
+              <ApolloMascot className="waitlist-mascot" />
+              <span className="waitlist-mascot-note">
                 Apollo&apos;s already on the list. 🐾
               </span>
             </div>
@@ -64,7 +57,7 @@ export function WaitlistSection() {
 
         {/* form */}
         <Reveal>
-          <div className="rounded-[2.5rem] border-2 border-plum/10 bg-cream p-6 shadow-[12px_12px_0_0_rgba(38,34,30,0.16)] sm:p-9">
+          <div className="waitlist-form-card">
             <WaitlistForm />
           </div>
         </Reveal>
