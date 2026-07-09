@@ -37,7 +37,7 @@ export function VisionSection() {
 
           <Reveal>
             <figure className="vision-quote">
-              <PawPrint className="vision-quote-icon" />
+              {/* <PawPrint className="vision-quote-icon" /> */}
               <blockquote className="vision-quote-text">
                 {vision.founderNote}
               </blockquote>

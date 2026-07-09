@@ -1,6 +1,5 @@
 import { Check } from "lucide-react";
 import { pricing } from "@/config/siteConfig";
-import { cn } from "@/lib/cn";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { iconMap, type IconName } from "./icons";
 import { TodoText } from "./Todo";
@@ -9,8 +8,10 @@ import { OverlayGraphic } from "./OverlayGraphic";
 
 /**
  * Membership & rates — the dark plum band that replaces the old "Why Us" grid.
- * Three ways to play (membership, private court booking, open play); prices are
- * intentionally rendered as [TODO] tokens until Jonathan confirms real figures.
+ * These are three *different* ways to play (membership, private court booking,
+ * open play), not tiers of one plan — so every card is weighted equally and
+ * none is flagged "most popular". Prices are rendered as [TODO] tokens until
+ * Jonathan confirms real figures.
  */
 export function PricingSection() {
   return (
@@ -31,24 +32,11 @@ export function PricingSection() {
           const Icon = iconMap[plan.icon as IconName];
           return (
             <Reveal key={plan.name}>
-              <div
-                className={cn(
-                  "pricing-card",
-                  plan.featured ? "pricing-card-featured" : "pricing-card-plain",
-                )}
-              >
+              <div className="pricing-card">
                 <div className="pricing-card-head">
-                  <span
-                    className={cn(
-                      "pricing-icon",
-                      plan.featured ? "pricing-icon-featured" : "pricing-icon-plain",
-                    )}
-                  >
+                  <span className="pricing-icon">
                     {Icon ? <Icon className="pricing-icon-glyph" strokeWidth={2} /> : null}
                   </span>
-                  {plan.badge ? (
-                    <span className="pricing-badge">{plan.badge}</span>
-                  ) : null}
                 </div>
 
                 <h3 className="pricing-plan-name">{plan.name}</h3>
@@ -62,14 +50,7 @@ export function PricingSection() {
                 <ul className="pricing-features">
                   {plan.features.map((f) => (
                     <li key={f} className="pricing-feature">
-                      <span
-                        className={cn(
-                          "pricing-feature-check",
-                          plan.featured
-                            ? "pricing-feature-check-featured"
-                            : "pricing-feature-check-plain",
-                        )}
-                      >
+                      <span className="pricing-feature-check">
                         <Check className="pricing-feature-icon" strokeWidth={3} />
                       </span>
                       <span className="pricing-feature-label">{f}</span>
@@ -80,7 +61,7 @@ export function PricingSection() {
                 <div className="pricing-cta-wrap">
                   <ButtonLink
                     href={plan.cta.href}
-                    variant={plan.featured ? "accent" : "cream"}
+                    variant="cream"
                     size="md"
                     className="pricing-cta"
                   >

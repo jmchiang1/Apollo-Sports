@@ -6,43 +6,35 @@
    to Apollo, the English Cream Golden Retriever. Tailwind v4 CSS-first config.
    ──────────────────────────────────────────────────────────────────────── */
 @theme {
-  /* Cream / warm-neutral canvas */
-  --color-cream: #f7f3ea; /* base canvas */
-  --color-cream-2: #ece5d6; /* deeper cream / tints */
-  --color-ink: #262320; /* primary text on light (warm charcoal) */
-  --color-muted: #726c61; /* secondary text on light */
+  /* Cool ivory canvas (Cove — coastal purple / blue / green) */
+  --color-cream: #f6f5f0; /* base canvas */
+  --color-cream-2: #e9e9e2; /* deeper cream / neutral tint */
+  --color-ink: #1f2340; /* primary text on light (deep indigo) */
+  --color-muted: #6c6f80; /* secondary text on light */
 
-  /* Soft neutral blocks (was pink/orange — now cream/greige) */
-  --color-peach: #e6dcc8; /* the deeper neutral block */
-  --color-peach-soft: #f1ebdd; /* light neutral tint */
-  --color-rose: #efe8db; /* the lighter neutral block */
-  --color-rose-soft: #f5efe4; /* neutral tint */
+  /* Playful pastel section blocks (PKLYN-style, toned down) */
+  --color-peach: #c4dbea; /* SKY block (Sports, Waitlist) */
+  --color-peach-soft: #dfeaf2; /* light sky tint */
+  --color-rose: #d5cde8; /* VIOLET block (Vision, Location) */
+  --color-rose-soft: #e7e1f0; /* light violet tint */
+  --color-foam: #cde7de; /* MINT/GREEN block (Programs) */
 
-  /* Caramel gold — the lone accent, the Apollo namesake */
-  --color-gold: #e0a63a;
-  --color-gold-deep: #a9761a; /* gold text on light surfaces */
-  --color-gold-soft: #f2dcac;
+  /* Teal — the lone action/accent color.
+     Token names stay `gold*` so the whole system keeps working; the values
+     are now teal. `gold-light` is the accent for DARK sections, where the
+     mid-dark teal would vanish against the indigo backgrounds. */
+  --color-gold: #159e8a; /* accent fill on light */
+  --color-gold-deep: #0e7466; /* accent text/shadow on light */
+  --color-gold-light: #5fc5b3; /* accent on dark surfaces */
+  --color-gold-soft: #cfeae3; /* pale accent tint */
 
-  /* Dark anchor — warm charcoal (was brown-plum) */
-  --color-plum: #2a2622;
-  --color-plum-deep: #201d18;
-
-  /* ── Version 2 (luxury): forest / butter / brass ── */
-  --color-forest: #24311d; /* deep hunter green — primary dark */
-  --color-forest-2: #2f3e26; /* raised green surface */
-  --color-forest-deep: #1a2413; /* deepest green (footer) */
-  --color-butter: #f1eac2; /* pale butter — light sections */
-  --color-ivory: #faf6e6; /* lightest cream */
-  --color-brass: #a67c3c; /* brass/gold accent + CTAs */
-  --color-brass-light: #c8a45f; /* brass text on dark */
-  --color-olive-ink: #212a1a; /* text on light */
-  --color-olive-muted: #676c54; /* muted text on light */
+  /* Dark anchor — deep indigo */
+  --color-plum: #232a52;
+  --color-plum-deep: #171d3c;
 
   /* Type */
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-playfair), Georgia, "Times New Roman", serif;
-  --font-luxe: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -50,7 +42,7 @@
 /* ── Base ──────────────────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5.5rem;
+  scroll-padding-top: 6rem;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -115,15 +107,6 @@ body {
   background-size: 26px 26px;
 }
 
-/* ── Luxury (v2) helpers ─────────────────────────────────────────────── */
-.luxe-eyebrow {
-  font-family: var(--font-luxe);
-  text-transform: uppercase;
-  letter-spacing: 0.34em;
-  font-size: 0.7rem;
-  font-weight: 500;
-}
-
 /* ── Semantic component classes ────────────────────────────────────────────
    Readable, kebab-case class names for the markup — each bundles its Tailwind
    utilities via @apply so the rendered HTML shows e.g. class="faq-section"
@@ -164,7 +147,7 @@ body {
     @apply grid h-8 w-8 shrink-0 place-items-center rounded-full bg-cream-2 text-gold-deep transition-all duration-300;
   }
   .faq-toggle-open {
-    @apply rotate-45 bg-gold text-plum;
+    @apply rotate-45 bg-gold text-cream;
   }
   .faq-toggle-icon {
     @apply h-4 w-4;
@@ -188,10 +171,10 @@ body {
     @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-200 disabled:opacity-60 disabled:pointer-events-none active:translate-y-[3px];
   }
   .btn-primary {
-    @apply bg-plum text-cream shadow-[0_5px_0_0_#201d18] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#201d18] active:shadow-[0_2px_0_0_#201d18];
+    @apply bg-plum text-cream shadow-[0_5px_0_0_#141a3b] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#141a3b] active:shadow-[0_2px_0_0_#141a3b];
   }
   .btn-accent {
-    @apply bg-gold text-plum shadow-[0_5px_0_0_#a9761a] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#a9761a] active:shadow-[0_2px_0_0_#a9761a];
+    @apply bg-gold text-cream shadow-[0_5px_0_0_#0c5f52] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#0c5f52] active:shadow-[0_2px_0_0_#0c5f52];
   }
   .btn-cream {
     @apply bg-cream text-plum shadow-[0_5px_0_0_rgba(0,0,0,0.28)] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_rgba(0,0,0,0.28)] active:shadow-[0_2px_0_0_rgba(0,0,0,0.28)];
@@ -236,7 +219,7 @@ body {
     @apply h-16;
   }
   .header-inner-top {
-    @apply h-20;
+    @apply h-32;
   }
   .header-brand {
     @apply shrink-0;
@@ -262,11 +245,29 @@ body {
   .header-icon {
     @apply h-5 w-5;
   }
+  /* While transparent over the dark hero (top, not scrolled), header content is
+     light; it flips back to dark once the bar solidifies to cream on scroll. */
+  .header-bar-top .wordmark-ink {
+    @apply text-cream;
+  }
+  .header-bar-top .header-nav-link {
+    @apply text-cream/75 hover:text-cream;
+  }
+  .header-bar-top .header-menu-btn {
+    @apply text-cream hover:bg-cream/10;
+  }
+  /* Oversized logo at the top of the page; shrinks to its regular size on scroll. */
+  .header-bar-top .wordmark-logo {
+    @apply h-24;
+  }
   .header-overlay {
     @apply fixed inset-0 z-50 bg-cream md:hidden;
   }
   .header-overlay-top {
     @apply flex h-20 items-center justify-between px-6;
+  }
+  .header-overlay .wordmark-logo {
+    @apply h-10;
   }
   .header-overlay-close {
     @apply grid h-10 w-10 place-items-center rounded-full text-ink transition-colors hover:bg-plum/[0.06];
@@ -286,7 +287,7 @@ body {
 
   /* ── Wordmark ────────────────────────────────────────────────────────── */
   .wordmark {
-    @apply inline-flex items-center gap-2.5 font-display text-xl font-extrabold tracking-tight sm:text-2xl;
+    @apply inline-flex items-center gap-2.5 font-display text-xl font-extrabold tracking-tight transition-colors duration-500 sm:text-2xl;
   }
   .wordmark-cream {
     @apply text-cream;
@@ -295,18 +296,18 @@ body {
     @apply text-ink;
   }
   .wordmark-logo {
-    @apply h-9 w-auto sm:h-10;
+    @apply h-9 w-auto transition-[height] duration-500 ease-out sm:h-10;
   }
   .wordmark-text {
     @apply leading-none whitespace-nowrap;
   }
 
-  /* ── Hero ────────────────────────────────────────────────────────────── */
+  /* ── Hero (dark "spotlight" — the boldest block on the page) ─────────── */
   .hero-section {
-    @apply relative flex min-h-[90vh] items-center overflow-hidden bg-cream pt-28 pb-16 sm:pt-28;
+    @apply relative flex min-h-[90vh] items-center overflow-hidden bg-plum pt-40 pb-16 sm:pt-40;
   }
-  .hero-glow {
-    @apply pointer-events-none absolute -top-24 right-[-12%] h-[44rem] w-[44rem] rounded-full opacity-70 blur-3xl;
+  .hero-glow-2 {
+    @apply pointer-events-none absolute -bottom-32 -left-28 h-[38rem] w-[38rem] rounded-full opacity-80 blur-3xl;
   }
   .hero-grid {
     @apply relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-6;
@@ -315,28 +316,37 @@ body {
     @apply max-w-xl;
   }
   .hero-eyebrow {
-    @apply mb-6 inline-flex items-center rounded-full bg-cream-2 px-4 py-2 text-sm font-semibold text-ink ring-1 ring-plum/10;
+    @apply mb-6 inline-flex items-center rounded-full bg-cream/10 px-4 py-2 text-sm font-semibold text-cream ring-1 ring-cream/20 backdrop-blur-sm;
   }
   .hero-headline {
-    @apply font-display text-[2.85rem] font-extrabold leading-[0.98] tracking-tight text-ink sm:text-6xl lg:text-[4.4rem];
+    @apply font-display text-[2.85rem] font-extrabold leading-[0.98] tracking-tight text-cream sm:text-6xl lg:text-[4.4rem];
+  }
+  .hero-headline-accent {
+    @apply text-gold-light;
   }
   .hero-subhead {
-    @apply mt-7 max-w-xl text-lg leading-relaxed text-muted;
+    @apply mt-7 max-w-xl text-lg leading-relaxed text-cream/70;
   }
   .hero-actions {
     @apply mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center;
   }
   .hero-secondary {
-    @apply inline-flex items-center gap-2 text-[0.95rem] font-semibold text-ink transition-colors hover:text-gold-deep;
+    @apply inline-flex items-center gap-2 text-[0.95rem] font-semibold text-cream transition-colors hover:text-gold-light;
   }
   .hero-secondary-icon {
     @apply h-4 w-4 transition-transform duration-300 group-hover:translate-x-1;
   }
   .hero-court {
-    @apply relative;
+    @apply relative flex items-center justify-center lg:justify-start;
+  }
+  .hero-court-stage {
+    @apply relative w-full max-w-[520px] shrink-0 lg:w-[64vw] lg:max-w-[62rem];
+  }
+  .hero-court-glow {
+    @apply pointer-events-none absolute left-1/2 top-1/2 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 blur-3xl lg:h-[54rem] lg:w-[54rem];
   }
   .hero-court-float {
-    @apply relative mx-auto aspect-[701/447] w-full max-w-[520px] drop-shadow-[0_30px_50px_rgba(38,34,30,0.14)] lg:mx-0 lg:ml-auto lg:max-w-[640px];
+    @apply relative aspect-[701/447] w-full drop-shadow-[0_18px_44px_rgba(95,197,179,0.32)];
   }
   .hero-court-layer {
     @apply absolute inset-0;
@@ -380,13 +390,13 @@ body {
     @apply mt-3 text-center font-display text-sm font-bold text-ink;
   }
   .vision-quote {
-    @apply relative z-10 mx-auto -mt-6 max-w-sm -rotate-2 rounded-2xl border-2 border-plum/10 bg-gold px-6 py-5 shadow-[6px_6px_0_0_rgba(38,34,30,0.16)];
+    @apply relative z-10 mx-auto mt-6 max-w-sm -rotate-2 rounded-2xl border-2 border-plum/10 bg-gold px-6 py-5 shadow-[6px_6px_0_0_rgba(38,34,30,0.16)];
   }
   .vision-quote-icon {
-    @apply mb-2 h-6 w-6 text-plum/70;
+    @apply mb-2 h-6 w-6 text-cream/80;
   }
   .vision-quote-text {
-    @apply font-display text-base font-bold leading-snug text-plum;
+    @apply font-display text-base font-bold leading-snug text-cream;
   }
 
   /* ── Sports ──────────────────────────────────────────────────────────── */
@@ -400,7 +410,7 @@ body {
     @apply relative;
   }
   .sports-heading-wrap {
-    @apply max-w-2xl;
+    @apply max-w-none;
   }
   .sports-heading {
     @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[3rem];
@@ -445,7 +455,7 @@ body {
     @apply flex items-center gap-3;
   }
   .sports-feature-check {
-    @apply grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold text-plum;
+    @apply grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold text-cream;
   }
   .sports-feature-icon {
     @apply h-4 w-4;
@@ -462,10 +472,10 @@ body {
     @apply mx-auto grid max-w-6xl grid-cols-2 gap-x-8 gap-y-10 px-6 py-12 sm:grid-cols-4 sm:px-8 sm:py-14;
   }
   .stats-item {
-    @apply border-l-[3px] border-gold/40 pl-4;
+    @apply border-l-[3px] border-gold-light/40 pl-4;
   }
   .stats-value {
-    @apply font-display text-5xl font-extrabold leading-none tracking-tight text-gold sm:text-6xl;
+    @apply font-display text-5xl font-extrabold leading-none tracking-tight text-gold-light sm:text-6xl;
   }
   .stats-label {
     @apply mt-2 text-sm font-extrabold uppercase tracking-wide text-cream;
@@ -476,13 +486,13 @@ body {
 
   /* ── Programs ────────────────────────────────────────────────────────── */
   .programs-section {
-    @apply relative overflow-hidden bg-cream;
+    @apply relative overflow-hidden bg-foam;
   }
   .programs-running-dog {
     @apply pointer-events-none absolute right-6 top-8 hidden h-[200px] w-auto rotate-[35deg] text-plum sm:block lg:right-10;
   }
   .programs-heading-wrap {
-    @apply max-w-2xl;
+    @apply max-w-none;
   }
   .programs-heading {
     @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[3rem];
@@ -506,7 +516,7 @@ body {
     @apply mt-1.5 max-w-2xl leading-relaxed text-muted;
   }
   .programs-icon-chip {
-    @apply hidden h-12 w-12 shrink-0 place-items-center rounded-2xl bg-plum text-gold transition-transform duration-300 group-hover:-rotate-6 sm:grid;
+    @apply hidden h-12 w-12 shrink-0 place-items-center rounded-2xl bg-plum text-gold-light transition-transform duration-300 group-hover:-rotate-6 sm:grid;
   }
   .programs-icon {
     @apply h-6 w-6;
@@ -520,7 +530,7 @@ body {
     @apply -bottom-24 -left-16 h-60 w-60 rotate-12 opacity-70;
   }
   .pricing-heading-wrap {
-    @apply relative max-w-2xl;
+    @apply relative;
   }
   .pricing-heading {
     @apply font-display text-3xl font-extrabold tracking-tight text-cream sm:text-4xl lg:text-[3rem];
@@ -532,31 +542,16 @@ body {
     @apply relative mt-14 grid items-stretch gap-6 lg:grid-cols-3;
   }
   .pricing-card {
-    @apply flex h-full flex-col rounded-3xl p-8 ring-1;
-  }
-  .pricing-card-featured {
-    @apply bg-cream/[0.1] ring-2 ring-gold lg:-translate-y-2;
-  }
-  .pricing-card-plain {
-    @apply bg-cream/[0.05] ring-cream/10;
+    @apply flex h-full flex-col rounded-3xl bg-cream/[0.06] p-8 ring-1 ring-cream/10;
   }
   .pricing-card-head {
-    @apply flex items-center justify-between gap-3;
+    @apply flex items-center gap-3;
   }
   .pricing-icon {
-    @apply grid h-12 w-12 shrink-0 place-items-center rounded-2xl;
-  }
-  .pricing-icon-featured {
-    @apply bg-gold text-plum;
-  }
-  .pricing-icon-plain {
-    @apply bg-cream/[0.07] text-gold ring-1 ring-cream/10;
+    @apply grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-cream/[0.07] text-gold-light ring-1 ring-cream/10;
   }
   .pricing-icon-glyph {
     @apply h-6 w-6;
-  }
-  .pricing-badge {
-    @apply rounded-full bg-gold px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-plum;
   }
   .pricing-plan-name {
     @apply mt-6 font-display text-2xl font-extrabold text-cream;
@@ -568,7 +563,7 @@ body {
     @apply mt-6 flex flex-wrap items-baseline gap-x-2 gap-y-1;
   }
   .pricing-price {
-    @apply font-display text-xl font-extrabold text-gold;
+    @apply font-display text-xl font-extrabold text-gold-light;
   }
   .pricing-unit {
     @apply text-sm font-semibold text-cream/50;
@@ -580,13 +575,7 @@ body {
     @apply flex items-start gap-3;
   }
   .pricing-feature-check {
-    @apply mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full;
-  }
-  .pricing-feature-check-featured {
-    @apply bg-gold text-plum;
-  }
-  .pricing-feature-check-plain {
-    @apply bg-cream/10 text-gold;
+    @apply mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-cream/10 text-gold-light;
   }
   .pricing-feature-icon {
     @apply h-3 w-3;
@@ -627,7 +616,7 @@ body {
     @apply flex h-full flex-col justify-between gap-8 overflow-hidden rounded-3xl bg-cream/[0.06] p-8 ring-1 ring-cream/10;
   }
   .whyus-feature-chip {
-    @apply mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-gold text-plum;
+    @apply mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-gold text-cream;
   }
   .whyus-feature-icon {
     @apply h-7 w-7;
@@ -657,7 +646,7 @@ body {
     @apply flex flex-1 items-start gap-4 p-6 sm:p-7;
   }
   .whyus-list-chip {
-    @apply grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-cream/[0.07] text-gold ring-1 ring-cream/10 transition-colors duration-300 group-hover:bg-gold group-hover:text-plum;
+    @apply grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-cream/[0.07] text-gold-light ring-1 ring-cream/10 transition-colors duration-300 group-hover:bg-gold group-hover:text-cream;
   }
   .whyus-list-icon {
     @apply h-6 w-6;
@@ -671,7 +660,7 @@ body {
 
   /* ── Location ────────────────────────────────────────────────────────── */
   .location-section {
-    @apply bg-cream;
+    @apply bg-rose;
   }
   .location-grid {
     @apply grid items-center gap-10 lg:grid-cols-2 lg:gap-16;
@@ -713,7 +702,7 @@ body {
     @apply absolute h-16 w-16 animate-ping rounded-full bg-gold/25;
   }
   .location-map-pin {
-    @apply grid h-12 w-12 place-items-center rounded-full bg-plum text-gold shadow-lg;
+    @apply grid h-12 w-12 place-items-center rounded-full bg-plum text-gold-light shadow-lg;
   }
   .location-map-pin-icon {
     @apply h-5 w-5;
@@ -731,7 +720,7 @@ body {
     @apply flex h-full items-start gap-4 rounded-3xl border-2 border-plum/10 bg-cream-2 p-6;
   }
   .location-card-chip {
-    @apply grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gold text-plum;
+    @apply grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gold text-cream;
   }
   .location-card-icon {
     @apply h-5 w-5;
@@ -881,7 +870,7 @@ body {
     @apply mt-6 flex items-center gap-3;
   }
   .footer-social {
-    @apply grid h-10 w-10 place-items-center rounded-full text-cream/70 ring-1 ring-cream/15 transition-colors hover:text-gold hover:ring-cream/40;
+    @apply grid h-10 w-10 place-items-center rounded-full text-cream/70 ring-1 ring-cream/15 transition-colors hover:text-gold-light hover:ring-cream/40;
   }
   .footer-social-icon {
     @apply h-5 w-5;
@@ -893,7 +882,7 @@ body {
     @apply mt-4 space-y-3;
   }
   .footer-link {
-    @apply text-sm font-medium text-cream/70 transition-colors hover:text-gold;
+    @apply text-sm font-medium text-cream/70 transition-colors hover:text-gold-light;
   }
   .footer-contact-list {
     @apply mt-4 space-y-3 text-sm text-cream/70;
@@ -902,7 +891,7 @@ body {
     @apply flex items-center gap-2.5;
   }
   .footer-contact-icon {
-    @apply h-4 w-4 shrink-0 text-gold;
+    @apply h-4 w-4 shrink-0 text-gold-light;
   }
   .footer-bottom {
     @apply mt-14 flex flex-col gap-3 border-t border-cream/10 pt-6 sm:flex-row sm:items-center sm:justify-between;

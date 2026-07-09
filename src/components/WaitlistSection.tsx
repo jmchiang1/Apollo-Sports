@@ -44,15 +44,6 @@ export function WaitlistSection() {
               })}
             </ol>
           </Reveal>
-
-          <Reveal>
-            <div className="waitlist-mascot-row">
-              <ApolloMascot className="waitlist-mascot" />
-              <span className="waitlist-mascot-note">
-                Apollo&apos;s already on the list. 🐾
-              </span>
-            </div>
-          </Reveal>
         </div>
 
         {/* form */}

@@ -1,5 +1,5 @@
-import { SiteSwitcher } from "@/components/SiteSwitcher";
+import { SiteOriginal } from "@/components/SiteOriginal";
 
 export default function Home() {
-  return <SiteSwitcher />;
+  return <SiteOriginal />;
 }

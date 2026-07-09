@@ -38,14 +38,7 @@ export const todo = {
   },
 } as const;
 
-/**
- * Anchor navigation — id must match each section's element id.
- *
- * The two site versions expose slightly different sections, so they carry
- * their own nav lists: v1 (`nav`) has a Pricing section; the luxury build
- * (`navLuxe`) still leads with Why Us. Keep each in sync with its site's
- * actual section ids.
- */
+/** Anchor navigation — id must match each section's element id. */
 export const nav = [
   { label: "Vision", href: "#vision" },
   { label: "Sports", href: "#sports" },
@@ -55,19 +48,11 @@ export const nav = [
   { label: "FAQ", href: "#faq" },
 ] as const;
 
-/** Luxury (v2) nav — mirrors `nav` but keeps the Why Us section. */
-export const navLuxe = [
-  { label: "Vision", href: "#vision" },
-  { label: "Sports", href: "#sports" },
-  { label: "Programs", href: "#programs" },
-  { label: "Why Us", href: "#why-us" },
-  { label: "Location", href: "#location" },
-  { label: "FAQ", href: "#faq" },
-] as const;
-
 export const hero = {
   eyebrow: `Coming to Nassau County · ${todo.opening}`,
   headline: "Great Neck's Premier Racket Club",
+  // Word within `headline` to accent in teal on the dark hero (must appear verbatim).
+  headlineHighlight: "Racket",
   subhead:
     "A badminton and pickleball led indoor racquet club in the heart of Nassau County; private bookings, open play, coaching and leagues for every level!",
   primaryCta: { label: "Join the Waitlist", href: "#waitlist" },
@@ -172,7 +157,7 @@ export const programs = {
  */
 export const pricing = {
   eyebrow: "Membership & Rates",
-  heading: "Ways to play — and what they'll cost.",
+  heading: "Ways to play and what they'll cost.",
   note: "Waitlist members lock in founding rates. Exact pricing is being finalized ahead of our 2026 opening.",
   plans: [
     {
@@ -180,8 +165,6 @@ export const pricing = {
       tagline: "The best way to play.",
       price: "$129", // PLACEHOLDER — confirm before launch
       unit: "per month",
-      featured: true,
-      badge: "Most popular",
       icon: "BadgeCheck",
       cta: { label: "Join the Waitlist", href: "#waitlist" },
       features: [
@@ -196,8 +179,6 @@ export const pricing = {
       tagline: "Reserve the whole court.",
       price: "$40", // PLACEHOLDER — confirm before launch
       unit: "per hour",
-      featured: false,
-      badge: "",
       icon: "CalendarClock",
       cta: { label: "Get booking updates", href: "#waitlist" },
       features: [
@@ -212,8 +193,6 @@ export const pricing = {
       tagline: "Show up and get matched.",
       price: "$25", // PLACEHOLDER — confirm before launch
       unit: "per drop-in",
-      featured: false,
-      badge: "",
       icon: "Users",
       cta: { label: "Get booking updates", href: "#waitlist" },
       features: [
@@ -337,7 +316,6 @@ export const siteConfig = {
   brand,
   todo,
   nav,
-  navLuxe,
   hero,
   vision,
   sports,

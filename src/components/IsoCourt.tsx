@@ -1,8 +1,8 @@
 import { cn } from "@/lib/cn";
 
 /**
- * Isometric racquet court illustration, drawn to match the pickleball-court
- * aesthetic (tan surface, cream service boxes, charcoal lines, gold mesh net).
+ * Isometric racquet court illustration, drawn to match the club palette
+ * (mint surface, ivory service boxes, indigo lines, teal mesh net).
  * Both sports share the same outer court + net; only the internal markings
  * differ — so pickleball and badminton read as identical illustrations.
  */
@@ -70,11 +70,11 @@ const MARKINGS: Record<Sport, Marks> = {
 };
 
 const C = {
-  surface: "#cbb083",
-  side: "#ab8d55",
-  cream: "#f7efe0",
-  line: "#2a2622",
-  gold: "#e0a63a",
+  surface: "#b9d9c6", // soft mint court
+  side: "#98bca8", // darker mint (3D edge)
+  cream: "#f2f4ef", // ivory service boxes
+  line: "#232a52", // indigo lines
+  gold: "#159e8a", // teal net
 };
 
 export function IsoCourt({
