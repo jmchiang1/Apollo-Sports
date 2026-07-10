@@ -18,7 +18,7 @@ export const brand = {
   name: "Apollo Racquet Club",
   shortName: "Apollo",
   legalEntity: "Apollo Sports LLC",
-  tagline: "Great Neck's premier badminton and pickleball club",
+  tagline: "New York's premier badminton and pickleball club",
   // Named after Apollo — a Nassau local's English Cream Golden Retriever.
   // Drives the warm cream + caramel-gold palette.
 } as const;

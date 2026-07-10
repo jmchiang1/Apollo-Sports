@@ -85,46 +85,46 @@ export function Hero() {
             </a>
           </motion.div>
         </motion.div>
-
-        {/* court illustration — alternates between pickleball & badminton */}
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={reduce ? { duration: 0 } : { duration: 1, ease: EASE, delay: 0.2 }}
-          className="hero-court"
-        >
-          <div className="hero-court-stage">
-            {/* teal spotlight — centered on the court, sits still while it bobs */}
-            <div
-              aria-hidden
-              className="hero-court-glow"
-              style={{
-                background:
-                  "radial-gradient(circle, rgba(95,197,179,0.45) 0%, rgba(95,197,179,0) 62%)",
-              }}
-            />
-            <motion.div
-              animate={reduce ? undefined : { y: [0, -10, 0] }}
-              transition={
-                reduce ? undefined : { duration: 7, ease: "easeInOut", repeat: Infinity }
-              }
-              className="hero-court-float"
-            >
-              {COURTS.map((sport, i) => (
-                <motion.div
-                  key={sport}
-                  aria-hidden={active !== i}
-                  className="hero-court-layer"
-                  animate={{ opacity: active === i ? 1 : 0 }}
-                  transition={{ duration: 0.8, ease: EASE }}
-                >
-                  <IsoCourt sport={sport} />
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </motion.div>
       </div>
+
+      {/* court illustration — pinned to the bottom-right, bleeding off-page */}
+      <motion.div
+        initial={reduce ? false : { opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={reduce ? { duration: 0 } : { duration: 1, ease: EASE, delay: 0.2 }}
+        className="hero-court"
+      >
+        <div className="hero-court-stage">
+          {/* teal spotlight — centered on the court, sits still while it bobs */}
+          <div
+            aria-hidden
+            className="hero-court-glow"
+            style={{
+              background:
+                "radial-gradient(circle, rgba(95,197,179,0.45) 0%, rgba(95,197,179,0) 62%)",
+            }}
+          />
+          <motion.div
+            animate={reduce ? undefined : { y: [0, -10, 0] }}
+            transition={
+              reduce ? undefined : { duration: 7, ease: "easeInOut", repeat: Infinity }
+            }
+            className="hero-court-float"
+          >
+            {COURTS.map((sport, i) => (
+              <motion.div
+                key={sport}
+                aria-hidden={active !== i}
+                className="hero-court-layer"
+                animate={{ opacity: active === i ? 1 : 0 }}
+                transition={{ duration: 0.8, ease: EASE }}
+              >
+                <IsoCourt sport={sport} />
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </motion.div>
     </section>
   );
 }

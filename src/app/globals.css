@@ -304,13 +304,13 @@ body {
 
   /* ── Hero (dark "spotlight" — the boldest block on the page) ─────────── */
   .hero-section {
-    @apply relative flex min-h-[90vh] items-center overflow-hidden bg-plum pt-40 pb-16 sm:pt-40;
+    @apply relative flex min-h-[90vh] flex-col justify-center overflow-hidden bg-plum pt-40 pb-16 sm:pt-40;
   }
   .hero-glow-2 {
     @apply pointer-events-none absolute -bottom-32 -left-28 h-[38rem] w-[38rem] rounded-full opacity-80 blur-3xl;
   }
   .hero-grid {
-    @apply relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-6;
+    @apply relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-6;
   }
   .hero-copy {
     @apply max-w-xl;
@@ -337,10 +337,10 @@ body {
     @apply h-4 w-4 transition-transform duration-300 group-hover:translate-x-1;
   }
   .hero-court {
-    @apply relative flex items-center justify-center lg:justify-start;
+    @apply relative z-0 mt-10 flex w-full justify-center px-6 lg:absolute lg:bottom-0 lg:right-0 lg:mt-0 lg:block lg:w-auto lg:px-0;
   }
   .hero-court-stage {
-    @apply relative w-full max-w-[520px] shrink-0 lg:w-[64vw] lg:max-w-[62rem];
+    @apply relative w-full max-w-[520px] shrink-0 lg:w-[115vw] lg:max-w-none lg:translate-x-[35.5%] lg:translate-y-[38%];
   }
   .hero-court-glow {
     @apply pointer-events-none absolute left-1/2 top-1/2 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 blur-3xl lg:h-[54rem] lg:w-[54rem];
