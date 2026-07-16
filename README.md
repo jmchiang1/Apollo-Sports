@@ -79,7 +79,7 @@ ships unconfirmed. Fill these in before launch:
 - [ ] Membership + drop-in pricing (`todo.pricing`)
 - [ ] Hours of operation (`todo.hours`)
 - [ ] Contact email + phone (`todo.email`, `todo.phone`)
-- [ ] Opening date/season (`todo.opening`, currently "Opening 2026")
+- [ ] Opening date/season (`todo.opening`, currently "Opening 2027")
 - [ ] Social handles (`todo.social`)
 - [ ] Hero photography (optional — the illustrated court graphic ships as-is)
 

@@ -25,13 +25,13 @@ export const brand = {
 
 /** Placeholders only Jonathan confirms. Rendered as visible [TODO] tokens. */
 export const todo = {
-  address: "TBD",
+  address: "Coming Soon",
   courts: "[TODO: exact court count & mix — planning target ~6]",
   pricing: "[TODO: pricing]",
   hours: "24/7",
   phone: "1 (917) 828 - 0104",
   email: "apollosports@gmail.com",
-  opening: "Opening 2026", // brief-sanctioned soft default; confirm exact season
+  opening: "Opening 2027", // brief-sanctioned soft default; confirm exact season
   social: {
     instagram: "[TODO: Instagram handle]",
     facebook: "[TODO: Facebook page]",
@@ -50,8 +50,10 @@ export const nav = [
 
 export const hero = {
   eyebrow: `Coming to Nassau County · ${todo.opening}`,
-  headline: "Great Neck's Premier Racket Club",
-  // Word within `headline` to accent in teal on the dark hero (must appear verbatim).
+  // One line per entry — the hero breaks exactly here, no reflow. Line 1 is the
+  // service area; swap it for whichever city/region the club lands in.
+  headlineLines: ["Nassau County's", "Premier Racket", "Sport Club"],
+  // Word within a headline line to accent in teal (must appear verbatim).
   headlineHighlight: "Racket",
   subhead:
     "A badminton and pickleball led indoor racquet club in the heart of Nassau County; private bookings, open play, coaching and leagues for every level!",
@@ -158,7 +160,7 @@ export const programs = {
 export const pricing = {
   eyebrow: "Membership & Rates",
   heading: "Ways to play and what they'll cost.",
-  note: "Waitlist members lock in founding rates. Exact pricing is being finalized ahead of our 2026 opening.",
+  note: "Waitlist members lock in founding rates. Exact pricing is being finalized ahead of our 2027 opening.",
   plans: [
     {
       name: "Membership",
@@ -177,7 +179,7 @@ export const pricing = {
     {
       name: "Private Court Booking",
       tagline: "Reserve the whole court.",
-      price: "$40", // PLACEHOLDER — confirm before launch
+      price: "$50", // PLACEHOLDER — confirm before launch
       unit: "per hour",
       icon: "CalendarClock",
       cta: { label: "Get booking updates", href: "#waitlist" },
@@ -239,8 +241,10 @@ export const location = {
   addressLabel: todo.address,
   areas: [
     "Great Neck",
+    "Little Neck",
+    "Bayside",
+    "Douglaston",
     "Manhasset",
-    "Roslyn",
     "Mineola",
     "Garden City",
     "New Hyde Park",
@@ -265,7 +269,7 @@ export const waitlist = {
     },
     {
       title: "Play opening day",
-      body: "We'll tell you the moment the doors open in 2026.",
+      body: "We'll tell you the moment the doors open in 2027.",
     },
   ],
 } as const;
@@ -276,7 +280,7 @@ export const faq = {
   items: [
     {
       q: "When are you opening?",
-      a: "We're targeting 2026. Join the waitlist and we'll tell you the moment we have a date.",
+      a: "We're targeting 2027. Join the waitlist and we'll tell you the moment we have a date.",
     },
     {
       q: "Where will you be located?",

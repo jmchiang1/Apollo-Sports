@@ -1,10 +1,10 @@
 import { cn } from "@/lib/cn";
 
 /**
- * Isometric racquet court illustration, drawn to match the club palette
- * (mint surface, ivory service boxes, indigo lines, teal mesh net).
- * Both sports share the same outer court + net; only the internal markings
- * differ — so pickleball and badminton read as identical illustrations.
+ * Isometric racquet court illustration, drawn to match the club palette:
+ * a deep-teal slab with cream lines and a teal mesh net. Both sports share the
+ * same outer court + net; only the internal markings differ — pickleball adds
+ * the teal kitchen (non-volley zone), badminton is the bare slab.
  */
 
 type Sport = "pickleball" | "badminton";
@@ -23,7 +23,11 @@ function P(x: number, y: number, lift = 0) {
 const s = (p: { x: number; y: number }) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
 const poly = (corners: [number, number][]) => corners.map(([x, y]) => s(P(x, y))).join(" ");
 
-type Marks = { boxes: [number, number][][]; lines: [number, number, number, number][] };
+/** `zone` is an optional accent-filled area (pickleball's kitchen). */
+type Marks = {
+  zone?: [number, number][];
+  lines: [number, number, number, number][];
+};
 
 const OUTER: [number, number, number, number][] = [
   [0, 0, 44, 0],
@@ -34,12 +38,8 @@ const OUTER: [number, number, number, number][] = [
 
 const MARKINGS: Record<Sport, Marks> = {
   pickleball: {
-    boxes: [
-      [[0, 0], [15, 0], [15, 10], [0, 10]],
-      [[0, 10], [15, 10], [15, 20], [0, 20]],
-      [[29, 0], [44, 0], [44, 10], [29, 10]],
-      [[29, 10], [44, 10], [44, 20], [29, 20]],
-    ],
+    // the kitchen — between the two non-volley lines, spanning the full width
+    zone: [[15, 0], [29, 0], [29, 20], [15, 20]],
     lines: [
       ...OUTER,
       [15, 0, 15, 20], // non-volley (kitchen) lines
@@ -49,12 +49,6 @@ const MARKINGS: Record<Sport, Marks> = {
     ],
   },
   badminton: {
-    boxes: [
-      [[2.5, 1.5], [15.5, 1.5], [15.5, 10], [2.5, 10]],
-      [[2.5, 10], [15.5, 10], [15.5, 18.5], [2.5, 18.5]],
-      [[28.5, 1.5], [41.5, 1.5], [41.5, 10], [28.5, 10]],
-      [[28.5, 10], [41.5, 10], [41.5, 18.5], [28.5, 18.5]],
-    ],
     lines: [
       ...OUTER,
       [0, 1.5, 44, 1.5], // singles side lines
@@ -69,22 +63,34 @@ const MARKINGS: Record<Sport, Marks> = {
   },
 };
 
+/** The slab is `--color-plum`, which is also the hero's background — so on the
+ *  hero it needs `lifted`, or the court dissolves into the section behind it. */
+type Tone = "slab" | "lifted";
+
+const SURFACE: Record<Tone, { surface: string; side: string }> = {
+  slab: { surface: "#1D3C44", side: "#132a30" },
+  lifted: { surface: "#2c5c68", side: "#1d434d" },
+};
+
 const C = {
-  surface: "#b9d9c6", // soft mint court
-  side: "#98bca8", // darker mint (3D edge)
-  cream: "#f2f4ef", // ivory service boxes
-  line: "#232a52", // indigo lines
-  gold: "#159e8a", // teal net
+  zone: "#5fc5b3", // pickleball kitchen
+  line: "#f6f5f0", // cream court lines
+  net: "#000000", // black mesh net
+  tape: "#ffffff", // white top tape
+  post: "#000000", // black posts
 };
 
 export function IsoCourt({
   sport,
+  tone = "slab",
   className,
 }: {
   sport: Sport;
+  tone?: Tone;
   className?: string;
 }) {
   const m = MARKINGS[sport];
+  const { surface, side } = SURFACE[tone];
 
   // key screen points
   const A = P(0, 0);
@@ -107,20 +113,18 @@ export function IsoCourt({
         {/* court slab sides (3D thickness) */}
         <polygon
           points={`${s(A)} ${s(D)} ${D.x},${D.y + DEPTH} ${A.x},${A.y + DEPTH}`}
-          fill={C.side}
+          fill={side}
         />
         <polygon
           points={`${s(D)} ${s(Cc)} ${Cc.x},${Cc.y + DEPTH} ${D.x},${D.y + DEPTH}`}
-          fill={C.side}
+          fill={side}
         />
 
         {/* top surface */}
-        <polygon points={poly([[0, 0], [44, 0], [44, 20], [0, 20]])} fill={C.surface} />
+        <polygon points={poly([[0, 0], [44, 0], [44, 20], [0, 20]])} fill={surface} />
 
-        {/* cream service boxes */}
-        {m.boxes.map((b, i) => (
-          <polygon key={i} points={poly(b)} fill={C.cream} />
-        ))}
+        {/* accent zone (pickleball kitchen) */}
+        {m.zone && <polygon points={poly(m.zone)} fill={C.zone} />}
 
         {/* court lines */}
         {m.lines.map(([x1, y1, x2, y2], i) => {
@@ -143,7 +147,7 @@ export function IsoCourt({
         {/* net */}
         <polygon
           points={`${s(N0)} ${s(N1)} ${N1.x},${N1.y - NETH} ${N0.x},${N0.y - NETH}`}
-          fill={C.gold}
+          fill={C.net}
           fillOpacity={0.16}
         />
         {Array.from({ length: NV + 1 }).map((_, i) => {
@@ -157,7 +161,7 @@ export function IsoCourt({
               y1={by}
               x2={bx}
               y2={by - NETH}
-              stroke={C.gold}
+              stroke={C.net}
               strokeOpacity={0.55}
               strokeWidth={0.9}
             />
@@ -172,7 +176,7 @@ export function IsoCourt({
               y1={N0.y - h}
               x2={N1.x}
               y2={N1.y - h}
-              stroke={C.gold}
+              stroke={C.net}
               strokeOpacity={0.55}
               strokeWidth={0.9}
             />
@@ -184,12 +188,12 @@ export function IsoCourt({
           y1={N0.y - NETH}
           x2={N1.x}
           y2={N1.y - NETH}
-          stroke={C.gold}
+          stroke={C.tape}
           strokeWidth={3}
           strokeLinecap="round"
         />
-        <line x1={N0.x} y1={N0.y} x2={N0.x} y2={N0.y - NETH} stroke={C.line} strokeWidth={5} strokeLinecap="round" />
-        <line x1={N1.x} y1={N1.y} x2={N1.x} y2={N1.y - NETH} stroke={C.line} strokeWidth={5} strokeLinecap="round" />
+        <line x1={N0.x} y1={N0.y} x2={N0.x} y2={N0.y - NETH} stroke={C.post} strokeWidth={5} strokeLinecap="round" />
+        <line x1={N1.x} y1={N1.y} x2={N1.x} y2={N1.y - NETH} stroke={C.post} strokeWidth={5} strokeLinecap="round" />
       </g>
     </svg>
   );

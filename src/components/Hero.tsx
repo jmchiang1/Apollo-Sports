@@ -21,6 +21,19 @@ const fadeUp: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
 };
 
+/** Accents `hero.headlineHighlight` within a line, if it appears there. */
+function headlineLine(line: string) {
+  const i = line.indexOf(hero.headlineHighlight);
+  if (i === -1) return line;
+  return (
+    <>
+      {line.slice(0, i)}
+      <span className="hero-headline-accent">{hero.headlineHighlight}</span>
+      {line.slice(i + hero.headlineHighlight.length)}
+    </>
+  );
+}
+
 export function Hero() {
   const reduce = useReducedMotion();
   const [active, setActive] = useState(0);
@@ -30,8 +43,6 @@ export function Hero() {
     const id = setInterval(() => setActive((a) => (a === 0 ? 1 : 0)), 4200);
     return () => clearInterval(id);
   }, [reduce]);
-
-  const hi = hero.headline.indexOf(hero.headlineHighlight);
 
   return (
     <section id="top" className="hero-section">
@@ -58,17 +69,11 @@ export function Hero() {
           </motion.p>
 
           <motion.h1 variants={fadeUp} className="hero-headline">
-            {hi === -1 ? (
-              hero.headline
-            ) : (
-              <>
-                {hero.headline.slice(0, hi)}
-                <span className="hero-headline-accent">
-                  {hero.headlineHighlight}
-                </span>
-                {hero.headline.slice(hi + hero.headlineHighlight.length)}
-              </>
-            )}
+            {hero.headlineLines.map((line) => (
+              <span key={line} className="hero-headline-line">
+                {headlineLine(line)}
+              </span>
+            ))}
           </motion.h1>
 
           <motion.p variants={fadeUp} className="hero-subhead">
@@ -119,7 +124,7 @@ export function Hero() {
                 animate={{ opacity: active === i ? 1 : 0 }}
                 transition={{ duration: 0.8, ease: EASE }}
               >
-                <IsoCourt sport={sport} />
+                <IsoCourt sport={sport} tone="lifted" />
               </motion.div>
             ))}
           </motion.div>

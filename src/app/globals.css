@@ -13,8 +13,8 @@
   --color-muted: #6c6f80; /* secondary text on light */
 
   /* Playful pastel section blocks (PKLYN-style, toned down) */
-  --color-peach: #c4dbea; /* SKY block (Sports, Waitlist) */
-  --color-peach-soft: #dfeaf2; /* light sky tint */
+  --color-peach: #ebdac2; /* SAND block (Sports, Waitlist) */
+  --color-peach-soft: #f4eadd; /* light sand tint */
   --color-rose: #d5cde8; /* VIOLET block (Vision, Location) */
   --color-rose-soft: #e7e1f0; /* light violet tint */
   --color-foam: #cde7de; /* MINT/GREEN block (Programs) */
@@ -28,9 +28,9 @@
   --color-gold-light: #5fc5b3; /* accent on dark surfaces */
   --color-gold-soft: #cfeae3; /* pale accent tint */
 
-  /* Dark anchor — deep indigo */
-  --color-plum: #232a52;
-  --color-plum-deep: #171d3c;
+  /* Dark anchor — deep teal */
+  --color-plum: #1D3C44;
+  --color-plum-deep: #244a54;
 
   /* Type */
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
@@ -171,7 +171,7 @@ body {
     @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-200 disabled:opacity-60 disabled:pointer-events-none active:translate-y-[3px];
   }
   .btn-primary {
-    @apply bg-plum text-cream shadow-[0_5px_0_0_#141a3b] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#141a3b] active:shadow-[0_2px_0_0_#141a3b];
+    @apply bg-plum text-cream shadow-[0_5px_0_0_#133239] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#133239] active:shadow-[0_2px_0_0_#133239];
   }
   .btn-accent {
     @apply bg-gold text-cream shadow-[0_5px_0_0_#0c5f52] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#0c5f52] active:shadow-[0_2px_0_0_#0c5f52];
@@ -304,7 +304,7 @@ body {
 
   /* ── Hero (dark "spotlight" — the boldest block on the page) ─────────── */
   .hero-section {
-    @apply relative flex min-h-[90vh] flex-col justify-center overflow-hidden bg-plum pt-40 pb-16 sm:pt-40;
+    @apply relative flex min-h-[100svh] flex-col justify-center overflow-hidden bg-plum pt-40 pb-16 sm:pt-40;
   }
   .hero-glow-2 {
     @apply pointer-events-none absolute -bottom-32 -left-28 h-[38rem] w-[38rem] rounded-full opacity-80 blur-3xl;
@@ -316,10 +316,15 @@ body {
     @apply max-w-xl;
   }
   .hero-eyebrow {
-    @apply mb-6 inline-flex items-center rounded-full bg-cream/10 px-4 py-2 text-sm font-semibold text-cream ring-1 ring-cream/20 backdrop-blur-sm;
+    @apply mb-6 inline-flex items-center rounded-full bg-cream/10 px-4 py-2 text-sm font-semibold text-cream backdrop-blur-sm;
   }
+  /* Sized so the longest line ("Nassau County's", ~7.9em wide) fits its column
+     without wrapping — the copy column is only ~456px at lg, ~550px at xl. */
   .hero-headline {
-    @apply font-display text-[2.85rem] font-extrabold leading-[0.98] tracking-tight text-cream sm:text-6xl lg:text-[4.4rem];
+    @apply font-display text-[clamp(2.15rem,9vw,2.85rem)] font-extrabold leading-[0.98] tracking-tight text-cream sm:text-6xl lg:text-[3.4rem] xl:text-[4.1rem];
+  }
+  .hero-headline-line {
+    display: block;
   }
   .hero-headline-accent {
     @apply text-gold-light;
@@ -354,7 +359,7 @@ body {
 
   /* ── Vision ──────────────────────────────────────────────────────────── */
   .vision-section {
-    @apply relative overflow-hidden bg-rose;
+    @apply relative overflow-hidden bg-cream;
   }
   .vision-grid {
     @apply grid items-center gap-12 lg:grid-cols-12 lg:gap-10;
@@ -660,7 +665,7 @@ body {
 
   /* ── Location ────────────────────────────────────────────────────────── */
   .location-section {
-    @apply bg-rose;
+    @apply bg-cream;
   }
   .location-grid {
     @apply grid items-center gap-10 lg:grid-cols-2 lg:gap-16;
@@ -675,43 +680,14 @@ body {
     @apply mt-7 flex flex-wrap gap-2.5;
   }
   .location-pill {
-    @apply rounded-full border-2 border-plum/10 px-4 py-1.5 text-sm font-semibold text-ink;
+    @apply rounded-full bg-cream-2 px-4 py-1.5 text-sm font-semibold text-ink;
   }
   .location-map {
-    @apply relative aspect-[4/3] overflow-hidden rounded-[2rem] border-2 border-plum/10 bg-cream-2 shadow-[10px_10px_0_0_rgba(38,34,30,0.1)];
-  }
-  .location-map-tex {
-    @apply absolute inset-0 text-plum/[0.1];
-  }
-  .location-map-stripes {
-    @apply absolute -inset-8 rotate-[24deg];
-  }
-  .location-map-block {
-    @apply absolute left-6 top-6 h-20 w-28 rounded-xl bg-peach/40;
-  }
-  .location-map-paw {
-    @apply absolute bottom-6 right-8 h-9 w-9 rotate-12 text-rose;
-  }
-  .location-map-pin-wrap {
-    @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
-  }
-  .location-map-pin-stack {
-    @apply relative flex items-center justify-center;
-  }
-  .location-map-ping {
-    @apply absolute h-16 w-16 animate-ping rounded-full bg-gold/25;
-  }
-  .location-map-pin {
-    @apply grid h-12 w-12 place-items-center rounded-full bg-plum text-gold-light shadow-lg;
+    display: grid;
+    @apply relative aspect-[4/3] place-items-center overflow-hidden rounded-[2rem] border-2 border-plum/10 bg-cream-2 shadow-[10px_10px_0_0_rgba(38,34,30,0.1)];
   }
   .location-map-pin-icon {
-    @apply h-5 w-5;
-  }
-  .location-map-label {
-    @apply absolute bottom-4 left-4 right-4 rounded-2xl border-2 border-plum/10 bg-cream px-4 py-2.5;
-  }
-  .location-map-label-text {
-    @apply font-display text-sm font-extrabold text-ink;
+    @apply h-14 w-14 text-gold;
   }
   .location-cards {
     @apply mt-10 grid gap-5 sm:grid-cols-3;

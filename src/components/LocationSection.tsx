@@ -1,11 +1,7 @@
 import { MapPin, Clock, Car } from "lucide-react";
 import { location, todo } from "@/config/siteConfig";
-import { cn } from "@/lib/cn";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { TodoText } from "./Todo";
-import { PawPrint } from "./PawPrint";
-
-const PILL_TONES = ["bg-peach-soft", "bg-rose-soft", "bg-gold-soft"];
 
 export function LocationSection() {
   return (
@@ -21,11 +17,8 @@ export function LocationSection() {
           </Reveal>
           <Reveal>
             <ul className="location-pills">
-              {location.areas.map((area, i) => (
-                <li
-                  key={area}
-                  className={cn("location-pill", PILL_TONES[i % PILL_TONES.length])}
-                >
+              {location.areas.map((area) => (
+                <li key={area} className="location-pill">
                   {area}
                 </li>
               ))}
@@ -33,37 +26,10 @@ export function LocationSection() {
           </Reveal>
         </div>
 
-        {/* playful map */}
+        {/* map placeholder — a plain block until there's a real address to map */}
         <Reveal>
           <div className="location-map">
-            <div
-              aria-hidden
-              className="tex-waffle location-map-tex"
-              style={{ backgroundSize: "40px 40px" }}
-            />
-            <div
-              aria-hidden
-              className="location-map-stripes"
-              style={{
-                background:
-                  "repeating-linear-gradient(90deg, transparent 0 120px, rgba(228,168,53,0.16) 120px 130px)",
-              }}
-            />
-            <div aria-hidden className="location-map-block" />
-            <PawPrint aria-hidden className="location-map-paw" />
-            <div className="location-map-pin-wrap">
-              <span className="location-map-pin-stack">
-                <span className="location-map-ping" />
-                <span className="location-map-pin">
-                  <MapPin className="location-map-pin-icon" />
-                </span>
-              </span>
-            </div>
-            <div className="location-map-label">
-              <span className="location-map-label-text">
-                Central Nassau County
-              </span>
-            </div>
+            <MapPin aria-hidden className="location-map-pin-icon" strokeWidth={2} />
           </div>
         </Reveal>
       </div>
