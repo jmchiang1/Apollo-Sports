@@ -7,16 +7,46 @@ import { brand, hero, nav } from "@/config/siteConfig";
 import { cn } from "@/lib/cn";
 import { Wordmark } from "./Wordmark";
 import { ButtonLink } from "./Button";
+import { useSafeReducedMotion } from "./Reveal";
 
 export function Header() {
+  const reduce = useSafeReducedMotion();
   const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
+    // The bar stays transparent for the whole pinned hero fly-over and only
+    // solidifies (cream bg, smaller logo) once the pin has scrolled past —
+    // i.e. when its bottom edge slides under the header.
+    const onScroll = () => {
+      const pin = document.querySelector(".hero-pin");
+      setScrolled(
+        pin
+          ? pin.getBoundingClientRect().bottom <= 80
+          : window.scrollY > 16,
+      );
+
+      // Scroll-spy: the last nav target whose top has passed the header.
+      // Hidden sections (0×0 rects) are skipped so they can never win.
+      const y = window.scrollY + 120;
+      let current: string | null = null;
+      for (const item of nav) {
+        const el = document.querySelector<HTMLElement>(item.href);
+        if (!el) continue;
+        const r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) continue;
+        if (r.top + window.scrollY <= y) current = item.href;
+      }
+      setActive(current);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -48,6 +78,17 @@ export function Header() {
             <a key={item.href} href={item.href} className="group header-nav-link">
               {item.label}
               <span className="header-nav-underline" />
+              {/* scroll-spy indicator — layoutId makes it slide between links */}
+              {active === item.href &&
+                (reduce ? (
+                  <span className="header-nav-active" />
+                ) : (
+                  <motion.span
+                    layoutId="header-nav-active"
+                    className="header-nav-active"
+                    transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                  />
+                ))}
             </a>
           ))}
         </nav>

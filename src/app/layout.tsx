@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Figtree } from "next/font/google";
+import { Bricolage_Grotesque, Figtree, Geist } from "next/font/google";
 import "./globals.css";
 import { brand, hero } from "@/config/siteConfig";
+import { cn } from "@/lib/utils";
+import { ButtonPointerGlow } from "@/components/ButtonPointerGlow";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+
 
 // Display face — warm, characterful grotesque with personality.
 const bricolage = Bricolage_Grotesque({
@@ -54,12 +59,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // NOTE: never set overflow on <html> — a non-visible value here stops
+    // body's overflow-x from propagating to the viewport, which turns body
+    // into a scroll container and silently breaks every position:sticky
+    // descendant (the hero pin). Sideways clipping lives on body instead.
     <html
       lang="en"
-      className={`${bricolage.variable} ${figtree.variable} h-full`}
+      className={cn("h-full", bricolage.variable, figtree.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col bg-cream text-ink">
         {children}
+        <ButtonPointerGlow />
       </body>
     </html>
   );

@@ -1,8 +1,25 @@
 "use client";
 
 import { motion, useReducedMotion, type Variants } from "motion/react";
-import type { ReactNode } from "react";
+import { useSyncExternalStore, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
+
+/**
+ * `useReducedMotion` knows the real preference on the first client render, but
+ * the server rendered with `false` — anything that branches render output on it
+ * must gate behind hydration or React reports a mismatch. Shared by every
+ * scroll-reveal surface (SectionWrapper, StatsBand, Hero).
+ */
+const emptySubscribe = () => () => {};
+export function useSafeReducedMotion() {
+  const prefers = useReducedMotion();
+  const hydrated = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+  return hydrated && !!prefers;
+}
 
 /**
  * Scroll-reveal system.
@@ -48,7 +65,7 @@ export function SectionWrapper({
   children,
   contained = true,
 }: SectionWrapperProps) {
-  const reduce = useReducedMotion();
+  const reduce = useSafeReducedMotion();
 
   return (
     <section id={id} className={cn("section", className)}>

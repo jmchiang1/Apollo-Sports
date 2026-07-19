@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 /* ────────────────────────────────────────────────────────────────────────
    Apollo Racquet Club — theme  (playful-warm / retro-casual)
@@ -13,8 +17,8 @@
   --color-muted: #6c6f80; /* secondary text on light */
 
   /* Playful pastel section blocks (PKLYN-style, toned down) */
-  --color-peach: #ebdac2; /* SAND block (Sports, Waitlist) */
-  --color-peach-soft: #f4eadd; /* light sand tint */
+  --color-peach: #F5F0E6; /* SAND block (Sports, Waitlist) */
+  --color-peach-soft: #F5F0E6; /* light sand tint */
   --color-rose: #d5cde8; /* VIOLET block (Vision, Location) */
   --color-rose-soft: #e7e1f0; /* light violet tint */
   --color-foam: #cde7de; /* MINT/GREEN block (Programs) */
@@ -53,7 +57,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
+  /* `clip` (not `hidden`): propagates to the viewport to block sideways
+     scroll/overscroll, but never creates a scroll container — `hidden` can,
+     which would break position:sticky (the hero pin). */
+  overflow-x: clip;
 }
 
 ::selection {
@@ -70,6 +77,35 @@ body {
 /* Display face runs a touch tight and heavy */
 .font-display {
   letter-spacing: -0.015em;
+}
+
+/* Pointer position inside a button, as a percentage of its box. Registering
+   these gives them a type, which is what lets `transition` interpolate them —
+   an unregistered custom property snaps between values, so the gradient would
+   jump instead of trailing the cursor and easing back to centre on exit. */
+@property --btn-x {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+@property --btn-y {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+/* The gradient's two stops. Registered for the same reason: `transition`
+   can interpolate a typed custom property, so hover can fade the flat resting
+   fill into the gradient. `transparent` initial keeps `.btn-outline`, which
+   sets no stops, unpainted. */
+@property --btn-from {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: transparent;
+}
+@property --btn-to {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: transparent;
 }
 
 /* ── Reusable helpers ──────────────────────────────────────────────────── */
@@ -156,7 +192,7 @@ body {
     @apply overflow-hidden;
   }
   .faq-answer {
-    @apply pb-5 pr-8 text-[1.02rem] leading-relaxed text-muted;
+    @apply pb-5 pr-8 text-[1.02rem] leading-relaxed text-plum/80;
   }
   /* centred anchor so the dog lines up with the container (heading) edge */
   .faq-peeking-wrap {
@@ -167,17 +203,74 @@ body {
   }
 
   /* ── Buttons ─────────────────────────────────────────────────────────── */
+  /* The fill is a radial gradient whose centre follows the pointer (see
+     ButtonPointerGlow, which writes --btn-x/--btn-y). At rest both stops hold
+     the variant's own flat colour, so the button looks exactly as it always
+     has; hover splits them into the gradient. Both stops are registered
+     @property colours, which is what lets the split animate — a plain
+     `background-image` swap would pop, since gradients don't interpolate. */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-200 disabled:opacity-60 disabled:pointer-events-none active:translate-y-[3px];
+    @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold disabled:opacity-60 disabled:pointer-events-none active:translate-y-[3px];
+    background-image: radial-gradient(
+      circle 9rem at var(--btn-x) var(--btn-y),
+      var(--btn-from),
+      var(--btn-to)
+    );
+    /* Spelled out rather than `transition-all` so the gradient stops can carry
+       their own timing: the lift and the pointer tracking stay immediate,
+       while the colours get a delay (added on :hover below) so the gradient
+       eases in a beat after the cursor lands. */
+    transition:
+      transform 200ms,
+      box-shadow 200ms,
+      --btn-x 200ms,
+      --btn-y 200ms,
+      --btn-from 320ms,
+      --btn-to 320ms;
+  }
+  /* Delay lives on the hover state only, so the gradient fades in late but
+     drops away promptly when the pointer leaves. */
+  .btn:hover {
+    transition:
+      transform 200ms,
+      box-shadow 200ms,
+      --btn-x 200ms,
+      --btn-y 200ms,
+      --btn-from 320ms 160ms,
+      --btn-to 320ms 160ms;
   }
   .btn-primary {
     @apply bg-plum text-cream shadow-[0_5px_0_0_#133239] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#133239] active:shadow-[0_2px_0_0_#133239];
+    --btn-from: var(--color-plum);
+    --btn-to: var(--color-plum);
   }
+  .btn-primary:hover {
+    --btn-from: #0b1d21;
+    --btn-to: #2f6b78;
+  }
+  /* Hover stops are the Figma pair for this button (node 220:908), ordered
+     dark-centre → light-edge: the pointer sinks a well into the button rather
+     than carrying a highlight around with it. */
   .btn-accent {
     @apply bg-gold text-cream shadow-[0_5px_0_0_#0c5f52] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#0c5f52] active:shadow-[0_2px_0_0_#0c5f52];
+    --btn-from: var(--color-gold);
+    --btn-to: var(--color-gold);
+  }
+  .btn-accent:hover {
+    --btn-from: #073831;
+    --btn-to: #159e8a;
   }
   .btn-cream {
     @apply bg-cream text-plum shadow-[0_5px_0_0_rgba(0,0,0,0.28)] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_rgba(0,0,0,0.28)] active:shadow-[0_2px_0_0_rgba(0,0,0,0.28)];
+    --btn-from: var(--color-cream);
+    --btn-to: var(--color-cream);
+  }
+  /* The pricing CTAs. cream-2 against cream is too close a pair to read as a
+     gradient, so the well takes the pale teal tint instead — same dark-centre
+     → light-edge direction as the other variants, just in this palette. */
+  .btn-cream:hover {
+    --btn-from: var(--color-gold-soft);
+    --btn-to: #ffffff;
   }
   .btn-outline {
     @apply text-plum ring-2 ring-inset ring-plum/25 hover:ring-plum/50 hover:bg-plum/[0.04] active:translate-y-0;
@@ -200,6 +293,17 @@ body {
   }
   .todo-badge {
     @apply inline-flex items-center rounded-md bg-gold-soft/80 px-2 py-1 text-sm font-semibold text-gold-deep ring-1 ring-gold/50;
+  }
+
+  /* ── Back-to-top button ──────────────────────────────────────────────── */
+  .back-to-top {
+    @apply fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full bg-gold text-cream shadow-[0_5px_0_0_#0c5f52] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_7px_0_0_#0c5f52] active:translate-y-[2px] active:shadow-[0_2px_0_0_#0c5f52] sm:bottom-8 sm:right-8;
+  }
+  .back-to-top-hidden {
+    @apply pointer-events-none translate-y-4 opacity-0;
+  }
+  .back-to-top-icon {
+    @apply h-5 w-5;
   }
 
   /* ── Header ──────────────────────────────────────────────────────────── */
@@ -233,6 +337,11 @@ body {
   .header-nav-underline {
     @apply absolute -bottom-1.5 left-0 h-[3px] w-full origin-left scale-x-0 rounded-full bg-gold transition-transform duration-300 ease-out group-hover:scale-x-100;
   }
+  /* Scroll-spy indicator — same geometry as the hover underline; slides
+     between links via Motion layoutId (see Header). */
+  .header-nav-active {
+    @apply absolute -bottom-1.5 left-0 h-[3px] w-full rounded-full bg-gold;
+  }
   .header-actions {
     @apply flex items-center gap-2;
   }
@@ -252,6 +361,9 @@ body {
   }
   .header-bar-top .header-nav-link {
     @apply text-cream/75 hover:text-cream;
+  }
+  .header-bar-top .header-nav-active {
+    @apply bg-gold-light;
   }
   .header-bar-top .header-menu-btn {
     @apply text-cream hover:bg-cream/10;
@@ -302,15 +414,52 @@ body {
     @apply leading-none whitespace-nowrap;
   }
 
-  /* ── Hero (dark "spotlight" — the boldest block on the page) ─────────── */
-  .hero-section {
-    @apply relative flex min-h-[100svh] flex-col justify-center overflow-hidden bg-plum pt-40 pb-16 sm:pt-40;
+  /* ── Hero (dark "spotlight" — a pinned 3D camera fly-over) ───────────── */
+  /* Tall scroll track; the pin inside stays put while the camera moves. */
+  .hero-wrap {
+    @apply relative;
+    height: 300svh;
   }
-  .hero-glow-2 {
-    @apply pointer-events-none absolute -bottom-32 -left-28 h-[38rem] w-[38rem] rounded-full opacity-80 blur-3xl;
+  .hero-pin {
+    @apply sticky top-0 flex h-[100svh] w-full items-center overflow-hidden bg-plum;
   }
-  .hero-grid {
-    @apply relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-6;
+
+  /* 3D scene — the camera lives in `perspective`; the floor holds the courts. */
+  .hero-scene {
+    @apply pointer-events-none absolute inset-0 z-[1];
+    perspective: 1400px;
+    perspective-origin: 50% 44%;
+  }
+  .hero-floor {
+    @apply absolute left-1/2 top-1/2;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  .hero-court-tile {
+    @apply absolute;
+    transform-style: preserve-3d;
+  }
+  .court-plan-svg {
+    @apply block h-full w-full;
+    filter: drop-shadow(0 10px 22px rgba(10, 25, 30, 0.45));
+  }
+  /* Standing net on the hero court: a mesh plane rotated up out of the floor. */
+  .hero-net {
+    @apply absolute left-0 w-full;
+    transform-origin: 50% 100%;
+    transform: rotateX(-90deg);
+    background:
+      repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0 0.5px, transparent 0.5px 4px),
+      repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0 0.5px, transparent 0.5px 4px);
+    background-color: rgba(0, 0, 0, 0.12);
+  }
+  .hero-net-tape {
+    @apply absolute inset-x-0 top-0 block h-[2px] bg-white;
+  }
+
+  /* Copy overlay — floats above the scene, left-aligned. */
+  .hero-copy-wrap {
+    @apply relative z-10 mx-auto w-full max-w-6xl px-6 sm:px-8;
   }
   .hero-copy {
     @apply max-w-xl;
@@ -318,8 +467,6 @@ body {
   .hero-eyebrow {
     @apply mb-6 inline-flex items-center rounded-full bg-cream/10 px-4 py-2 text-sm font-semibold text-cream backdrop-blur-sm;
   }
-  /* Sized so the longest line ("Nassau County's", ~7.9em wide) fits its column
-     without wrapping — the copy column is only ~456px at lg, ~550px at xl. */
   .hero-headline {
     @apply font-display text-[clamp(2.15rem,9vw,2.85rem)] font-extrabold leading-[0.98] tracking-tight text-cream sm:text-6xl lg:text-[3.4rem] xl:text-[4.1rem];
   }
@@ -341,25 +488,80 @@ body {
   .hero-secondary-icon {
     @apply h-4 w-4 transition-transform duration-300 group-hover:translate-x-1;
   }
-  .hero-court {
-    @apply relative z-0 mt-10 flex w-full justify-center px-6 lg:absolute lg:bottom-0 lg:right-0 lg:mt-0 lg:block lg:w-auto lg:px-0;
+  .hero-facility-caption {
+    @apply pointer-events-none absolute inset-x-0 bottom-[4%] z-10 hidden flex-col items-center px-6 text-center lg:flex;
   }
-  .hero-court-stage {
-    @apply relative w-full max-w-[520px] shrink-0 lg:w-[115vw] lg:max-w-none lg:translate-x-[35.5%] lg:translate-y-[38%];
+  .hero-facility-overline {
+    @apply text-xs font-semibold uppercase tracking-[0.22em] text-cream/50;
   }
-  .hero-court-glow {
-    @apply pointer-events-none absolute left-1/2 top-1/2 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 blur-3xl lg:h-[54rem] lg:w-[54rem];
+  .hero-facility-line {
+    @apply font-display text-xl font-bold capitalize text-cream/90;
   }
-  .hero-court-float {
-    @apply relative aspect-[701/447] w-full drop-shadow-[0_18px_44px_rgba(95,197,179,0.32)];
+
+  /* Nav anchor for #sports — its `top` is set inline in Hero.tsx, where it
+     tracks the camera timeline. */
+  .hero-sports-anchor {
+    @apply absolute left-0 h-px w-px;
   }
-  .hero-court-layer {
-    @apply absolute inset-0;
+
+  /* Sports copy (was SportsSection) — the fly-over's final beat. */
+  .hero-sports-overlay {
+    @apply pointer-events-none absolute inset-0 z-10 flex flex-col items-center pt-24 lg:pt-28;
+  }
+  .hero-sports-head {
+    @apply px-6 text-center;
+  }
+  .hero-sports-heading {
+    @apply mt-2 font-display text-2xl font-bold tracking-tight text-cream sm:text-3xl;
+  }
+  .hero-sports-cards {
+    @apply absolute inset-x-4 bottom-[4%] flex justify-center gap-3 lg:inset-x-10 lg:top-1/2 lg:bottom-auto lg:-translate-y-[42%] lg:justify-between lg:gap-6;
+  }
+  .hero-sports-card {
+    @apply w-full max-w-[200px] rounded-2xl bg-cream/[0.07] p-4 text-left ring-1 ring-cream/10 backdrop-blur-sm lg:max-w-[300px] lg:p-6;
+  }
+  .hero-sports-card-courts {
+    @apply text-[11px] font-bold uppercase tracking-[0.18em] text-gold-light;
+  }
+  .hero-sports-card-name {
+    @apply mt-1 font-display text-lg font-bold text-cream lg:text-2xl;
+  }
+  .hero-sports-card-tagline {
+    @apply mt-1 text-sm font-semibold text-cream/80;
+  }
+  .hero-sports-card-body {
+    @apply mt-2 hidden text-sm leading-relaxed text-cream/60 lg:block;
+  }
+  .hero-sports-features {
+    @apply mt-3 hidden space-y-1.5 lg:block;
+  }
+  .hero-sports-feature {
+    @apply flex items-start gap-2 text-[13px] leading-snug text-cream/75;
+  }
+  .hero-sports-feature-icon {
+    @apply mt-0.5 h-3.5 w-3.5 shrink-0 text-gold-light;
+  }
+
+  /* Reduced-motion fallback: sports copy as a plain block under the hero. */
+  .hero-sports-static {
+    @apply scroll-mt-24 bg-plum px-6 py-20;
+  }
+  .hero-sports-static-cards {
+    @apply mx-auto mt-10 flex max-w-4xl flex-wrap justify-center gap-6;
+  }
+  .hero-sports-static-cards .hero-sports-card {
+    @apply max-w-[340px];
+  }
+  .hero-sports-static-cards .hero-sports-card-body,
+  .hero-sports-static-cards .hero-sports-features {
+    @apply block;
   }
 
   /* ── Vision ──────────────────────────────────────────────────────────── */
   .vision-section {
     @apply relative overflow-hidden bg-cream;
+    /* temporarily hidden */
+    display: none;
   }
   .vision-grid {
     @apply grid items-center gap-12 lg:grid-cols-12 lg:gap-10;
@@ -410,6 +612,8 @@ body {
   }
   .sports-pickleball {
     @apply -right-20 -top-24 h-72 w-72 rotate-12;
+    /* temporarily hidden */
+    display: none;
   }
   .sports-inner {
     @apply relative;
@@ -493,8 +697,17 @@ body {
   .programs-section {
     @apply relative overflow-hidden bg-foam;
   }
-  .programs-running-dog {
-    @apply pointer-events-none absolute right-6 top-8 hidden h-[200px] w-auto rotate-[35deg] text-plum sm:block lg:right-10;
+  /* Scroll-driven running dog (see ProgramsDog): a full-width track measures
+     scroll progress; the mover starts at the left edge and travels right.
+     The sprite keeps its original (unmirrored) pose. */
+  .programs-dog-track {
+    @apply pointer-events-none absolute inset-x-0 top-8 hidden sm:block;
+  }
+  .programs-dog-mover {
+    @apply absolute left-6 lg:left-10;
+  }
+  .programs-running-dog-svg {
+    @apply h-[200px] w-auto rotate-[35deg] text-plum;
   }
   .programs-heading-wrap {
     @apply max-w-none;
@@ -506,10 +719,10 @@ body {
     @apply mt-12 border-t-2 border-plum/10;
   }
   .programs-row {
-    @apply flex items-center gap-5 border-b-2 border-plum/10 py-6 transition-colors duration-300 hover:bg-cream-2/60 sm:gap-8 sm:px-4;
+    @apply flex items-center gap-5 border-b-2 border-plum/10 py-6 sm:gap-8 sm:px-4;
   }
   .programs-index {
-    @apply w-14 shrink-0 font-display text-4xl font-extrabold leading-none text-plum/20 transition-colors duration-300 group-hover:text-gold sm:w-24 sm:text-6xl;
+    @apply w-14 shrink-0 font-display text-4xl font-extrabold leading-none text-plum/60 sm:w-24 sm:text-6xl;
   }
   .programs-row-body {
     @apply flex-1;
@@ -517,11 +730,13 @@ body {
   .programs-title {
     @apply font-display text-xl font-extrabold text-ink sm:text-2xl;
   }
+  /* `text-muted` is tuned for the cream canvas; on the mint block it washes
+     out, so the body copy leans on the dark teal anchor instead. */
   .programs-body {
-    @apply mt-1.5 max-w-2xl leading-relaxed text-muted;
+    @apply mt-1.5 max-w-2xl leading-relaxed text-plum/80;
   }
   .programs-icon-chip {
-    @apply hidden h-12 w-12 shrink-0 place-items-center rounded-2xl bg-plum text-gold-light transition-transform duration-300 group-hover:-rotate-6 sm:grid;
+    @apply hidden h-12 w-12 shrink-0 place-items-center rounded-2xl bg-plum text-gold-light sm:grid;
   }
   .programs-icon {
     @apply h-6 w-6;
@@ -674,7 +889,7 @@ body {
     @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[3rem];
   }
   .location-body {
-    @apply mt-5 max-w-lg text-lg leading-relaxed text-muted;
+    @apply mt-5 max-w-lg text-lg leading-relaxed text-plum/80;
   }
   .location-pills {
     @apply mt-7 flex flex-wrap gap-2.5;
@@ -708,7 +923,7 @@ body {
     @apply mt-1 font-display text-base font-bold text-ink;
   }
   .location-card-sub {
-    @apply mt-0.5 text-sm text-muted;
+    @apply mt-0.5 text-sm text-plum/80;
   }
 
   /* ── Waitlist ────────────────────────────────────────────────────────── */
@@ -772,7 +987,7 @@ body {
 
   /* ── Waitlist form ───────────────────────────────────────────────────── */
   .waitlist-form-input {
-    @apply w-full rounded-2xl border-2 border-plum/12 bg-cream-2 px-4 py-3 text-ink placeholder:text-muted/60 outline-none transition focus:border-gold focus:bg-cream focus:ring-4 focus:ring-gold/20;
+    @apply w-full rounded-2xl border-2 border-plum/12 bg-cream-2 px-4 py-3 text-ink placeholder:text-plum/80 outline-none transition focus:border-gold focus:bg-cream focus:ring-4 focus:ring-gold/20;
   }
   .waitlist-form-label {
     @apply mb-1.5 block text-sm font-bold text-ink;
@@ -910,5 +1125,129 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
   }
 }

@@ -74,15 +74,15 @@ export const vision = {
 
 export const sports = {
   eyebrow: "Sports & Courts",
-  heading: "Two sports. One serious home for both.",
+  heading: "Two sports. One home for both.",
   courtsNote: todo.courts,
   cards: [
     {
       name: "Badminton",
       courts: 4,
       lead: true,
-      tagline: "The lead sport.",
-      body: "Regulation courts with the ceiling height and lighting the sport actually needs. Singles, doubles, mixed — from your first rally to competitive league play. This is the club badminton on Long Island deserves.",
+      // tagline: "The lead sport.",
+      body: "Regulation courts with the height ceiling height and lighting. Singles, doubles, mixed from your first rally to competitive play.",
       features: [
         "Regulation courts & true ceiling height",
         "Singles, doubles & mixed",
@@ -93,7 +93,7 @@ export const sports = {
       name: "Pickleball",
       courts: 2,
       lead: false,
-      tagline: "All-season, all-weather.",
+      // tagline: "All-season, all-weather.",
       body: "Dedicated indoor courts, all-weather, all-season. Drop in, join a game, or bring your crew. Perfect for beginners and addicts alike.",
       features: [
         "Dedicated indoor courts",
@@ -107,10 +107,10 @@ export const sports = {
 /** Big-number stat strip. `courts` value is a planning estimate (see todo). */
 export const stats = {
   items: [
-    { value: "~6", label: "Courts", note: "planning target" },
+    { value: "6", label: "Total courts"},
     { value: "2", label: "Racquet sports" },
-    { value: "All", label: "Levels welcome" },
-    { value: "'26", label: "Opening" },
+    { value: "16", label: "hours a day" },
+    { value: "'27", label: "Opening" },
   ],
 } as const;
 

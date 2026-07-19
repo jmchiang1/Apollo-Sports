@@ -1,12 +1,12 @@
 import { programs } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { iconMap, type IconName } from "./icons";
-import { DogRunning } from "./DogRunning";
+import { ProgramsDog } from "./ProgramsDog";
 
 export function ProgramsSection() {
   return (
     <SectionWrapper id="programs" className="programs-section">
-      <DogRunning aria-hidden className="programs-running-dog" />
+      <ProgramsDog />
 
       <div className="programs-heading-wrap">
         <Reveal as="h2" className="programs-heading">
@@ -19,7 +19,7 @@ export function ProgramsSection() {
           const Icon = iconMap[card.icon as IconName];
           return (
             <Reveal key={card.name}>
-              <div className="group programs-row">
+              <div className="programs-row">
                 <span className="programs-index">
                   {String(i + 1).padStart(2, "0")}
                 </span>
