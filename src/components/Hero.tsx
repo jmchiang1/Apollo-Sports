@@ -137,9 +137,11 @@ export function Hero() {
   const vpW = useSyncExternalStore(resizeSubscribe, readW, readZero);
   const vpH = useSyncExternalStore(resizeSubscribe, readH, readZero);
   const lg = vpW >= 1024;
-  const s0 = vpW === 0 ? 4 : lg ? vpW / 172 : 2.2;
+  // Mobile opens with a large, low court so it reads as the full-bleed hero
+  // element from the Figma mobile design (was 2.2 → 3.1 → 4.3).
+  const s0 = vpW === 0 ? 4 : lg ? vpW / 172 : 5.9;
   const tx0 = lg ? vpW / 2 - 29.7 * s0 : 0;
-  const ty0 = lg ? vpH / 2 - 17.5 * s0 : vpH * 0.3;
+  const ty0 = lg ? vpH / 2 - 17.5 * s0 : vpH * 0.36;
   // End frame: size the facility to FILL the frame — as large as fits between
   // the heading (top ≈ 190px) and a real bottom margin (~6vh), never bleeding
   // off the fold. Grid visual height ≈ GRID_H·s·cos(26°) ≈ 380·s; on phones
@@ -148,10 +150,17 @@ export function Hero() {
   const fitW = (vpW - 24) / 344;
   const sEnd =
     vpH === 0 ? 1.6 : lg ? Math.max(1.2, fitH) : Math.max(0.9, Math.min(fitW, fitH));
-  // Place the grid's centre so its top row sits just below the heading
-  // (transform-origin is the hero court, 100·s above the grid centre).
-  const tyEnd = vpH === 0 ? 200 : (lg ? 190 : 170) + 290 * sEnd - vpH / 2;
-  const txEnd = -12 * sEnd; // centres the grid (hero court is 12 left of centre)
+  // Vertical placement of the grid at the end frame. Desktop tucks the grid's
+  // top row just below the heading; mobile CENTRES the whole grid in the
+  // viewport instead (the transform-origin — the hero court — sits ~100·s below
+  // the grid centre, so origin_y = vpH/2 + 100·s lands the grid centre on the
+  // viewport centre).
+  const tyEnd =
+    vpH === 0 ? 200 : lg ? 190 + 290 * sEnd - vpH / 2 : 100 * sEnd;
+  // Horizontal nudge. The hero court is the grid's centre column, so the grid is
+  // already centred on the origin; mobile needs no offset. Desktop keeps its
+  // small shift (the sports cards flank the grid there).
+  const txEnd = lg ? -12 * sEnd : 0;
 
   const { scrollYProgress } = useScroll({
     target: wrapRef,
@@ -345,7 +354,14 @@ export function Hero() {
               {hero.subhead}
             </motion.p>
             <motion.div variants={fadeUp} className="hero-actions">
-              <ButtonLink href={hero.primaryCta.href} variant="accent" size="lg">
+              <ButtonLink
+                href={hero.primaryCta.href}
+                variant="accent"
+                size="lg"
+                // Full-bleed on mobile (matches the Figma mobile hero); reverts
+                // to its natural width once the row goes horizontal at sm.
+                className="w-full sm:w-auto"
+              >
                 {hero.primaryCta.label}
               </ButtonLink>
               <a href={hero.secondaryCta.href} className="group hero-secondary">
@@ -354,6 +370,17 @@ export function Hero() {
               </a>
             </motion.div>
           </motion.div>
+        </motion.div>
+
+        {/* Mobile-only status pill — sits bottom-centre over the court, matching
+            the Figma mobile hero. Shortened to just the opening line, on a
+            translucent-black chip. Fades out with the copy as the fly-over
+            begins (desktop keeps the full eyebrow at the top instead). */}
+        <motion.div
+          className="hero-eyebrow-bottom"
+          style={reduce ? undefined : { opacity: copyOpacity }}
+        >
+          {hero.eyebrow.split("·").pop()?.trim()}
         </motion.div>
 
         {/* ── sports copy — the fly-over's payoff (was SportsSection) ─── */}

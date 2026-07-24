@@ -152,6 +152,13 @@ body {
   /* section shell (SectionWrapper) */
   .section {
     @apply relative scroll-mt-24 py-20 sm:py-28 md:py-32;
+    /* Decorative overlay graphics use negative insets (e.g. `-right-20`) to
+       peek from the section edges and spill vertically into neighbours. Clip
+       the X axis so that horizontal bleed never widens the document (which,
+       on mobile, makes the browser render everything zoomed-out with cream
+       margins). `clip` — not `hidden` — leaves overflow-y visible, so the
+       intended vertical spill into adjacent sections is preserved. */
+    overflow-x: clip;
   }
   .section-inner {
     @apply mx-auto w-full max-w-6xl px-6 sm:px-8;
@@ -159,7 +166,10 @@ body {
 
   /* FAQ ("Good questions.") */
   .faq-section {
-    @apply relative overflow-hidden bg-cream;
+    /* Extra bottom padding on mobile so the peeking dog (pinned to the section
+       floor) clears the stacked questions instead of overlapping the last one.
+       sm+ keeps the standard .section rhythm. */
+    @apply relative overflow-hidden bg-cream pb-40 sm:pb-28 md:pb-32;
   }
   .faq-grid {
     @apply grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16;
@@ -323,7 +333,7 @@ body {
     @apply h-16;
   }
   .header-inner-top {
-    @apply h-32;
+    @apply h-24 sm:h-32;
   }
   .header-brand {
     @apply shrink-0;
@@ -368,9 +378,10 @@ body {
   .header-bar-top .header-menu-btn {
     @apply text-cream hover:bg-cream/10;
   }
-  /* Oversized logo at the top of the page; shrinks to its regular size on scroll. */
+  /* Oversized logo at the top of the page; shrinks to its regular size on scroll.
+     Kept more compact on phones (matches the Figma mobile hero). */
   .header-bar-top .wordmark-logo {
-    @apply h-24;
+    @apply h-14 sm:h-24;
   }
   .header-overlay {
     @apply fixed inset-0 z-50 bg-cream md:hidden;
@@ -421,7 +432,9 @@ body {
     height: 300svh;
   }
   .hero-pin {
-    @apply sticky top-0 flex h-[100svh] w-full items-center overflow-hidden bg-plum;
+    /* Mobile top-aligns the copy under the header (Figma mobile hero), leaving
+       the lower half to the full-bleed court; desktop centres it. */
+    @apply sticky top-0 flex h-[100svh] w-full items-start overflow-hidden bg-plum sm:items-center;
   }
 
   /* 3D scene — the camera lives in `perspective`; the floor holds the courts. */
@@ -459,13 +472,23 @@ body {
 
   /* Copy overlay — floats above the scene, left-aligned. */
   .hero-copy-wrap {
-    @apply relative z-10 mx-auto w-full max-w-6xl px-6 sm:px-8;
+    /* Mobile: clear the fixed header (top state is h-24) so the top-aligned copy
+       doesn't tuck under the logo. Neutralised at sm where the pin re-centres. */
+    @apply relative z-10 mx-auto w-full max-w-6xl px-6 pt-28 sm:px-8 sm:pt-0;
   }
   .hero-copy {
     @apply max-w-xl;
   }
+  /* Top eyebrow — desktop only. On mobile the status moves to a bottom-centre
+     pill over the court (see `.hero-eyebrow-bottom`). */
   .hero-eyebrow {
-    @apply mb-6 inline-flex items-center rounded-full bg-cream/10 px-4 py-2 text-sm font-semibold text-cream backdrop-blur-sm;
+    @apply mb-6 hidden items-center rounded-full bg-cream/10 px-4 py-2 text-sm font-semibold text-cream backdrop-blur-sm sm:inline-flex;
+  }
+  /* Mobile status pill: shortened copy on a translucent-black chip, centred at
+     the bottom of the hero over the court. Hidden from sm up. */
+  .hero-eyebrow-bottom {
+    @apply pointer-events-none absolute bottom-[3%] left-1/2 z-10 inline-flex -translate-x-1/2 items-center rounded-full px-4 py-2 text-sm font-semibold text-cream backdrop-blur-md sm:hidden;
+    background-color: rgba(0, 0, 0, 0.25);
   }
   .hero-headline {
     @apply font-display text-[clamp(2.15rem,9vw,2.85rem)] font-extrabold leading-[0.98] tracking-tight text-cream sm:text-6xl lg:text-[3.4rem] xl:text-[4.1rem];
@@ -482,8 +505,10 @@ body {
   .hero-actions {
     @apply mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center;
   }
+  /* Secondary "See what we're building" link — desktop only; the Figma mobile
+     hero drops it. */
   .hero-secondary {
-    @apply inline-flex items-center gap-2 text-[0.95rem] font-semibold text-cream transition-colors hover:text-gold-light;
+    @apply hidden items-center gap-2 text-[0.95rem] font-semibold text-cream transition-colors hover:text-gold-light sm:inline-flex;
   }
   .hero-secondary-icon {
     @apply h-4 w-4 transition-transform duration-300 group-hover:translate-x-1;
