@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { brand, hero, nav } from "@/config/siteConfig";
@@ -14,6 +15,11 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  // The menu overlay is portaled to <body> so it can never be trapped by the
+  // header's containing block (see the overlay render below). Portals need the
+  // DOM, so gate on mount to stay SSR-safe.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     // The bar stays transparent for the whole pinned hero fly-over and only
@@ -21,9 +27,15 @@ export function Header() {
     // i.e. when its bottom edge slides under the header.
     const onScroll = () => {
       const pin = document.querySelector(".hero-pin");
+      // The fly-over's payoff — the "Two sports. One home for both." grid —
+      // lands when the #sports anchor reaches the header. Solidify the bar to
+      // cream there too (not only once the whole pin has scrolled past), so the
+      // nav reads as a white bar over that frame.
+      const sports = document.querySelector("#sports");
+      const atSports = !!sports && sports.getBoundingClientRect().top <= 96;
       setScrolled(
         pin
-          ? pin.getBoundingClientRect().bottom <= 80
+          ? pin.getBoundingClientRect().bottom <= 80 || atSports
           : window.scrollY > 16,
       );
 
@@ -113,15 +125,22 @@ export function Header() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="header-overlay"
-          >
+      {/* Portaled to <body>: the scrolled header carries a backdrop-filter,
+          which would otherwise make it the containing block for this fixed
+          overlay and collapse it to the bar's height (cream bg + nav only
+          covering the top). Rendered at the document root, `inset-0` resolves
+          against the viewport in every scroll state. */}
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="header-overlay"
+              >
             <div className="header-overlay-top">
               <Wordmark />
               <button
@@ -175,9 +194,11 @@ export function Header() {
                 </ButtonLink>
               </motion.div>
             </motion.nav>
-          </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </header>
   );
 }

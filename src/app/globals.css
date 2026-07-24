@@ -292,6 +292,32 @@ body {
     @apply px-8 py-4 text-[1.02rem];
   }
 
+  /* Ambient gradient on touch devices. There's no pointer to drive the well
+     (ButtonPointerGlow does nothing without hover), so instead of sitting flat
+     the button drifts its gradient on a slow loop. The split colours are pinned
+     to each variant's hover pair so the gradient is actually visible, and
+     `btn-idle-glow` orbits --btn-x/--btn-y. Gated on `hover: none` so desktop
+     keeps pointer-tracking, and on reduced-motion so it stays still when asked. */
+  @media (hover: none) and (prefers-reduced-motion: no-preference) {
+    .btn-primary,
+    .btn-accent,
+    .btn-cream {
+      animation: btn-idle-glow 5s linear infinite;
+    }
+    .btn-primary {
+      --btn-from: #0b1d21;
+      --btn-to: #2f6b78;
+    }
+    .btn-accent {
+      --btn-from: #073831;
+      --btn-to: #159e8a;
+    }
+    .btn-cream {
+      --btn-from: var(--color-gold-soft);
+      --btn-to: #ffffff;
+    }
+  }
+
   /* ── Decorative overlay graphic (birdie / pickleball watermarks) ─────── */
   .overlay-graphic {
     @apply pointer-events-none absolute bg-contain bg-center bg-no-repeat;
@@ -386,11 +412,20 @@ body {
   .header-overlay {
     @apply fixed inset-0 z-50 bg-cream md:hidden;
   }
+  /* Mirror .header-inner's geometry (top state: h-24, same max-width + padding)
+     so the close (X) lands exactly where the hamburger was — no shift when the
+     menu opens. */
   .header-overlay-top {
-    @apply flex h-20 items-center justify-between px-6;
+    @apply mx-auto flex h-24 max-w-6xl items-center justify-between px-6 sm:px-8;
   }
   .header-overlay .wordmark-logo {
     @apply h-10;
+  }
+  /* The open menu is the clean "no logo" version everywhere. Keep the wordmark in
+     the flow (invisible, not removed) so the close (X) stays right-aligned with
+     where the hamburger was. */
+  .header-overlay .wordmark {
+    @apply invisible;
   }
   .header-overlay-close {
     @apply grid h-10 w-10 place-items-center rounded-full text-ink transition-colors hover:bg-plum/[0.06];
@@ -636,7 +671,7 @@ body {
     @apply relative bg-peach;
   }
   .sports-pickleball {
-    @apply -right-20 -top-24 h-72 w-72 rotate-12;
+    @apply -right-20 -top-24 h-44 w-44 rotate-12 sm:h-72 sm:w-72;
     /* temporarily hidden */
     display: none;
   }
@@ -772,7 +807,7 @@ body {
     @apply relative overflow-hidden bg-plum text-cream;
   }
   .pricing-pickleball {
-    @apply -bottom-24 -left-16 h-60 w-60 rotate-12 opacity-70;
+    @apply -bottom-24 -left-16 h-40 w-40 rotate-12 opacity-70 sm:h-60 sm:w-60;
   }
   .pricing-heading-wrap {
     @apply relative;
@@ -843,7 +878,7 @@ body {
     @apply pointer-events-none absolute -bottom-40 -right-24 h-[36rem] w-[36rem] rounded-full opacity-40 blur-3xl;
   }
   .whyus-birdie {
-    @apply -left-16 -top-24 h-96 w-80 rotate-[35deg] opacity-80;
+    @apply -left-16 -top-24 h-56 w-48 rotate-[35deg] opacity-80 sm:h-96 sm:w-80;
   }
   .whyus-heading-wrap {
     @apply relative max-w-2xl;
@@ -952,14 +987,17 @@ body {
   }
 
   /* ── Waitlist ────────────────────────────────────────────────────────── */
+  /* Clip so the decorative pickleball/birdie watermarks stay within the waitlist
+     section instead of bleeding up into .location-section / down into
+     .faq-section. */
   .waitlist-section {
-    @apply relative z-10 bg-peach;
+    @apply relative z-10 overflow-hidden bg-peach;
   }
   .waitlist-pickleball {
-    @apply -top-24 -right-20 h-72 w-72 rotate-12;
+    @apply -top-24 -right-20 h-44 w-44 rotate-12 sm:h-72 sm:w-72;
   }
   .waitlist-birdie {
-    @apply -bottom-24 -left-32 h-[20rem] w-[16rem] -rotate-[18deg];
+    @apply -bottom-24 -left-32 h-52 w-44 -rotate-[18deg] sm:h-[20rem] sm:w-[16rem];
   }
   .waitlist-layout {
     @apply relative grid items-center gap-10 lg:grid-cols-2 lg:gap-14;
@@ -1135,6 +1173,21 @@ body {
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+/* Ambient button gradient (touch only, see .btn media query): the radial well
+   sweeps straight across left → right, exits off the right, then re-enters from
+   the left — a one-way conveyor, not a ping-pong. --btn-y stays at its 50%
+   default so the path is horizontal. Both ends sit fully off the button (past
+   ±the 9rem well radius) so the loop restart lands on a uniform frame with no
+   visible jump. `linear` keeps the speed constant end to end. */
+@keyframes btn-idle-glow {
+  from {
+    --btn-x: -50%;
+  }
+  to {
+    --btn-x: 150%;
   }
 }
 
