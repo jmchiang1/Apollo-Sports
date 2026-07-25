@@ -30,7 +30,7 @@ export const todo = {
   pricing: "[TODO: pricing]",
   hours: "24/7",
   phone: "1 (917) 828 - 0104",
-  email: "apollosports@gmail.com",
+  email: "apolloracketclub@gmail.com",
   opening: "Opening 2027", // brief-sanctioned soft default; confirm exact season
   social: {
     instagram: "[TODO: Instagram handle]",

@@ -362,7 +362,11 @@ body {
     @apply h-24 sm:h-32;
   }
   .header-brand {
-    @apply shrink-0;
+    /* Flex (not the default inline anchor) so the wordmark is centre-aligned
+       rather than baseline-aligned. Baseline alignment let the tall logo's
+       descender space push the whole brand a few px above the header's centre,
+       so the hamburger (centred in the bar) sat lower than the text. */
+    @apply flex shrink-0 items-center;
   }
   .header-nav {
     @apply hidden items-center gap-8 md:flex;
