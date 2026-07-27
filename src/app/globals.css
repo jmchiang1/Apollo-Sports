@@ -516,7 +516,9 @@ body {
     @apply relative z-10 mx-auto w-full max-w-6xl px-6 pt-28 sm:px-8 sm:pt-0;
   }
   .hero-copy {
-    @apply max-w-xl;
+    /* Nudge the copy down on mobile so it sits lower under the header; reset at
+       sm where the pin re-centres the copy. */
+    @apply mt-12 max-w-xl sm:mt-0;
   }
   /* Top eyebrow — desktop only. On mobile the status moves to a bottom-centre
      pill over the court (see `.hero-eyebrow-bottom`). */
@@ -530,7 +532,7 @@ body {
     background-color: rgba(0, 0, 0, 0.25);
   }
   .hero-headline {
-    @apply font-display text-[clamp(2.15rem,9vw,2.85rem)] font-extrabold leading-[0.98] tracking-tight text-cream sm:text-6xl lg:text-[3.4rem] xl:text-[4.1rem];
+    @apply text-center font-display text-[clamp(2.15rem,9vw,2.85rem)] font-extrabold leading-[0.98] tracking-tight text-cream sm:text-left sm:text-6xl lg:text-[3.4rem] xl:text-[4.1rem];
   }
   .hero-headline-line {
     display: block;
@@ -539,7 +541,9 @@ body {
     @apply text-gold-light;
   }
   .hero-subhead {
-    @apply mt-7 max-w-xl text-lg leading-relaxed text-cream/70;
+    /* Hidden on mobile to de-clutter the hero (headline + CTA + court only);
+       shown from sm up. */
+    @apply mt-7 hidden max-w-xl text-lg leading-relaxed text-cream/70 sm:block;
   }
   .hero-actions {
     @apply mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center;
