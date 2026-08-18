@@ -14,12 +14,24 @@ export function Footer() {
             <Wordmark invert />
             <p className="footer-tagline">{footer.tagline}</p>
             <div className="footer-socials">
-              <span title="Handle coming soon" className="footer-social">
+              <a
+                href={footer.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Apollo Racket Club on Instagram"
+                className="footer-social"
+              >
                 <InstagramIcon className="footer-social-icon" />
-              </span>
-              <span title="Handle coming soon" className="footer-social">
+              </a>
+              <a
+                href={footer.social.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Apollo Racket Club on Facebook"
+                className="footer-social"
+              >
                 <FacebookIcon className="footer-social-icon" />
-              </span>
+              </a>
             </div>
           </div>
 

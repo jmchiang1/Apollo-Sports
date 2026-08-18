@@ -30,12 +30,12 @@ const half = y1 - y0;
 
 type Line = [number, number, number, number];
 
-/** Badminton doubles markings, proportional to a real court. */
+/** Badminton markings, simplified: one service line per end, spanning only the
+ *  singles side lines, with the centre line running from it to the net. */
 function badmintonLines(): Line[] {
   const sgl = x0 + span * 0.075; // singles side lines inset
   const sglR = x1 - span * 0.075;
-  const shortSvc = half * 0.295; // short service line offset from net
-  const longSvc = half * 0.06; // doubles long service line inset from back
+  const svc = half * 0.13; // service line inset from the back boundary
   return [
     [x0, y0, x1, y0],
     [x1, y0, x1, y1],
@@ -43,12 +43,10 @@ function badmintonLines(): Line[] {
     [x0, y1, x0, y0], // outer
     [sgl, y0, sgl, y1],
     [sglR, y0, sglR, y1], // singles side lines
-    [x0, midY - shortSvc, x1, midY - shortSvc], // short service lines
-    [x0, midY + shortSvc, x1, midY + shortSvc],
-    [x0, y0 + longSvc, x1, y0 + longSvc], // long service lines (doubles)
-    [x0, y1 - longSvc, x1, y1 - longSvc],
-    [cx, y0 + longSvc, cx, midY - shortSvc], // centre lines (service courts)
-    [cx, midY + shortSvc, cx, y1 - longSvc],
+    [sgl, y0 + svc, sglR, y0 + svc], // service lines — stop at the singles lines
+    [sgl, y1 - svc, sglR, y1 - svc],
+    [cx, y0 + svc, cx, midY], // centre lines run service line → net
+    [cx, midY, cx, y1 - svc],
   ];
 }
 

@@ -47,7 +47,7 @@ export function LocationSection() {
             icon: Clock,
             label: "Hours",
             value: <TodoText>{todo.hours}</TodoText>,
-            sub: "Open 7 days once we launch",
+            sub: "16 hours a day · 7 days",
           },
           {
             icon: Car,

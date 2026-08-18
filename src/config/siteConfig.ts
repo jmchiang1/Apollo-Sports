@@ -8,17 +8,17 @@
  * for a [TODO] — leave the token until it's confirmed.
  *
  * ── The brand-name swap ────────────────────────────────────────────────
- * `brand.name` is the ONE place to change the consumer brand. The franchise
- * (Kotofit) vs. independent decision is unresolved; the working default is
- * "Apollo Racquet Club". Change it here and it updates everywhere.
+ * `brand.name` is the ONE place to change the consumer brand — currently
+ * "Apollo Racket Club" (spelling standardized to "Racket": domain, logo, plan).
+ * Change it here and it updates everywhere.
  */
 
 export const brand = {
-  // Working default. Swap here if the franchise/independent decision changes.
-  name: "Apollo Racquet Club",
+  // Standardized on "Racket" (matches domain apolloracketclub.com, logo, plan).
+  name: "Apollo Racket Club",
   shortName: "Apollo",
   legalEntity: "Apollo Sports LLC",
-  tagline: "New York's premier badminton and pickleball club",
+  tagline: "Nassau County's dedicated badminton club",
   // Named after Apollo — a Nassau local's English Cream Golden Retriever.
   // Drives the warm cream + caramel-gold palette.
 } as const;
@@ -26,15 +26,15 @@ export const brand = {
 /** Placeholders only Jonathan confirms. Rendered as visible [TODO] tokens. */
 export const todo = {
   address: "Coming Soon",
-  courts: "[TODO: exact court count & mix — planning target ~6]",
+  courts: "8 regulation badminton courts",
   pricing: "[TODO: pricing]",
-  hours: "24/7",
+  hours: "8 AM – Midnight",
   phone: "1 (917) 828 - 0104",
   email: "apolloracketclub@gmail.com",
   opening: "Opening 2027", // brief-sanctioned soft default; confirm exact season
   social: {
-    instagram: "[TODO: Instagram handle]",
-    facebook: "[TODO: Facebook page]",
+    instagram: "https://www.instagram.com/apolloracketclub/",
+    facebook: "https://www.facebook.com/profile.php?id=61592577303122",
   },
 } as const;
 
@@ -52,11 +52,11 @@ export const hero = {
   eyebrow: `Coming to Nassau County · ${todo.opening}`,
   // One line per entry — the hero breaks exactly here, no reflow. Line 1 is the
   // service area; swap it for whichever city/region the club lands in.
-  headlineLines: ["Nassau County's", "Premier Racket", "Sport Club"],
+  headlineLines: ["Nassau County's", "Premier Badminton", "Club"],
   // Word within a headline line to accent in teal (must appear verbatim).
-  headlineHighlight: "Racket",
+  headlineHighlight: "Badminton",
   subhead:
-    "A badminton and pickleball led indoor racquet club in the heart of Nassau County; private bookings, open play, coaching and leagues for every level!",
+    "A dedicated indoor badminton club in central Nassau County: 8 courts, private bookings, open play, and leagues for every level.",
   primaryCta: { label: "Join the Waitlist", href: "#waitlist" },
   secondaryCta: { label: "See what we're building", href: "#vision" },
 } as const;
@@ -65,40 +65,29 @@ export const vision = {
   eyebrow: "The Vision",
   heading: "The club we always wished existed.",
   paragraphs: [
-    "We're building a welcoming, well-run indoor club where badminton comes first — and where pickleball players, families, and beginners all have a court to call their own.",
-    "Long Island has no shortage of places to play pickleball. What it's missing is a real home for badminton — proper courts, proper height, proper community. That's what we're here to build, with pickleball, coaching, and leagues layered on top so there's always a reason to come back.",
+    "We're building a welcoming, well-run indoor club where badminton comes first: proper courts, proper height, and a real community for players at every level.",
+    "Long Island has plenty of places to play pickleball. What it's missing is a club built for badminton. That's what we're building: eight courts and real programming, all of it badminton.",
+    "There's even a real lounge with seating, workspace, and Wi-Fi, for the parent putting in 6–8 hours a week while a kid trains. No badminton facility around here offers it.",
   ],
   founderNote:
     "Built by a lifelong player and Nassau local. We understand the club because we're the ones who've been looking for it.",
 } as const;
 
 export const sports = {
-  eyebrow: "Sports & Courts",
-  heading: "Two sports. One home for both.",
+  eyebrow: "The Courts",
+  heading: "One sport. Done right.",
   courtsNote: todo.courts,
   cards: [
     {
       name: "Badminton",
-      courts: 4,
+      courts: 8,
       lead: true,
-      // tagline: "The lead sport.",
-      body: "Regulation courts with the height ceiling height and lighting. Singles, doubles, mixed from your first rally to competitive play.",
+      body: "Eight regulation courts with true ceiling height and tournament-grade mats and lighting. Singles, doubles, and mixed, from your first rally to competitive league.",
       features: [
-        "Regulation courts & true ceiling height",
-        "Singles, doubles & mixed",
-        "First rally to competitive league play",
-      ],
-    },
-    {
-      name: "Pickleball",
-      courts: 2,
-      lead: false,
-      // tagline: "All-season, all-weather.",
-      body: "Dedicated indoor courts, all-weather, all-season. Drop in, join a game, or bring your crew. Perfect for beginners and addicts alike.",
-      features: [
-        "Dedicated indoor courts",
-        "All-weather, all-season play",
-        "Drop in or bring your crew",
+        "8 regulation courts & true ceiling height",
+        "Tournament-grade mats & lighting",
+        "Singles, doubles & mixed play",
+        "Spacing, lighting, air & flooring tuned to one sport",
       ],
     },
   ],
@@ -107,8 +96,8 @@ export const sports = {
 /** Big-number stat strip. `courts` value is a planning estimate (see todo). */
 export const stats = {
   items: [
-    { value: "6", label: "Total courts"},
-    { value: "2", label: "Racquet sports" },
+    { value: "8", label: "Total courts" },
+    { value: "22+ ft", label: "Ceiling height" },
     { value: "16", label: "hours a day" },
     { value: "'27", label: "Opening" },
   ],
@@ -126,82 +115,145 @@ export const programs = {
     {
       name: "Memberships",
       body: "The best way to play. Priority booking, member rates, and community perks.",
-      note: "From $129/mo", // PLACEHOLDER — confirm before launch
+      note: "From $59/mo",
       icon: "BadgeCheck",
     },
     {
-      name: "Coaching & Clinics",
-      body: "Private lessons and group clinics for all ages and levels, from fundamentals to competitive training.",
-      icon: "GraduationCap",
+      name: "Leagues & Tournaments",
+      body: "Rotating up/down leagues, box leagues, and a club ladder. Play with purpose and climb.",
+      icon: "Trophy",
     },
     {
-      name: "Leagues & Tournaments",
-      body: "Weekly ladders, seasonal leagues, and club tournaments. Play with purpose.",
-      icon: "Trophy",
+      name: "Club Rating System",
+      body: "Every session sorted into credible skill bands from ladder and league results, so every game is matched. No other badminton club in the market offers it.",
+      icon: "Target",
     },
     {
       name: "Youth Programming",
       body: "After-school, weekend, and holiday programs to build the next generation of players.",
       icon: "Sparkles",
     },
+    {
+      name: "Coaching & Clinics",
+      body: "Private lessons and group clinics, coming soon once our coaching staff are in place.",
+      note: "Coming soon",
+      icon: "GraduationCap",
+    },
   ],
 } as const;
 
 /**
- * Membership & rates.
- *
- * ⚠️ PLACEHOLDER PRICING — NOT CONFIRMED. The figures below are estimates
- * benchmarked against comparable NY-metro / Long Island indoor badminton &
- * pickleball clubs (membership ~$99–$179/mo; whole-court rentals ~$30–$60/hr;
- * open-play drop-ins ~$15–$30). They're here so the section reads as a real
- * pricing page, but Jonathan must confirm each number before launch. The
- * on-page `note` already tells visitors pricing is still being finalized.
+ * Membership & rates — from Business Plan V10 / Cash Flow FINAL (Aug 2026).
+ * A free registered account (with waiver) is required to play and books at list
+ * rate; the two paid tiers below unlock member pricing. Figures are the plan's
+ * founding-rate targets; the on-page `note` flags that pricing is still being
+ * finalized ahead of opening.
  */
 export const pricing = {
   eyebrow: "Membership & Rates",
   heading: "Ways to play and what they'll cost.",
-  note: "Waitlist members lock in founding rates. Exact pricing is being finalized ahead of our 2027 opening.",
-  plans: [
+  note: "A free registered account (with signed waiver) is required to play and books at list rate. Member tiers unlock discounts on everything below. Waitlist members lock in founding rates ahead of our 2027 opening.",
+  groups: [
     {
-      name: "Membership",
-      tagline: "The best way to play.",
-      price: "$129", // PLACEHOLDER — confirm before launch
-      unit: "per month",
-      icon: "BadgeCheck",
-      cta: { label: "Join the Waitlist", href: "#waitlist" },
-      features: [
-        "Priority court booking",
-        "Member rates on every court hour",
-        "Included open-play sessions",
-        "Guest passes & member-only events",
+      eyebrow: "Memberships",
+      heading: "Join the pack.",
+      title: "Memberships",
+      subtitle: "Start free to play, then upgrade to a paid tier for member pricing.",
+      plans: [
+        {
+          name: "Free Account",
+          tagline: "Required to play.",
+          price: "$0",
+          unit: "to join",
+          icon: "HeartHandshake",
+          cta: { label: "Join the Waitlist", href: "#waitlist" },
+          features: [
+            "Book any court at list rate",
+            "Account + signed waiver",
+            "No card, no commitment",
+            "Upgrade to a paid tier anytime",
+          ],
+        },
+        {
+          name: "Player",
+          tagline: "For regulars.",
+          price: "$59",
+          unit: "per month",
+          icon: "BadgeCheck",
+          featured: true,
+          badge: "Most popular",
+          cta: { label: "Join the Waitlist", href: "#waitlist" },
+          features: [
+            "15% off every court hour",
+            "Priority booking window",
+            "Member-only events & socials",
+            "Founding rate locked in",
+          ],
+        },
+        {
+          name: "Premier",
+          tagline: "The best way to play.",
+          price: "$129",
+          unit: "per month",
+          icon: "Trophy",
+          cta: { label: "Join the Waitlist", href: "#waitlist" },
+          features: [
+            "30% off every court hour",
+            "4 open-play sessions / month",
+            "Priority court booking",
+            "Guest passes & member events",
+          ],
+        },
       ],
     },
     {
-      name: "Private Court Booking",
-      tagline: "Reserve the whole court.",
-      price: "$50", // PLACEHOLDER — confirm before launch
-      unit: "per hour",
-      icon: "CalendarClock",
-      cta: { label: "Get booking updates", href: "#waitlist" },
-      features: [
-        "Badminton or pickleball courts",
-        "Book by the hour, online",
-        "Peak & off-peak rates",
-        "Room for a full doubles crew",
-      ],
-    },
-    {
-      name: "Open Play",
-      tagline: "Show up and get matched.",
-      price: "$25", // PLACEHOLDER — confirm before launch
-      unit: "per drop-in",
-      icon: "Users",
-      cta: { label: "Get booking updates", href: "#waitlist" },
-      features: [
-        "Rated sessions by skill level",
-        "Both sports, all levels",
-        "No partner needed",
-        "Member & drop-in pricing",
+      eyebrow: "Rates",
+      heading: "Pay as you go.",
+      title: "Pay as you go",
+      subtitle: "One-time — no membership required. Members save on all of it.",
+      plans: [
+        {
+          name: "Court Booking",
+          tagline: "Reserve the whole court.",
+          pricePrefix: "From",
+          price: "$50",
+          unit: "per hour",
+          icon: "CalendarClock",
+          cta: { label: "Get booking updates", href: "#waitlist" },
+          features: [
+            "8 regulation badminton courts",
+            "Non-peak $50 · peak $70",
+            "Book by the hour, online",
+            "Room for a full doubles crew",
+          ],
+        },
+        {
+          name: "Open Play",
+          tagline: "Show up and get matched.",
+          price: "$25",
+          unit: "per drop-in",
+          icon: "Users",
+          cta: { label: "Get booking updates", href: "#waitlist" },
+          features: [
+            "All levels, rated by skill",
+            "No partner needed",
+            "Member & drop-in pricing",
+          ],
+        },
+        {
+          name: "Clinics & Events",
+          tagline: "Drop in on the calendar.",
+          price: "Varies",
+          unit: "by event",
+          icon: "Sparkles",
+          cta: { label: "Get event updates", href: "#waitlist" },
+          features: [
+            "Skills clinics & round-robins",
+            "Tournaments & club socials",
+            "Members save on every event",
+            "One-off, no membership needed",
+          ],
+        },
       ],
     },
   ],
@@ -213,7 +265,7 @@ export const whyUs = {
   items: [
     {
       title: "Badminton-first",
-      body: "Not an afterthought. The courts, the height, the community are built around the sport.",
+      body: "The courts, the ceiling height, and the community are all built around one sport.",
       icon: "Target",
     },
     {
@@ -236,8 +288,8 @@ export const whyUs = {
 
 export const location = {
   eyebrow: "Location",
-  heading: "Rooted in Great Neck.",
-  body: "Serving all of central Nassau — Great Neck, Manhasset, Roslyn, Mineola, Garden City, New Hyde Park, and beyond. Easy parking, easy access.",
+  heading: "Based in Great Neck.",
+  body: "Serving all of central Nassau: Great Neck, Manhasset, Roslyn, Mineola, Garden City, New Hyde Park, and beyond. Easy parking, easy access.",
   addressLabel: todo.address,
   areas: [
     "Great Neck",
@@ -254,10 +306,11 @@ export const location = {
 export const waitlist = {
   eyebrow: "Waitlist",
   heading: "Be first on the court.",
-  body: "Join the waitlist for early access, founding-member perks, and opening-day updates. No spam — just news about the club.",
+  body: "Join the waitlist for early access, founding-member perks, and opening-day updates. No spam, just news about the club.",
   button: "Notify Me",
   success: "You're on the list. We'll be in touch. 🏸",
-  sportsOptions: ["Badminton", "Pickleball", "Both"],
+  skillLabel: "Skill level",
+  skillLevels: ["Beginner", "Intermediate", "Advanced"],
   steps: [
     {
       title: "Drop your email",
@@ -288,19 +341,19 @@ export const faq = {
     },
     {
       q: "Do I need to be good at badminton?",
-      a: "Not at all. We have open play, clinics, and coaching for total beginners.",
+      a: "No. We have open play, leagues, and (soon) coaching for total beginners.",
     },
     {
       q: "Will you have pickleball?",
-      a: "Yes — dedicated indoor pickleball courts alongside badminton.",
+      a: "No. Apollo is a dedicated badminton club. Pickle N Par opens 14 pickleball courts about five minutes away in New Hyde Park, and the corridor has no dedicated badminton. Committing all eight courts to one sport is the whole point.",
     },
     {
       q: "Can I take lessons?",
-      a: "Yes — private and group coaching for all ages and levels.",
+      a: "From day one you'll have structured open play and leagues. Private and group coaching will be added once our coaching staff are in place.",
     },
     {
       q: "How much will membership cost?",
-      a: "Early estimates: memberships around $129/month, whole-court rentals about $40/hour, and open-play drop-ins around $25. Final pricing is still being set — waitlist members lock in the lowest founding rates.",
+      a: "Two tiers: Player at $59/month (15% off court time) and Premier at $129/month (30% off, monthly open-play sessions, and priority booking). A free registered account books at list rate. Waitlist members lock in founding rates.",
     },
   ],
 } as const;

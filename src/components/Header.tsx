@@ -81,7 +81,7 @@ export function Header() {
           scrolled ? "header-inner-scrolled" : "header-inner-top",
         )}
       >
-        <a href="#top" aria-label={`${brand.name} — back to top`} className="header-brand">
+        <a href="#top" aria-label={`${brand.name}, back to top`} className="header-brand">
           <Wordmark />
         </a>
 

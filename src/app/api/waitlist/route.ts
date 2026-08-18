@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const data = await req.json();
     const name = String(data?.name ?? "").trim();
     const email = String(data?.email ?? "").trim();
-    const sport = String(data?.sport ?? "").trim();
+    const skill = String(data?.skill ?? "").trim();
     const zip = String(data?.zip ?? "").trim();
 
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     }
 
     // TODO(jonathan): replace with Formspree / Resend / DB insert.
-    console.log("[waitlist] new signup", { name, email, sport, zip });
+    console.log("[waitlist] new signup", { name, email, skill, zip });
 
     return NextResponse.json({ ok: true });
   } catch {

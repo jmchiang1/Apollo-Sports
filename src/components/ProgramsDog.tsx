@@ -12,8 +12,10 @@ import { useSafeReducedMotion } from "./Reveal";
  * Both ends of the run are MEASURED as document-scroll fractions, so the run
  * is anchored to the section itself rather than to the page as a whole (which
  * would drift every time a section above is added, removed, or resized):
- *   start  — the moment the track crosses the viewport's bottom edge
- *   finish — the section's midpoint sitting at the centre of the viewport
+ *   start  — half a viewport before the section's top reaches the fold
+ *   finish — the section's top rising into the upper third of the viewport
+ * The whole run therefore completes while Programs is still arriving, so it
+ * reads as finished by the time the section fills the screen.
  * Reduced motion pins him in place.
  */
 export function ProgramsDog() {
@@ -28,18 +30,17 @@ export function ProgramsDog() {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       if (max <= 0) return;
 
-      // he becomes visible when the track crosses the viewport's bottom edge
+      // he sets off while the section is still half a viewport below the fold
       const enter =
-        el.getBoundingClientRect().top + window.scrollY - window.innerHeight;
+        el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 1.5;
 
-      // ...and lands when the section is half-scrolled — i.e. its vertical
-      // midpoint reaches the middle of the viewport.
+      // ...and lands once the section's top has risen into the upper third of
+      // the viewport, well before the section is centred.
       const section = el.closest(".programs-section") ?? el;
       const box = section.getBoundingClientRect();
-      const mid =
-        box.top + window.scrollY + box.height / 2 - window.innerHeight / 2;
+      const land = box.top + window.scrollY - window.innerHeight * 0.35;
 
-      const finish = Math.max(0, Math.min(1, mid / max));
+      const finish = Math.max(0, Math.min(1, land / max));
       const start = Math.max(0, Math.min(finish - 0.01, enter / max));
       setSpan([start, finish]);
     };
@@ -59,7 +60,10 @@ export function ProgramsDog() {
   // settings trailed far enough behind `raw` that he was still visibly moving
   // well past the midpoint, which is exactly the beat he's supposed to hit.
   const p = useSpring(raw, { stiffness: 160, damping: 30, mass: 0.4 });
-  const x = useTransform(p, [0, 1], ["0vw", "68vw"]);
+  // End point stops short of 100vw on purpose: the section is `overflow-hidden`
+  // and the sprite is ~200px wide at its landing angle, so anything much past
+  // this clips his nose on narrower desktops.
+  const x = useTransform(p, [0, 1], ["0vw", "75vw"]);
 
   return (
     <div ref={ref} className="programs-dog-track" aria-hidden>

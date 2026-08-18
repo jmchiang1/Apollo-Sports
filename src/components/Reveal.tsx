@@ -82,6 +82,34 @@ export function SectionWrapper({
   );
 }
 
+/**
+ * A nested reveal orchestrator — same trigger as SectionWrapper, but usable
+ * *inside* a section to give a sub-group its own stagger. Needed because Motion
+ * only reliably staggers a `Reveal`'s nearest orchestrating ancestor; grouping
+ * cards under extra wrappers (e.g. the pricing groups) otherwise leaves them
+ * stuck hidden for non-reduced-motion visitors.
+ */
+export function RevealGroup({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const reduce = useSafeReducedMotion();
+  return (
+    <motion.div
+      variants={containerVariants}
+      initial={reduce ? "visible" : "hidden"}
+      whileInView="visible"
+      viewport={{ once: true, margin: "-90px" }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 const MOTION_TAGS = {
   div: motion.div,
   p: motion.p,

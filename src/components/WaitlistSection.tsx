@@ -7,8 +7,7 @@ import { OverlayGraphic } from "./OverlayGraphic";
 export function WaitlistSection() {
   return (
     <SectionWrapper id="waitlist" className="waitlist-section">
-      {/* decorative watermarks that spill into the neighbouring sections */}
-      <OverlayGraphic src="/pickleball.svg" className="waitlist-pickleball" />
+      {/* decorative shuttlecock watermark */}
       <OverlayGraphic src="/birdie.svg" className="waitlist-birdie" />
 
       <div className="waitlist-layout">

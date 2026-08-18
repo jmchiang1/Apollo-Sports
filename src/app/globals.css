@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ────────────────────────────────────────────────────────────────────────
-   Apollo Racquet Club — theme  (playful-warm / retro-casual)
+   Apollo Racket Club — theme  (playful-warm / retro-casual)
    Multi-color flat blocks, chunky rounded type, warm sunny palette that nods
    to Apollo, the English Cream Golden Retriever. Tailwind v4 CSS-first config.
    ──────────────────────────────────────────────────────────────────────── */
@@ -572,59 +572,6 @@ body {
     @apply absolute left-0 h-px w-px;
   }
 
-  /* Sports copy (was SportsSection) — the fly-over's final beat. */
-  .hero-sports-overlay {
-    @apply pointer-events-none absolute inset-0 z-10 flex flex-col items-center pt-24 lg:pt-28;
-  }
-  .hero-sports-head {
-    @apply px-6 text-center;
-  }
-  .hero-sports-heading {
-    @apply mt-2 font-display text-2xl font-bold tracking-tight text-cream sm:text-3xl;
-  }
-  .hero-sports-cards {
-    @apply absolute inset-x-4 bottom-[4%] flex justify-center gap-3 lg:inset-x-10 lg:top-1/2 lg:bottom-auto lg:-translate-y-[42%] lg:justify-between lg:gap-6;
-  }
-  .hero-sports-card {
-    @apply w-full max-w-[200px] rounded-2xl bg-cream/[0.07] p-4 text-left ring-1 ring-cream/10 backdrop-blur-sm lg:max-w-[300px] lg:p-6;
-  }
-  .hero-sports-card-courts {
-    @apply text-[11px] font-bold uppercase tracking-[0.18em] text-gold-light;
-  }
-  .hero-sports-card-name {
-    @apply mt-1 font-display text-lg font-bold text-cream lg:text-2xl;
-  }
-  .hero-sports-card-tagline {
-    @apply mt-1 text-sm font-semibold text-cream/80;
-  }
-  .hero-sports-card-body {
-    @apply mt-2 hidden text-sm leading-relaxed text-cream/60 lg:block;
-  }
-  .hero-sports-features {
-    @apply mt-3 hidden space-y-1.5 lg:block;
-  }
-  .hero-sports-feature {
-    @apply flex items-start gap-2 text-[13px] leading-snug text-cream/75;
-  }
-  .hero-sports-feature-icon {
-    @apply mt-0.5 h-3.5 w-3.5 shrink-0 text-gold-light;
-  }
-
-  /* Reduced-motion fallback: sports copy as a plain block under the hero. */
-  .hero-sports-static {
-    @apply scroll-mt-24 bg-plum px-6 py-20;
-  }
-  .hero-sports-static-cards {
-    @apply mx-auto mt-10 flex max-w-4xl flex-wrap justify-center gap-6;
-  }
-  .hero-sports-static-cards .hero-sports-card {
-    @apply max-w-[340px];
-  }
-  .hero-sports-static-cards .hero-sports-card-body,
-  .hero-sports-static-cards .hero-sports-features {
-    @apply block;
-  }
-
   /* ── Vision ──────────────────────────────────────────────────────────── */
   .vision-section {
     @apply relative overflow-hidden bg-cream;
@@ -814,7 +761,7 @@ body {
   .pricing-section {
     @apply relative overflow-hidden bg-plum text-cream;
   }
-  .pricing-pickleball {
+  .pricing-birdie {
     @apply -bottom-24 -left-16 h-40 w-40 rotate-12 opacity-70 sm:h-60 sm:w-60;
   }
   .pricing-heading-wrap {
@@ -826,11 +773,50 @@ body {
   .pricing-note {
     @apply mt-4 text-lg leading-relaxed text-cream/60;
   }
+  /* Each pricing group (Memberships / Pay as you go) gets its own labelled block. */
+  .pricing-group {
+    @apply relative mt-12 sm:mt-16;
+  }
+  .pricing-group-head {
+    @apply mb-6 border-t border-cream/10 pt-8;
+  }
+  .pricing-group-title {
+    @apply font-display text-2xl font-extrabold tracking-tight text-cream;
+  }
+  .pricing-group-subtitle {
+    @apply mt-1 text-sm font-semibold text-cream/50;
+  }
   .pricing-grid {
-    @apply relative mt-14 grid items-stretch gap-6 lg:grid-cols-3;
+    @apply relative grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3;
+  }
+  /* Two-card group (Memberships): keep the pair centred and a comfortable width
+     rather than stretched across three columns. */
+  .pricing-grid-2 {
+    @apply mx-auto max-w-3xl lg:grid-cols-2;
+  }
+  /* A group with a featured (middle) plan: widen the centre column and give the
+     row headroom for the raised card + its badge. */
+  .pricing-grid-featured {
+    @apply lg:grid-cols-[minmax(0,1fr)_minmax(0,1.16fr)_minmax(0,1fr)] lg:pt-4;
   }
   .pricing-card {
-    @apply flex h-full flex-col rounded-3xl bg-cream/[0.06] p-8 ring-1 ring-cream/10;
+    @apply relative flex h-full flex-col rounded-3xl bg-cream/[0.06] p-8 ring-1 ring-cream/10;
+  }
+  /* Featured tier (Player): brighter surface, accent ring + glow, and lifted a
+     touch on desktop so it reads as the headline choice. */
+  .pricing-card-featured {
+    @apply bg-cream/[0.11] ring-2 ring-gold-light/70 lg:-translate-y-3 lg:p-9 lg:shadow-[0_24px_60px_-24px_rgba(95,197,179,0.4)];
+  }
+  /* The other tiers in a featured group step back a little. */
+  .pricing-card-muted {
+    @apply lg:scale-[0.96] lg:opacity-90;
+  }
+  /* "Most popular" pill, centred over the featured card's top edge. */
+  .pricing-badge {
+    @apply absolute -top-3 left-1/2 z-10 inline-flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-gold-light px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.12em] text-plum shadow-md;
+  }
+  .pricing-badge-paw {
+    @apply h-3.5 w-3.5;
   }
   .pricing-card-head {
     @apply flex items-center gap-3;
@@ -849,6 +835,9 @@ body {
   }
   .pricing-price-row {
     @apply mt-6 flex flex-wrap items-baseline gap-x-2 gap-y-1;
+  }
+  .pricing-price-prefix {
+    @apply text-sm font-semibold text-cream/50;
   }
   .pricing-price {
     @apply font-display text-xl font-extrabold text-gold-light;
@@ -876,6 +865,34 @@ body {
   }
   .pricing-cta {
     @apply w-full;
+  }
+  .pricing-eyebrow {
+    @apply mb-3 text-sm font-bold uppercase tracking-[0.18em] text-gold-light;
+  }
+  /* Faint paw watermark tucked in the corner of the featured tier. */
+  .pricing-card-paw {
+    @apply pointer-events-none absolute bottom-6 right-6 h-20 w-20 rotate-12 text-cream/[0.05];
+  }
+  /* Paw-print bullets (memberships): drop the round chip, show Apollo's paw. */
+  .pricing-feature-check-paw {
+    @apply bg-transparent text-gold-light;
+  }
+  .pricing-feature-check-paw .pricing-feature-icon {
+    @apply h-4 w-4;
+  }
+  /* Pay-as-you-go sits on a lighter plum so it reads as its own section. */
+  .rates-section {
+    @apply bg-plum-deep;
+  }
+  /* Memberships: leave room at the bottom for Apollo to peek in. */
+  .membership-section {
+    @apply pb-40 sm:pb-44;
+  }
+  .membership-peek-wrap {
+    @apply pointer-events-none absolute inset-x-0 bottom-0 z-0 mx-auto flex max-w-6xl justify-end px-6 sm:px-8;
+  }
+  .membership-peek {
+    @apply h-32 w-auto translate-y-2 text-gold-light/25 sm:h-44;
   }
 
   /* ── Why us ──────────────────────────────────────────────────────────── */
@@ -1000,9 +1017,6 @@ body {
      .faq-section. */
   .waitlist-section {
     @apply relative z-10 overflow-hidden bg-peach;
-  }
-  .waitlist-pickleball {
-    @apply -top-24 -right-20 h-44 w-44 rotate-12 sm:h-72 sm:w-72;
   }
   .waitlist-birdie {
     @apply -bottom-24 -left-32 h-52 w-44 -rotate-[18deg] sm:h-[20rem] sm:w-[16rem];

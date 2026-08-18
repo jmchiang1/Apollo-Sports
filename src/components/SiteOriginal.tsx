@@ -3,7 +3,7 @@ import { Hero } from "@/components/Hero";
 import { VisionSection } from "@/components/VisionSection";
 import { StatsBand } from "@/components/StatsBand";
 import { ProgramsSection } from "@/components/ProgramsSection";
-import { PricingSection } from "@/components/PricingSection";
+import { MembershipSection, RatesSection } from "@/components/PricingSection";
 import { LocationSection } from "@/components/LocationSection";
 import { WaitlistSection } from "@/components/WaitlistSection";
 import { FAQAccordion } from "@/components/FAQAccordion";
@@ -21,7 +21,8 @@ export function SiteOriginal() {
         <VisionSection />
         <StatsBand />
         <ProgramsSection />
-        <PricingSection />
+        <MembershipSection />
+        <RatesSection />
         <LocationSection />
         <WaitlistSection />
         <FAQAccordion />

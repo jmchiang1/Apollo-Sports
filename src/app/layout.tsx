@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Figtree, Geist } from "next/font/google";
 import "./globals.css";
-import { brand, hero } from "@/config/siteConfig";
+import { brand } from "@/config/siteConfig";
 import { cn } from "@/lib/utils";
 import { ButtonPointerGlow } from "@/components/ButtonPointerGlow";
 
@@ -23,33 +23,35 @@ const figtree = Figtree({
   display: "swap",
 });
 
+const META_DESCRIPTION =
+  "A dedicated indoor badminton club in central Nassau County: 8 courts, open play, leagues, and memberships for every level.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://apollo-racquet-club.vercel.app"),
+  metadataBase: new URL("https://apolloracketclub.com"),
   title: {
-    default: `${brand.name} — ${brand.tagline}`,
+    default: `${brand.name} · ${brand.tagline}`,
     template: `%s · ${brand.name}`,
   },
-  description: hero.subhead,
+  description: META_DESCRIPTION,
   keywords: [
     "badminton",
-    "pickleball",
     "Nassau County",
     "Long Island",
     "Great Neck",
-    "racquet club",
-    "indoor courts",
+    "New Hyde Park",
+    "indoor badminton courts",
   ],
   openGraph: {
-    title: `${brand.name} — ${brand.tagline}`,
-    description: hero.subhead,
+    title: `${brand.name} · ${brand.tagline}`,
+    description: META_DESCRIPTION,
     type: "website",
     locale: "en_US",
     siteName: brand.name,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${brand.name} — ${brand.tagline}`,
-    description: hero.subhead,
+    title: `${brand.name} · ${brand.tagline}`,
+    description: META_DESCRIPTION,
   },
 };
 

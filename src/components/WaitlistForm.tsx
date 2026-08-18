@@ -19,7 +19,7 @@ const labelClass = "waitlist-form-label";
 export function WaitlistForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
-  const [sport, setSport] = useState("");
+  const [skill, setSkill] = useState("");
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -46,7 +46,7 @@ export function WaitlistForm() {
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, sport, zip }),
+        body: JSON.stringify({ name, email, skill, zip }),
       });
       const json = (await res.json().catch(() => ({}))) as {
         ok?: boolean;
@@ -127,18 +127,18 @@ export function WaitlistForm() {
 
             <fieldset>
               <legend className={labelClass}>
-                Sports you play{" "}
+                {waitlist.skillLabel}{" "}
                 <span className="waitlist-form-label-muted">(optional)</span>
               </legend>
               <div className="waitlist-form-chips">
-                {waitlist.sportsOptions.map((opt) => {
-                  const active = sport === opt;
+                {waitlist.skillLevels.map((opt) => {
+                  const active = skill === opt;
                   return (
                     <button
                       key={opt}
                       type="button"
                       aria-pressed={active}
-                      onClick={() => setSport(active ? "" : opt)}
+                      onClick={() => setSkill(active ? "" : opt)}
                       className={cn(
                         "waitlist-form-chip",
                         active
@@ -194,7 +194,7 @@ export function WaitlistForm() {
             </button>
 
             <p className="waitlist-form-disclaimer">
-              No spam — just news about the club. Unsubscribe anytime.
+              No spam, just news about the club. Unsubscribe anytime.
             </p>
           </motion.form>
         )}

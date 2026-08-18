@@ -27,7 +27,7 @@ export function TodoText({
         part.startsWith("[TODO") ? (
           <mark
             key={i}
-            title="Placeholder — confirm before launch"
+            title="Placeholder: confirm before launch"
             className="todo-token"
           >
             {part}
@@ -50,7 +50,7 @@ export function TodoBadge({
 }) {
   return (
     <span
-      title="Placeholder — confirm before launch"
+      title="Placeholder: confirm before launch"
       className={cn("todo-badge", className)}
     >
       {label}

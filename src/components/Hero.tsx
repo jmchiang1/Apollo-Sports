@@ -9,8 +9,8 @@ import {
   useMotionTemplate,
   type Variants,
 } from "motion/react";
-import { ArrowRight, Check } from "lucide-react";
-import { hero, sports } from "@/config/siteConfig";
+import { ArrowRight } from "lucide-react";
+import { hero } from "@/config/siteConfig";
 import { ButtonLink } from "./Button";
 import { CourtPlan, W, L, type Sport } from "./CourtPlan";
 import { useSafeReducedMotion } from "./Reveal";
@@ -18,13 +18,13 @@ import { useSafeReducedMotion } from "./Reveal";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 // ── facility layout ─────────────────────────────────────────────────────
-// Courts are drawn length-vertical (see CourtPlan). Six courts on one even
-// 3×2 grid — four badminton, then the pickleball column — with the same gap
-// in both axes so the floor reads as a single regular block.
+// Courts are drawn length-vertical (see CourtPlan). Eight badminton courts on
+// one even 4×2 grid — a dedicated all-badminton club — with the same gap in
+// both axes so the floor reads as a single regular block.
 const GAP = 22;
-const COL = [0, W + GAP, 2 * (W + GAP)]; // x of each column
-const ROW = [0, L + GAP]; // y of each row
-const GRID_W = COL[2] + W;
+const COL = [0, W + GAP, 2 * (W + GAP), 3 * (W + GAP)]; // x of each column (4)
+const ROW = [0, L + GAP]; // y of each row (2)
+const GRID_W = COL[3] + W;
 const GRID_H = ROW[1] + L;
 
 type Court = { sport: Sport; x: number; y: number; hero?: boolean };
@@ -32,10 +32,12 @@ type Court = { sport: Sport; x: number; y: number; hero?: boolean };
 const COURTS: Court[] = [
   { sport: "badminton", x: COL[0], y: ROW[0] },
   { sport: "badminton", x: COL[1], y: ROW[0] },
+  { sport: "badminton", x: COL[2], y: ROW[0] },
+  { sport: "badminton", x: COL[3], y: ROW[0] },
   { sport: "badminton", x: COL[0], y: ROW[1] },
   { sport: "badminton", x: COL[1], y: ROW[1], hero: true }, // camera starts here
-  { sport: "pickleball", x: COL[2], y: ROW[0] },
-  { sport: "pickleball", x: COL[2], y: ROW[1] },
+  { sport: "badminton", x: COL[2], y: ROW[1] },
+  { sport: "badminton", x: COL[3], y: ROW[1] },
 ];
 
 const heroCourt = COURTS.find((c) => c.hero)!;
@@ -84,41 +86,12 @@ function headlineLine(line: string) {
   );
 }
 
-/** Sports copy (formerly SportsSection) — shown as the fly-over's final beat. */
-function SportsCards() {
-  return (
-    <>
-      {sports.cards.map((card) => (
-        <div key={card.name} className="hero-sports-card">
-          <p className="hero-sports-card-courts">{card.courts} courts</p>
-          <h3 className="hero-sports-card-name">{card.name}</h3>
-          <p className="hero-sports-card-body">{card.body}</p>
-          <ul className="hero-sports-features">
-            {card.features.map((f) => (
-              <li key={f} className="hero-sports-feature">
-                <Check className="hero-sports-feature-icon" strokeWidth={3} />
-                <span>{f}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </>
-  );
-}
-
-function SportsHead() {
-  return (
-    <div className="hero-sports-head">
-      {/* <p className="hero-facility-overline">Under one roof</p> */}
-      <h2 className="hero-sports-heading">{sports.heading}</h2>
-    </div>
-  );
-}
+/** Vertical squash from the end frame's rotateX(26°). */
+const COS_RX = Math.cos((26 * Math.PI) / 180);
 
 export function Hero() {
-  // The reduced-motion branch renders a different tree (static hero + plain
-  // sports block) — useSafeReducedMotion keeps SSR and hydration consistent.
+  // The reduced-motion branch renders a different tree (a single static frame,
+  // no camera) — useSafeReducedMotion keeps SSR and hydration consistent.
   const reduce = useSafeReducedMotion();
 
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -142,25 +115,27 @@ export function Hero() {
   const s0 = vpW === 0 ? 4 : lg ? vpW / 172 : 5.9;
   const tx0 = lg ? vpW / 2 - 29.7 * s0 : 0;
   const ty0 = lg ? vpH / 2 - 17.5 * s0 : vpH * 0.36;
-  // End frame: size the facility to FILL the frame — as large as fits between
-  // the heading (top ≈ 190px) and a real bottom margin (~6vh), never bleeding
-  // off the fold. Grid visual height ≈ GRID_H·s·cos(26°) ≈ 380·s; on phones
-  // the width (344·s) is the binding constraint instead.
-  const fitH = (0.94 * vpH - 210) / 380;
-  const fitW = (vpW - 24) / 344;
-  const sEnd =
-    vpH === 0 ? 1.6 : lg ? Math.max(1.2, fitH) : Math.max(0.9, Math.min(fitW, fitH));
-  // Vertical placement of the grid at the end frame. Desktop tucks the grid's
-  // top row just below the heading; mobile CENTRES the whole grid in the
-  // viewport instead (the transform-origin — the hero court — sits ~100·s below
-  // the grid centre, so origin_y = vpH/2 + 100·s lands the grid centre on the
-  // viewport centre).
+  // End frame: the plan fills the screen between the header and a bottom
+  // margin, and centres in what's left. Grid visual height is
+  // GRID_H·s·cos(26°).
+  const TOP = lg ? 96 : 84; // clearance under the sticky header
+  const BOTTOM = lg ? 64 : 48; // breathing room at the foot of the frame
+  const avail = Math.max(160, vpH - TOP - BOTTOM);
+  const fitH = avail / (GRID_H * COS_RX);
+  const fitW = (vpW - (lg ? 96 : 24)) / GRID_W;
+  const sEnd = vpH === 0 ? 1.4 : Math.max(0.7, Math.min(fitH, fitW));
+  // Vertical placement. The plan's top edge sits `planTop` down the viewport;
+  // solving the camera translate for that lands the transform origin (the hero
+  // court centre, HERO_CY plan-units down the grid) in the right place.
+  const planH = GRID_H * sEnd * COS_RX;
+  const planTop = TOP + (avail - planH) / 2;
   const tyEnd =
-    vpH === 0 ? 200 : lg ? 190 + 290 * sEnd - vpH / 2 : 100 * sEnd;
-  // Horizontal nudge. The hero court is the grid's centre column, so the grid is
-  // already centred on the origin; mobile needs no offset. Desktop keeps its
-  // small shift (the sports cards flank the grid there).
-  const txEnd = lg ? -12 * sEnd : 0;
+    vpH === 0 ? 200 : planTop + HERO_CY * COS_RX * sEnd - vpH / 2;
+  // Horizontal: centre the whole grid. The hero court (the transform origin)
+  // sits GRID_W/2 − HERO_CX plan-units left of the grid centre, so translating
+  // by (HERO_CX − GRID_W/2)·s lands the grid centre on the viewport centre for
+  // any hero-court choice or grid width.
+  const txEnd = (HERO_CX - GRID_W / 2) * sEnd;
 
   const { scrollYProgress } = useScroll({
     target: wrapRef,
@@ -191,9 +166,6 @@ export function Hero() {
   const othersOpacity = useTransform(t, [0.22, 0.52], [0, 1]);
   // Standing net recedes as we go overhead, fully gone by the reveal.
   const netOpacity = useTransform(t, [0.34, 0.7], [1, 0]);
-  // Sports copy lands as the facility assembles.
-  const sportsOpacity = useTransform(t, [0.76, 0.94], [0, 1]);
-  const sportsY = useTransform(t, [0.76, 0.94], [28, 0]);
 
   const staticFloor = reduce
     ? {
@@ -207,24 +179,23 @@ export function Hero() {
       ref={wrapRef}
       className="hero-wrap"
       // reduced-motion users get no camera move — collapse the scroll track so
-      // there's no dead pinned region (the sports copy renders statically below).
-      // 320svh: camera uses ~78%, the rest dwells on the finished facility.
+      // there's no dead pinned region. 320svh: camera uses ~78%, the rest
+      // dwells on the finished facility.
       style={reduce ? { height: "auto" } : { height: "320svh" }}
     >
       {/* nav anchor: lands mid-pin, right at the facility reveal. The offset
           is a point on the camera timeline (progress ≈ top/160svh), so it
-          lives here beside the keyframes rather than in the stylesheet. */}
-      {!reduce && (
-        <div
-          id="sports"
-          className="hero-sports-anchor"
-          style={{ top: "175svh" }}
-          aria-hidden
-        />
-      )}
+          lives here beside the keyframes rather than in the stylesheet. In
+          reduce mode there's no track to land on, so it sits at the top. */}
+      <div
+        id="sports"
+        className="hero-sports-anchor"
+        style={reduce ? undefined : { top: "175svh" }}
+        aria-hidden
+      />
 
       {/* In reduce mode there's no scroll track, so the pin must not stick —
-          a sticky element would slide down over the static sports block. */}
+          a sticky element would slide down over the section below. */}
       <div
         className="hero-pin"
         style={reduce ? { position: "relative" } : undefined}
@@ -382,32 +353,7 @@ export function Hero() {
         >
           {hero.eyebrow.split("·").pop()?.trim()}
         </motion.div>
-
-        {/* ── sports copy — the fly-over's payoff (was SportsSection) ─── */}
-        {!reduce && (
-          <motion.div
-            className="hero-sports-overlay"
-            style={{ opacity: sportsOpacity, y: sportsY }}
-          >
-            <SportsHead />
-            <div className="hero-sports-cards">
-              <SportsCards />
-            </div>
-          </motion.div>
-        )}
-
       </div>
-
-      {/* Reduced motion: the sports copy still needs a home — render it as a
-          plain static block below the (single-frame) hero. */}
-      {reduce && (
-        <div id="sports" className="hero-sports-static">
-          <SportsHead />
-          <div className="hero-sports-static-cards">
-            <SportsCards />
-          </div>
-        </div>
-      )}
     </section>
   );
 }

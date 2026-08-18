@@ -53,12 +53,10 @@ const MARKINGS: Record<Sport, Marks> = {
       ...OUTER,
       [0, 1.5, 44, 1.5], // singles side lines
       [0, 18.5, 44, 18.5],
-      [15.5, 0, 15.5, 20], // short service lines
-      [28.5, 0, 28.5, 20],
-      [2.5, 0, 2.5, 20], // doubles long service lines
-      [41.5, 0, 41.5, 20],
-      [2.5, 10, 15.5, 10], // centre lines
-      [28.5, 10, 41.5, 10],
+      [5.5, 1.5, 5.5, 18.5], // service lines — stop at the singles side lines
+      [38.5, 1.5, 38.5, 18.5],
+      [5.5, 10, 22, 10], // centre lines run service line → net
+      [22, 10, 38.5, 10],
     ],
   },
 };
