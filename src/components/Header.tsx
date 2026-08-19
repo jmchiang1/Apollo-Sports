@@ -27,15 +27,16 @@ export function Header() {
     // i.e. when its bottom edge slides under the header.
     const onScroll = () => {
       const pin = document.querySelector(".hero-pin");
-      // The fly-over's payoff — the "Two sports. One home for both." grid —
-      // lands when the #sports anchor reaches the header. Solidify the bar to
-      // cream there too (not only once the whole pin has scrolled past), so the
-      // nav reads as a white bar over that frame.
-      const sports = document.querySelector("#sports");
-      const atSports = !!sports && sports.getBoundingClientRect().top <= 96;
+      // The fly-over's payoff — the assembled 8-court facility — lands when
+      // the courts anchor reaches the header. Solidify the bar to cream there
+      // too (not only once the whole pin has scrolled past), so the nav reads
+      // as a white bar over that frame. Matched by CLASS: the reduced-motion
+      // anchor carries the same id but shouldn't trigger this.
+      const courts = document.querySelector(".hero-courts-anchor");
+      const atCourts = !!courts && courts.getBoundingClientRect().top <= 96;
       setScrolled(
         pin
-          ? pin.getBoundingClientRect().bottom <= 80 || atSports
+          ? pin.getBoundingClientRect().bottom <= 80 || atCourts
           : window.scrollY > 16,
       );
 

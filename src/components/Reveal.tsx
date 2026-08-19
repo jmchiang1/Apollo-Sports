@@ -110,6 +110,41 @@ export function RevealGroup({
   );
 }
 
+/**
+ * A reveal that triggers on *its own* entry into the viewport rather than
+ * inheriting a section's one-shot stagger. Use it for a group taller than the
+ * viewport (e.g. the Programs rows), where the section-level trigger would
+ * animate rows that are still well below the fold: here each item waits for its
+ * own scroll moment, so they arrive top to bottom as the user scrolls through.
+ *
+ * It deliberately takes NO `variants` prop — that is what stops an ancestor
+ * orchestrator from propagating "visible" and firing it early.
+ */
+export function RevealOnScroll({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const reduce = useSafeReducedMotion();
+  if (reduce) return <div className={className}>{children}</div>;
+
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      // `amount` (not a margin) so the trigger scales with the row: it fires
+      // once the row is a little under halfway onto the screen.
+      viewport={{ once: true, amount: 0.45 }}
+      transition={{ duration: 0.6, ease: EASE }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 const MOTION_TAGS = {
   div: motion.div,
   p: motion.p,

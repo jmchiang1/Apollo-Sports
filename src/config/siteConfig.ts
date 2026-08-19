@@ -38,10 +38,13 @@ export const todo = {
   },
 } as const;
 
-/** Anchor navigation — id must match each section's element id. */
+/**
+ * Anchor navigation — id must match each section's element id.
+ * Vision is deliberately absent: `.vision-section` is display:none, and a
+ * hidden target has no box, so the browser can't scroll to it.
+ */
 export const nav = [
-  { label: "Vision", href: "#vision" },
-  { label: "Sports", href: "#sports" },
+  { label: "Courts", href: "#courts" },
   { label: "Programs", href: "#programs" },
   { label: "Pricing", href: "#pricing" },
   { label: "Location", href: "#location" },
@@ -52,13 +55,14 @@ export const hero = {
   eyebrow: `Coming to Nassau County · ${todo.opening}`,
   // One line per entry — the hero breaks exactly here, no reflow. Line 1 is the
   // service area; swap it for whichever city/region the club lands in.
-  headlineLines: ["Nassau County's", "Premier Badminton", "Club"],
+  headlineLines: ["Nassau County's", "Premier Badminton", "Center"],
   // Word within a headline line to accent in teal (must appear verbatim).
   headlineHighlight: "Badminton",
   subhead:
     "A dedicated indoor badminton club in central Nassau County: 8 courts, private bookings, open play, and leagues for every level.",
   primaryCta: { label: "Join the Waitlist", href: "#waitlist" },
-  secondaryCta: { label: "See what we're building", href: "#vision" },
+  // Points at Programs, not Vision — the Vision section is hidden (see `nav`).
+  secondaryCta: { label: "See what we're building", href: "#programs" },
 } as const;
 
 export const vision = {

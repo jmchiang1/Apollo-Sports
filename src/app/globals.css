@@ -566,9 +566,12 @@ body {
     @apply font-display text-xl font-bold capitalize text-cream/90;
   }
 
-  /* Nav anchor for #sports — its `top` is set inline in Hero.tsx, where it
-     tracks the camera timeline. */
-  .hero-sports-anchor {
+  /* Nav anchor for #courts. In the fly-over its `top` is solved inline in
+     Hero.tsx against the camera timeline; the reduced-motion variant
+     just sits at the top of the hero and is a separate class so the header's
+     solidify check can tell them apart. */
+  .hero-courts-anchor,
+  .hero-courts-anchor-top {
     @apply absolute left-0 h-px w-px;
   }
 

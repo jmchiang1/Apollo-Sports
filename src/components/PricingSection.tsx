@@ -35,7 +35,7 @@ type DealRole = "center" | "left" | "right";
 const dealVariants: Record<DealRole, Variants> = {
   center: {
     hidden: { opacity: 0, y: 28 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: EASE } },
   },
   left: {
     hidden: { opacity: 0, x: "92%", scale: 0.85 },
@@ -43,7 +43,7 @@ const dealVariants: Record<DealRole, Variants> = {
       opacity: 1,
       x: 0,
       scale: 1,
-      transition: { duration: 0.62, ease: EASE, delay: 0.36 },
+      transition: { duration: 0.9, ease: EASE, delay: 0.55 },
     },
   },
   right: {
@@ -52,7 +52,7 @@ const dealVariants: Record<DealRole, Variants> = {
       opacity: 1,
       x: 0,
       scale: 1,
-      transition: { duration: 0.62, ease: EASE, delay: 0.36 },
+      transition: { duration: 0.9, ease: EASE, delay: 0.55 },
     },
   },
 };

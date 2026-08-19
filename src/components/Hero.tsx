@@ -183,16 +183,29 @@ export function Hero() {
       // dwells on the finished facility.
       style={reduce ? { height: "auto" } : { height: "320svh" }}
     >
-      {/* nav anchor: lands mid-pin, right at the facility reveal. The offset
-          is a point on the camera timeline (progress ≈ top/160svh), so it
-          lives here beside the keyframes rather than in the stylesheet. In
-          reduce mode there's no track to land on, so it sits at the top. */}
-      <div
-        id="sports"
-        className="hero-sports-anchor"
-        style={reduce ? undefined : { top: "175svh" }}
-        aria-hidden
-      />
+      {/* nav anchor: lands on the assembled facility. Solving for it, rather
+          than eyeballing an offset:
+            scroll progress p = scrollY / (320svh − 100svh)   [the pin's travel]
+            the camera finishes at p = 0.78, then dwells to p = 1
+          so landing at p = 0.85 is comfortably inside the dwell — camera done,
+          33svh of track still to run before the pin releases. Jumping here
+          also looks right: scrollYProgress is springed, so the fly-over plays
+          itself in over ~half a second rather than snapping.
+          The +96px is the `scroll-padding-top: 6rem` the browser subtracts
+          when it scrolls a hash target into view.
+          Reduce mode has no track to land on, so it sits at the top of the
+          hero — and takes a DIFFERENT class, because the header's solidify
+          check looks for the fly-over anchor specifically. */}
+      {reduce ? (
+        <div id="courts" className="hero-courts-anchor-top" aria-hidden />
+      ) : (
+        <div
+          id="courts"
+          className="hero-courts-anchor"
+          style={{ top: "calc(187svh + 96px)" }}
+          aria-hidden
+        />
+      )}
 
       {/* In reduce mode there's no scroll track, so the pin must not stick —
           a sticky element would slide down over the section below. */}

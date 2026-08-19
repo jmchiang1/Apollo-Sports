@@ -1,5 +1,5 @@
 import { programs } from "@/config/siteConfig";
-import { SectionWrapper, Reveal } from "./Reveal";
+import { SectionWrapper, Reveal, RevealOnScroll } from "./Reveal";
 import { iconMap, type IconName } from "./icons";
 import { ProgramsDog } from "./ProgramsDog";
 
@@ -18,7 +18,7 @@ export function ProgramsSection() {
         {programs.cards.map((card, i) => {
           const Icon = iconMap[card.icon as IconName];
           return (
-            <Reveal key={card.name}>
+            <RevealOnScroll key={card.name}>
               <div className="programs-row">
                 <span className="programs-index">
                   {String(i + 1).padStart(2, "0")}
@@ -31,7 +31,7 @@ export function ProgramsSection() {
                   {Icon ? <Icon className="programs-icon" strokeWidth={2} /> : null}
                 </span>
               </div>
-            </Reveal>
+            </RevealOnScroll>
           );
         })}
       </div>

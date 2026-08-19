@@ -21,7 +21,7 @@ export function Wordmark({
       )}
     >
       <ApolloLogo className="wordmark-logo" />
-      <span className="wordmark-text">Apollo Racket Club</span>
+      <span className="wordmark-text">Apollo Badminton Center</span>
     </span>
   );
 }
