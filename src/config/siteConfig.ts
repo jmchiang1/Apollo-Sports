@@ -161,17 +161,25 @@ export const pricing = {
       subtitle: "Start free to play, then upgrade to a paid tier for member pricing.",
       plans: [
         {
-          name: "Free Account",
+          name: "Standard",
           tagline: "Required to play.",
           price: "$0",
           unit: "to join",
-          icon: "HeartHandshake",
-          cta: { label: "Join the Waitlist", href: "#waitlist" },
+          graphic: "sleeping",
+          cta: { label: "Join Now", href: "#waitlist" },
           features: [
             "Book any court at list rate",
             "Account + signed waiver",
             "No card, no commitment",
             "Upgrade to a paid tier anytime",
+          ],
+          // Perks this tier is missing — shown as struck-through to nudge upgrades.
+          excluded: [
+            "Court-hour discounts",
+            "Priority booking window",
+            "Member events & socials",
+            "Included open-play sessions",
+            "Guest passes",
           ],
         },
         {
@@ -179,15 +187,19 @@ export const pricing = {
           tagline: "For regulars.",
           price: "$59",
           unit: "per month",
-          icon: "BadgeCheck",
+          graphic: "walking",
           featured: true,
           badge: "Most popular",
-          cta: { label: "Join the Waitlist", href: "#waitlist" },
+          cta: { label: "Join Now", href: "#waitlist" },
           features: [
             "15% off every court hour",
-            "Priority booking window",
+            "Priority booking window - 14 Days",
             "Member-only events & socials",
             "Founding rate locked in",
+          ],
+          excluded: [
+            "Included open-play sessions",
+            "Guest passes",
           ],
         },
         {
@@ -195,12 +207,12 @@ export const pricing = {
           tagline: "The best way to play.",
           price: "$129",
           unit: "per month",
-          icon: "Trophy",
-          cta: { label: "Join the Waitlist", href: "#waitlist" },
+          graphic: "playing",
+          cta: { label: "Join Now", href: "#waitlist" },
           features: [
             "30% off every court hour",
             "4 open-play sessions / month",
-            "Priority court booking",
+            "Priority court booking - 21 days",
             "Guest passes & member events",
           ],
         },
@@ -290,6 +302,8 @@ export const location = {
   eyebrow: "Location",
   heading: "Based in Great Neck.",
   body: "Serving all of central Nassau: Great Neck, Manhasset, Roslyn, Mineola, Garden City, New Hyde Park, and beyond. Easy parking, easy access.",
+  // ⚠️ PLACEHOLDER address — a stand-in for the map until a real site is signed.
+  address: "1400 Union Tpke, New Hyde Park, NY 11040",
   addressLabel: todo.address,
   areas: [
     "Great Neck",

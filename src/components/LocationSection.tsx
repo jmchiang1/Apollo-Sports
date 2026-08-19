@@ -26,10 +26,16 @@ export function LocationSection() {
           </Reveal>
         </div>
 
-        {/* map placeholder — a plain block until there's a real address to map */}
+        {/* Map — placeholder site (see location.address) until a lease is signed. */}
         <Reveal>
           <div className="location-map">
-            <MapPin aria-hidden className="location-map-pin-icon" strokeWidth={2} />
+            <iframe
+              className="location-map-frame"
+              title={`Map of ${location.address}`}
+              src={`https://www.google.com/maps?q=${encodeURIComponent(location.address)}&z=15&output=embed`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </div>
         </Reveal>
       </div>
@@ -40,8 +46,8 @@ export function LocationSection() {
           {
             icon: MapPin,
             label: "Address",
-            value: <TodoText>{location.addressLabel}</TodoText>,
-            sub: "Central Nassau · near Great Neck",
+            value: location.address,
+            sub: "New Hyde Park, NY · placeholder site",
           },
           {
             icon: Clock,

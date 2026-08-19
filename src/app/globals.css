@@ -800,7 +800,9 @@ body {
     @apply lg:grid-cols-[minmax(0,1fr)_minmax(0,1.16fr)_minmax(0,1fr)] lg:pt-4;
   }
   .pricing-card {
-    @apply relative flex h-full flex-col rounded-3xl bg-cream/[0.06] p-8 ring-1 ring-cream/10;
+    /* `isolate` makes the card its own stacking context so the dog watermark can
+       sit behind the content via a negative z-index. */
+    @apply relative isolate flex h-full flex-col rounded-3xl bg-cream/[0.06] p-8 ring-1 ring-cream/10;
   }
   /* Featured tier (Player): brighter surface, accent ring + glow, and lifted a
      touch on desktop so it reads as the headline choice. */
@@ -869,9 +871,25 @@ body {
   .pricing-eyebrow {
     @apply mb-3 text-sm font-bold uppercase tracking-[0.18em] text-gold-light;
   }
-  /* Faint paw watermark tucked in the corner of the featured tier. */
-  .pricing-card-paw {
-    @apply pointer-events-none absolute bottom-6 right-6 h-20 w-20 rotate-12 text-cream/[0.05];
+  /* Clips the oversized dog to the card's rounded rect so it "cuts off" at the
+     right edge — without clipping the badge, which lives outside this wrapper.
+     Negative z (within the card's isolate context) keeps it behind content. */
+  .pricing-card-dog-clip {
+    @apply pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-3xl;
+  }
+  /* Apollo illustration: oversized, pushed to the top-right so it bleeds off. */
+  .pricing-card-dog {
+    @apply absolute -top-4 -right-16 h-44 w-auto text-white/20 sm:-right-20 sm:h-56;
+  }
+  .pricing-card-dog-flip {
+    @apply -scale-x-100;
+  }
+  /* Per-tier nudges on top of the shared position. */
+  .pricing-card-dog-walking {
+    @apply -right-28 sm:-right-36;
+  }
+  .pricing-card-dog-playing {
+    @apply -top-16 sm:-top-16;
   }
   /* Paw-print bullets (memberships): drop the round chip, show Apollo's paw. */
   .pricing-feature-check-paw {
@@ -879,6 +897,16 @@ body {
   }
   .pricing-feature-check-paw .pricing-feature-icon {
     @apply h-4 w-4;
+  }
+  /* Not-included perks: a muted X and struck-through label, to nudge upgrades. */
+  .pricing-feature-check-x {
+    @apply bg-transparent text-cream/30;
+  }
+  .pricing-feature-check-x .pricing-feature-icon {
+    @apply h-4 w-4;
+  }
+  .pricing-feature-off .pricing-feature-label {
+    @apply text-cream/35 line-through;
   }
   /* Pay-as-you-go sits on a lighter plum so it reads as its own section. */
   .rates-section {
@@ -988,6 +1016,9 @@ body {
   }
   .location-map-pin-icon {
     @apply h-14 w-14 text-gold;
+  }
+  .location-map-frame {
+    @apply absolute inset-0 block h-full w-full border-0;
   }
   .location-cards {
     @apply mt-10 grid gap-5 sm:grid-cols-3;
