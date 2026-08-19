@@ -1111,20 +1111,21 @@ body {
   .waitlist-form-label {
     @apply mb-1.5 block text-sm font-bold text-ink;
   }
+  /* Sits directly in the cream form card — no inner box or accent border. */
   .waitlist-form-success {
-    @apply flex flex-col items-center gap-4 rounded-3xl border-2 border-gold/40 bg-cream-2 px-6 py-10 text-center;
+    @apply flex flex-col items-center gap-3 px-4 py-8 text-center sm:py-12;
   }
-  .waitlist-form-success-badge {
-    @apply grid h-20 w-20 place-items-center rounded-full bg-cream shadow-md;
+  .waitlist-form-success-logo {
+    @apply inline-block;
   }
-  .waitlist-form-success-mascot {
-    @apply h-14 w-14;
+  .waitlist-form-success-logo-mark {
+    @apply h-20 w-auto text-plum sm:h-28;
   }
   .waitlist-form-success-title {
-    @apply font-display text-xl font-extrabold text-ink;
+    @apply font-display text-2xl font-extrabold text-ink;
   }
   .waitlist-form-success-note {
-    @apply text-sm text-muted;
+    @apply mx-auto max-w-sm text-[0.95rem] leading-relaxed text-plum/70;
   }
   .waitlist-form {
     @apply grid gap-4 text-left;

@@ -111,14 +111,19 @@ export function RevealGroup({
 }
 
 /**
- * A reveal that triggers on *its own* entry into the viewport rather than
- * inheriting a section's one-shot stagger. Use it for a group taller than the
- * viewport (e.g. the Programs rows), where the section-level trigger would
- * animate rows that are still well below the fold: here each item waits for its
- * own scroll moment, so they arrive top to bottom as the user scrolls through.
+ * A per-element scroll reveal that plays as a single move, in or out.
+ *
+ * Each item watches its OWN position, so in a group taller than the viewport
+ * (e.g. the Programs rows) they arrive top to bottom as the user scrolls,
+ * instead of a section-level trigger firing rows that are still below the fold.
+ * `once` is off, so scrolling back up plays the move in reverse.
+ *
+ * Opacity is a hard on/off switch rather than a scrubbed fade: it exists only
+ * so a row isn't sitting visibly out of position before its turn. The visible
+ * animation is the slide.
  *
  * It deliberately takes NO `variants` prop — that is what stops an ancestor
- * orchestrator from propagating "visible" and firing it early.
+ * orchestrator from propagating "visible" and animating it independently.
  */
 export function RevealOnScroll({
   children,
@@ -133,12 +138,14 @@ export function RevealOnScroll({
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      // `amount` (not a margin) so the trigger scales with the row: it fires
-      // once the row is a little under halfway onto the screen.
-      viewport={{ once: true, amount: 0.45 }}
-      transition={{ duration: 0.6, ease: EASE }}
+      // fires once a third of the row has come onto the screen
+      viewport={{ amount: 0.35 }}
+      transition={{
+        y: { duration: 0.55, ease: EASE },
+        opacity: { duration: 0.12, ease: "linear" },
+      }}
     >
       {children}
     </motion.div>

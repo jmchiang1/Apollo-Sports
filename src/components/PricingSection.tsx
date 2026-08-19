@@ -43,7 +43,14 @@ const dealVariants: Record<DealRole, Variants> = {
       opacity: 1,
       x: 0,
       scale: 1,
-      transition: { duration: 0.9, ease: EASE, delay: 0.55 },
+      transition: {
+        duration: 0.9,
+        ease: EASE,
+        delay: 0.55,
+        // Hold the (translucent) card invisible while it's still behind Player,
+        // then fade to 100% as it clears — no ghosting through Player's fill.
+        opacity: { duration: 0.5, ease: EASE, delay: 0.85 },
+      },
     },
   },
   right: {
@@ -52,7 +59,14 @@ const dealVariants: Record<DealRole, Variants> = {
       opacity: 1,
       x: 0,
       scale: 1,
-      transition: { duration: 0.9, ease: EASE, delay: 0.55 },
+      transition: {
+        duration: 0.9,
+        ease: EASE,
+        delay: 0.55,
+        // Hold the (translucent) card invisible while it's still behind Player,
+        // then fade to 100% as it clears — no ghosting through Player's fill.
+        opacity: { duration: 0.5, ease: EASE, delay: 0.85 },
+      },
     },
   },
 };

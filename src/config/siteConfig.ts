@@ -326,7 +326,9 @@ export const waitlist = {
   heading: "Be first on the court.",
   body: "Join the waitlist for early access, founding-member perks, and opening-day updates. No spam, just news about the club.",
   button: "Notify Me",
-  success: "You're on the list. We'll be in touch. 🏸",
+  success: "You're in the pack! 🐾",
+  successNote:
+    "We'll be in touch with founding-member perks and the moment we open in 2027.",
   skillLabel: "Skill level",
   skillLevels: ["Beginner", "Intermediate", "Advanced"],
   steps: [

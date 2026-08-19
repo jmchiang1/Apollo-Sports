@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { waitlist } from "@/config/siteConfig";
 import { buttonClass } from "./Button";
 import { cn } from "@/lib/cn";
-import { ApolloMascot } from "./ApolloMascot";
+import { DogLookingUp } from "./DogLookingUp";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -78,14 +78,12 @@ export function WaitlistForm() {
               initial={{ scale: 0, rotate: -12 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 220, damping: 14, delay: 0.05 }}
-              className="waitlist-form-success-badge"
+              className="waitlist-form-success-logo"
             >
-              <ApolloMascot className="waitlist-form-success-mascot" />
+              <DogLookingUp className="waitlist-form-success-logo-mark" />
             </motion.span>
             <p className="waitlist-form-success-title">{waitlist.success}</p>
-            <p className="waitlist-form-success-note">
-              Apollo says welcome to the pack. 🐾
-            </p>
+            <p className="waitlist-form-success-note">{waitlist.successNote}</p>
           </motion.div>
         ) : (
           <motion.form
@@ -107,6 +105,8 @@ export function WaitlistForm() {
                   type="text"
                   autoComplete="name"
                   placeholder="Jordan Lee"
+                  required
+                  aria-required="true"
                   className={inputClass}
                 />
               </div>
@@ -120,6 +120,8 @@ export function WaitlistForm() {
                   type="email"
                   autoComplete="email"
                   placeholder="you@email.com"
+                  required
+                  aria-required="true"
                   className={inputClass}
                 />
               </div>
