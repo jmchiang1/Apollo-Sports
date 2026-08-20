@@ -871,9 +871,6 @@ body {
   .pricing-cta {
     @apply w-full;
   }
-  .pricing-eyebrow {
-    @apply mb-3 text-sm font-bold uppercase tracking-[0.18em] text-gold-light;
-  }
   /* Clips the oversized dog to the card's rounded rect so it "cuts off" at the
      right edge — without clipping the badge, which lives outside this wrapper.
      Negative z (within the card's isolate context) keeps it behind content. */
@@ -1044,6 +1041,49 @@ body {
   .location-card-sub {
     @apply mt-0.5 text-sm text-plum/80;
   }
+  /* Peak / non-peak hours — a trigger in the Hours card, detail in a dialog
+     (see HoursDialog.tsx). Spelled out, the windows are far too long to sit in
+     the card itself. */
+  .hours-trigger {
+    @apply mt-3 inline-flex items-center rounded-full border-2 border-plum/15 bg-cream px-3 py-1.5 text-xs font-extrabold uppercase tracking-[0.12em] text-gold-deep transition-colors hover:border-gold hover:bg-gold hover:text-cream;
+  }
+  /* Base UI drives the transitions off these data attributes. */
+  .hours-backdrop {
+    @apply fixed inset-0 z-50 bg-plum/60 backdrop-blur-sm transition-opacity duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0;
+  }
+  .hours-popup {
+    @apply fixed left-1/2 top-1/2 z-50 w-[min(30rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-3xl border-2 border-plum/10 bg-cream p-6 text-ink shadow-2xl transition-[opacity,scale] duration-200 data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0 sm:p-7;
+  }
+  .hours-popup-head {
+    @apply flex items-start gap-4 pr-8;
+  }
+  .hours-popup-chip {
+    @apply grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gold text-cream;
+  }
+  .hours-popup-chip-icon {
+    @apply h-5 w-5;
+  }
+  .hours-title {
+    @apply font-display text-xl font-extrabold tracking-tight text-ink;
+  }
+  .hours-desc {
+    @apply mt-1 text-sm text-plum/80;
+  }
+  .hours-bands {
+    @apply mt-5 space-y-4 border-t-2 border-plum/10 pt-5;
+  }
+  .hours-band-label {
+    @apply text-xs font-extrabold uppercase tracking-[0.14em] text-gold-deep;
+  }
+  .hours-band-value {
+    @apply mt-1 text-[0.95rem] leading-relaxed text-plum/85;
+  }
+  .hours-close {
+    @apply absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full bg-cream-2 text-plum/70 transition-colors hover:bg-plum/10 hover:text-ink;
+  }
+  .hours-close-icon {
+    @apply h-4 w-4;
+  }
 
   /* ── Waitlist ────────────────────────────────────────────────────────── */
   /* Clip so the decorative pickleball/birdie watermarks stay within the waitlist
@@ -1055,8 +1095,11 @@ body {
   .waitlist-birdie {
     @apply -bottom-24 -left-32 h-52 w-44 -rotate-[18deg] sm:h-[20rem] sm:w-[16rem];
   }
+  /* Uneven split on purpose: the copy column is already capped (`max-w-md` on
+     the body, `max-w-sm` on the step text), so the leftover width is better
+     spent on the form card than on empty space beside the steps. */
   .waitlist-layout {
-    @apply relative grid items-center gap-10 lg:grid-cols-2 lg:gap-14;
+    @apply relative grid items-center gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-14;
   }
   .waitlist-heading {
     @apply font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl;
@@ -1135,6 +1178,11 @@ body {
   }
   .waitlist-form-label-muted {
     @apply font-medium text-muted;
+  }
+  /* Required-field mark. Teal rather than the usual red — this is a waitlist,
+     not an error state, and red would read as a validation failure. */
+  .waitlist-form-label-required {
+    @apply text-gold-deep;
   }
   .waitlist-form-chips {
     @apply flex flex-wrap gap-2;

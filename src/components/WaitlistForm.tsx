@@ -16,6 +16,11 @@ const inputClass = "waitlist-form-input";
 
 const labelClass = "waitlist-form-label";
 
+/** The `*` on required labels. Purely visual: the inputs already carry
+ *  `required` + `aria-required`, so screen readers announce it either way, and
+ *  `aria-hidden` on the mark keeps them from reading "asterisk" on top. */
+const requiredClass = "waitlist-form-label-required";
+
 export function WaitlistForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
@@ -97,14 +102,14 @@ export function WaitlistForm() {
             <div className="waitlist-form-fields">
               <div>
                 <label htmlFor="wl-name" className={labelClass}>
-                  Name
+                  Name <span className={requiredClass} aria-hidden="true">*</span>
                 </label>
                 <input
                   id="wl-name"
                   name="name"
                   type="text"
                   autoComplete="name"
-                  placeholder="Jordan Lee"
+                  placeholder="John Doe"
                   required
                   aria-required="true"
                   className={inputClass}
@@ -112,14 +117,14 @@ export function WaitlistForm() {
               </div>
               <div>
                 <label htmlFor="wl-email" className={labelClass}>
-                  Email
+                  Email <span className={requiredClass} aria-hidden="true">*</span>
                 </label>
                 <input
                   id="wl-email"
                   name="email"
                   type="email"
                   autoComplete="email"
-                  placeholder="you@email.com"
+                  placeholder="johndoe@email.com"
                   required
                   aria-required="true"
                   className={inputClass}

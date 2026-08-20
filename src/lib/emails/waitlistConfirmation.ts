@@ -19,9 +19,8 @@ const opening = todo.opening.replace(/^opening\s*/i, ""); // "Opening 2027" -> "
 const SITE = "https://apolloracketclub.com";
 
 const copy = {
-  subject: `You're on the ${brand.name} waitlist 🐾`,
+  subject: `You're on the ${brand.name} waitlist`,
   preheader: "Founding-member perks and opening-day news are on the way.",
-  eyebrow: "Waitlist confirmed",
   heading: "You're in the pack!",
   // Word inside `heading` to highlight with the site's marker sweep.
   headingHighlight: "in the pack",
@@ -37,10 +36,12 @@ const copy = {
     footLeft: `Opening ${opening}`,
     footRight: "Great Neck, NY",
   },
+  // `icon` names a PNG in `public/email/`, built by scripts/build-email-icons.mjs
+  // from the same lucide icons the site's cards use.
   perks: [
-    { emoji: "🔒", label: "Founding rates" },
-    { emoji: "⚡", label: "Priority booking" },
-    { emoji: "🎉", label: "Opening invite" },
+    { icon: "icon-badge-check", label: "Founding rates" },
+    { icon: "icon-calendar-clock", label: "Priority booking" },
+    { icon: "icon-sparkles", label: "Opening invite" },
   ],
   stepsHeading: "What happens next",
   // Written for people who have ALREADY signed up, so these pick up where the
@@ -61,7 +62,7 @@ const copy = {
   ],
   cta: { label: "See what we're building", href: `${SITE}/#programs` },
   signOff: "See you on the court,",
-  signName: "The Apollo pack 🐾",
+  signName: "The Apollo pack",
   socials: [
     { label: "Instagram", url: todo.social.instagram },
     { label: "Facebook", url: todo.social.facebook },
@@ -142,11 +143,27 @@ export function waitlistConfirmationEmail(
     )
     .join("");
 
+  /**
+   * An icon from `public/email/`. Every mark in this email is a PNG built by
+   * scripts/build-email-icons.mjs from the site's own artwork (the lucide icons
+   * its cards use) — email clients render neither SVG nor icon
+   * fonts. `alt=""` keeps them silent for screen readers and leaves no broken
+   * placeholder when a client blocks remote images; the label text beside each
+   * one already carries the meaning.
+   */
+  const icon = (
+    file: string,
+    width: number,
+    height: number,
+    valign = -3,
+  ) =>
+    `<img src="${assetBase}/email/${file}.png" width="${width}" height="${height}" alt="" style="display:inline-block;width:${width}px;height:${height}px;border:0;outline:none;vertical-align:${valign}px;">`;
+
   // Chips wrap on their own on narrow screens, so no media query needed.
   const perksHtml = copy.perks
     .map(
       (perk, i) =>
-        `<span style="display:inline-block;margin:0 6px 8px 0;padding:8px 14px;border-radius:999px;background-color:${[MINT, VIOLET, CREAM_2][i % 3]};font-family:${SANS};font-size:13px;font-weight:700;color:${PLUM};white-space:nowrap;">${perk.emoji}&nbsp; ${perk.label}</span>`,
+        `<span style="display:inline-block;margin:0 6px 8px 0;padding:8px 14px;border-radius:999px;background-color:${[MINT, VIOLET, CREAM_2][i % 3]};font-family:${SANS};font-size:13px;font-weight:700;color:${PLUM};white-space:nowrap;">${icon(perk.icon, 15, 15)}&nbsp; ${perk.label}</span>`,
     )
     .join("");
 
@@ -209,15 +226,14 @@ export function waitlistConfirmationEmail(
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
             <tr>
               <td align="left" style="font-family:${DISPLAY};font-size:19px;font-weight:800;letter-spacing:-0.01em;color:#ffffff;">${brand.name}</td>
-              <td align="right" style="font-family:${SANS};font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#8fd6c8;white-space:nowrap;">🏸&nbsp; ${todo.opening}</td>
+              <td align="right" style="font-family:${SANS};font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#8fd6c8;white-space:nowrap;">${todo.opening}</td>
             </tr>
           </table>
         </td></tr>
 
         <!-- Headline, with Apollo asleep in the top-right corner behind it -->
         <tr><td style="padding:36px 32px 0;${dogWatermark}" class="px">
-          <div style="font-family:${SANS};font-size:11.5px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:${TEAL_DEEP};">${copy.eyebrow}</div>
-          <h1 class="h1" style="margin:10px 0 18px;font-family:${DISPLAY};font-size:36px;line-height:1.1;font-weight:800;letter-spacing:-0.02em;color:${INK};">${markHeading(copy.heading, copy.headingHighlight)}</h1>
+          <h1 class="h1" style="margin:0 0 18px;font-family:${DISPLAY};font-size:36px;line-height:1.1;font-weight:800;letter-spacing:-0.02em;color:${INK};">${markHeading(copy.heading, copy.headingHighlight)}</h1>
           <p style="margin:0 0 16px;font-family:${SANS};font-size:16px;font-weight:700;color:${INK};">${greeting}</p>
           ${paragraphsHtml}
         </td></tr>
@@ -226,12 +242,7 @@ export function waitlistConfirmationEmail(
         <tr><td style="padding:22px 32px 0;" class="px">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${SAND};border:2px dashed rgba(29,60,68,0.22);border-radius:22px;">
             <tr><td style="padding:22px 24px;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td align="left" style="font-family:${SANS};font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:${TEAL_DEEP};">${copy.card.label}</td>
-                  <td align="right" style="font-size:18px;line-height:1;">🐾</td>
-                </tr>
-              </table>
+              <div style="font-family:${SANS};font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:${TEAL_DEEP};">${copy.card.label}</div>
               <div class="card-name" style="font-family:${DISPLAY};font-size:25px;font-weight:800;letter-spacing:-0.01em;color:${PLUM};padding-top:8px;">${cleanName}</div>
               <div style="height:2px;background-color:${TEAL};opacity:0.35;margin:14px 0 12px;font-size:0;line-height:0;">&nbsp;</div>
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -286,7 +297,6 @@ export function waitlistConfirmationEmail(
 </html>`;
 
   const text = [
-    copy.eyebrow.toUpperCase(),
     copy.heading,
     "",
     greeting,

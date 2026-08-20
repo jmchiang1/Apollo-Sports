@@ -29,6 +29,22 @@ export const todo = {
   courts: "8 regulation badminton courts",
   pricing: "[TODO: pricing]",
   hours: "8 AM – Midnight",
+  /**
+   * Peak / non-peak windows (confirmed Aug 2026). These decide which court
+   * rate applies — peak $70 vs non-peak $50, see `pricing`.
+   *
+   * Non-peak is spelled out rather than written as "all other hours", so it
+   * has to be kept in sync: it is the remainder of the 8 AM – Midnight day
+   * (`hours` above) once the peak windows are taken out. Change one, redo the
+   * other.
+   */
+  hourBands: [
+    { label: "Peak", hours: "Weekdays 5–10 PM · Weekends 8 AM–10 PM" },
+    {
+      label: "Non-peak",
+      hours: "Weekdays 8 AM–5 PM & 10 PM–Midnight · Weekends 10 PM–Midnight",
+    },
+  ],
   phone: "1 (917) 828 - 0104",
   email: "apolloracketclub@gmail.com",
   opening: "Opening 2027", // brief-sanctioned soft default; confirm exact season
@@ -62,7 +78,7 @@ export const hero = {
     "A dedicated indoor badminton club in central Nassau County: 8 courts, private bookings, open play, and leagues for every level.",
   primaryCta: { label: "Join the Waitlist", href: "#waitlist" },
   // Points at Programs, not Vision — the Vision section is hidden (see `nav`).
-  secondaryCta: { label: "See what we're building", href: "#programs" },
+  secondaryCta: { label: "See what we're building", href: "#top" },
 } as const;
 
 export const vision = {
@@ -159,20 +175,19 @@ export const pricing = {
   note: "A free registered account (with signed waiver) is required to play and books at list rate. Member tiers unlock discounts on everything below. Waitlist members lock in founding rates ahead of our 2027 opening.",
   groups: [
     {
-      eyebrow: "Memberships",
       heading: "Join the pack.",
       title: "Memberships",
       subtitle: "Start free to play, then upgrade to a paid tier for member pricing.",
       plans: [
         {
-          name: "Standard",
+          name: "Pup",
           tagline: "Required to play.",
           price: "$0",
           unit: "to join",
           graphic: "sleeping",
           cta: { label: "Join Now", href: "#waitlist" },
           features: [
-            "Book any court at list rate",
+            "Non priority booking - 7 Days",
             "Account + signed waiver",
             "No card, no commitment",
             "Upgrade to a paid tier anytime",
@@ -187,7 +202,7 @@ export const pricing = {
           ],
         },
         {
-          name: "Player",
+          name: "Good Boy",
           tagline: "For regulars.",
           price: "$59",
           unit: "per month",
@@ -207,7 +222,7 @@ export const pricing = {
           ],
         },
         {
-          name: "Premier",
+          name: "Top Dog",
           tagline: "The best way to play.",
           price: "$129",
           unit: "per month",
@@ -215,15 +230,16 @@ export const pricing = {
           cta: { label: "Join Now", href: "#waitlist" },
           features: [
             "30% off every court hour",
+            "Priority booking window - 21 Days",
             "4 open-play sessions / month",
-            "Priority court booking - 21 days",
-            "Guest passes & member events",
+            "Member-only events & socials",
+            "Guest passes included",
+            "Founding rate locked in",
           ],
         },
       ],
     },
     {
-      eyebrow: "Rates",
       heading: "Pay as you go.",
       title: "Pay as you go",
       subtitle: "One-time — no membership required. Members save on all of it.",
@@ -240,7 +256,7 @@ export const pricing = {
             "8 regulation badminton courts",
             "Non-peak $50 · peak $70",
             "Book by the hour, online",
-            "Room for a full doubles crew",
+            "Unlimited guests on court",
           ],
         },
         {
@@ -307,7 +323,7 @@ export const location = {
   heading: "Based in Great Neck.",
   body: "Serving all of central Nassau: Great Neck, Manhasset, Roslyn, Mineola, Garden City, New Hyde Park, and beyond. Easy parking, easy access.",
   // ⚠️ PLACEHOLDER address — a stand-in for the map until a real site is signed.
-  address: "1400 Union Tpke, New Hyde Park, NY 11040",
+  address: "Great Neck, NY",
   addressLabel: todo.address,
   areas: [
     "Great Neck",
@@ -373,7 +389,7 @@ export const faq = {
     },
     {
       q: "How much will membership cost?",
-      a: "Two tiers: Player at $59/month (15% off court time) and Premier at $129/month (30% off, monthly open-play sessions, and priority booking). A free registered account books at list rate. Waitlist members lock in founding rates.",
+      a: "Two paid tiers: Player at $59/month (15% off court time) and Top Dog at $129/month (30% off, monthly open-play sessions, and priority booking). A free Pup account books at list rate. Waitlist members lock in founding rates.",
     },
   ],
 } as const;

@@ -269,20 +269,9 @@ function PlanGrid({
   );
 }
 
-function PricingHead({
-  eyebrow,
-  heading,
-  sub,
-}: {
-  eyebrow: string;
-  heading: string;
-  sub: string;
-}) {
+function PricingHead({ heading, sub }: { heading: string; sub: string }) {
   return (
     <div className="pricing-heading-wrap">
-      <Reveal as="p" className="pricing-eyebrow">
-        {eyebrow}
-      </Reveal>
       <Reveal as="h2" className="pricing-heading">
         {heading}
       </Reveal>
@@ -302,11 +291,7 @@ export function MembershipSection() {
   const lg = useSyncExternalStore(resizeSubscribe, readLg, readFalse);
   return (
     <SectionWrapper id="pricing" className="pricing-section membership-section">
-      <PricingHead
-        eyebrow={membership.eyebrow}
-        heading={membership.heading}
-        sub={pricing.note}
-      />
+      <PricingHead heading={membership.heading} sub={pricing.note} />
       <PlanGrid group={membership} dog deal={lg} />
     </SectionWrapper>
   );
@@ -321,11 +306,7 @@ export function RatesSection() {
   return (
     <SectionWrapper id="rates" className="pricing-section rates-section">
       <OverlayGraphic src="/birdie.svg" invert className="pricing-birdie" />
-      <PricingHead
-        eyebrow={rates.eyebrow}
-        heading={rates.heading}
-        sub={rates.subtitle}
-      />
+      <PricingHead heading={rates.heading} sub={rates.subtitle} />
       <PlanGrid group={rates} dog />
     </SectionWrapper>
   );

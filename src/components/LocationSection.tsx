@@ -1,7 +1,42 @@
-import { MapPin, Clock, Car } from "lucide-react";
+import type { ReactNode } from "react";
+import { MapPin, Clock, Car, type LucideIcon } from "lucide-react";
 import { location, todo } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { TodoText } from "./Todo";
+import { HoursDialog } from "./HoursDialog";
+
+/** `extra` is an optional node under `sub` (Hours uses it for its dialog). */
+type InfoCard = {
+  icon: LucideIcon;
+  label: string;
+  value: ReactNode;
+  sub: string;
+  extra?: ReactNode;
+};
+
+const cards: InfoCard[] = [
+  {
+    icon: MapPin,
+    label: "Address",
+    value: location.address,
+    sub: "Exact address to be confirmed",
+  },
+  {
+    icon: Clock,
+    label: "Hours",
+    value: <TodoText>{todo.hours}</TodoText>,
+    sub: "16 hours a day · 7 days",
+    // Which hours are peak decides which court rate applies, so it belongs on
+    // this card — but spelled out it's too long to sit in it, hence the dialog.
+    extra: <HoursDialog />,
+  },
+  {
+    icon: Car,
+    label: "Getting here",
+    value: "Easy parking",
+    sub: "Minutes from the LIRR & parkways",
+  },
+];
 
 export function LocationSection() {
   return (
@@ -42,26 +77,7 @@ export function LocationSection() {
 
       {/* info cards */}
       <div className="location-cards">
-        {[
-          {
-            icon: MapPin,
-            label: "Address",
-            value: location.address,
-            sub: "New Hyde Park, NY · placeholder site",
-          },
-          {
-            icon: Clock,
-            label: "Hours",
-            value: <TodoText>{todo.hours}</TodoText>,
-            sub: "16 hours a day · 7 days",
-          },
-          {
-            icon: Car,
-            label: "Getting here",
-            value: "Easy parking",
-            sub: "Minutes from the LIRR & parkways",
-          },
-        ].map(({ icon: Icon, label, value, sub }) => (
+        {cards.map(({ icon: Icon, label, value, sub, extra }) => (
           <Reveal key={label}>
             <div className="location-card">
               <span className="location-card-chip">
@@ -71,6 +87,7 @@ export function LocationSection() {
                 <p className="location-card-label">{label}</p>
                 <p className="location-card-value">{value}</p>
                 <p className="location-card-sub">{sub}</p>
+                {extra}
               </div>
             </div>
           </Reveal>

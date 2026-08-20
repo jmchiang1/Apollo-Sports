@@ -18,31 +18,46 @@ import { useSafeReducedMotion } from "./Reveal";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 // ── facility layout ─────────────────────────────────────────────────────
-// Courts are drawn length-vertical (see CourtPlan). Eight badminton courts on
-// one even 4×2 grid — a dedicated all-badminton club — with the same gap in
-// both axes so the floor reads as a single regular block.
+// Eight badminton courts on one even grid — a dedicated all-badminton club —
+// with the same gap in both axes so the floor reads as a single regular block.
+//
+// The grid's SHAPE follows the screen's. Courts are drawn length-vertical (see
+// CourtPlan), so a 4×2 block is ~1.14:1 — fine in a landscape frame, but on a
+// portrait phone it can only ever fill the width and leaves half the height
+// empty. Tiled 2×4 the same eight courts run tall instead, and fill the frame.
 const GAP = 22;
-const COL = [0, W + GAP, 2 * (W + GAP), 3 * (W + GAP)]; // x of each column (4)
-const ROW = [0, L + GAP]; // y of each row (2)
-const GRID_W = COL[3] + W;
-const GRID_H = ROW[1] + L;
 
 type Court = { sport: Sport; x: number; y: number; hero?: boolean };
 
-const COURTS: Court[] = [
-  { sport: "badminton", x: COL[0], y: ROW[0] },
-  { sport: "badminton", x: COL[1], y: ROW[0] },
-  { sport: "badminton", x: COL[2], y: ROW[0] },
-  { sport: "badminton", x: COL[3], y: ROW[0] },
-  { sport: "badminton", x: COL[0], y: ROW[1] },
-  { sport: "badminton", x: COL[1], y: ROW[1], hero: true }, // camera starts here
-  { sport: "badminton", x: COL[2], y: ROW[1] },
-  { sport: "badminton", x: COL[3], y: ROW[1] },
-];
+/**
+ * Tiles `cols × rows` courts and picks one as the camera's start — the
+ * transform origin the fly-over opens on and pulls back from. Everything
+ * downstream (floor size, tile offsets, the camera's end frame) is solved
+ * from what this returns, so the two layouts need no special-casing.
+ */
+function buildLayout(cols: number, rows: number, heroIndex: number) {
+  const courts: Court[] = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      courts.push({ sport: "badminton", x: c * (W + GAP), y: r * (L + GAP) });
+    }
+  }
+  courts[heroIndex].hero = true;
+  const heroCourt = courts[heroIndex]; // not `hero` — that's the copy import
 
-const heroCourt = COURTS.find((c) => c.hero)!;
-const HERO_CX = heroCourt.x + W / 2;
-const HERO_CY = heroCourt.y + L / 2;
+  return {
+    courts,
+    gridW: (cols - 1) * (W + GAP) + W,
+    gridH: (rows - 1) * (L + GAP) + L,
+    heroCX: heroCourt.x + W / 2,
+    heroCY: heroCourt.y + L / 2,
+  };
+}
+
+// Both start the camera on a court in the lower-middle of the block, so the
+// pull-back reveals courts on every side of it.
+const LAYOUT_WIDE = buildLayout(4, 2, 5); // desktop — bottom row, 2nd column
+const LAYOUT_TALL = buildLayout(2, 4, 4); // mobile — 3rd row, 1st column
 
 // Standing net, in plan px. Real badminton proportions: posts ~5ft tall with
 // the ~2.5ft-deep mesh hanging from the top — clear air beneath it.
@@ -110,6 +125,13 @@ export function Hero() {
   const vpW = useSyncExternalStore(resizeSubscribe, readW, readZero);
   const vpH = useSyncExternalStore(resizeSubscribe, readH, readZero);
   const lg = vpW >= 1024;
+  // Wide block on a landscape frame, tall block on a portrait one. Server
+  // renders the tall layout (vpW is 0); useSyncExternalStore re-renders with
+  // the real viewport straight after hydration, and at that point only the
+  // hero court is visible anyway — the other seven are still at opacity 0.
+  const { courts, gridW, gridH, heroCX, heroCY } = lg
+    ? LAYOUT_WIDE
+    : LAYOUT_TALL;
   // Mobile opens with a large, low court so it reads as the full-bleed hero
   // element from the Figma mobile design (was 2.2 → 3.1 → 4.3).
   const s0 = vpW === 0 ? 4 : lg ? vpW / 172 : 5.9;
@@ -117,25 +139,25 @@ export function Hero() {
   const ty0 = lg ? vpH / 2 - 17.5 * s0 : vpH * 0.36;
   // End frame: the plan fills the screen between the header and a bottom
   // margin, and centres in what's left. Grid visual height is
-  // GRID_H·s·cos(26°).
+  // gridH·s·cos(26°).
   const TOP = lg ? 96 : 84; // clearance under the sticky header
   const BOTTOM = lg ? 64 : 48; // breathing room at the foot of the frame
   const avail = Math.max(160, vpH - TOP - BOTTOM);
-  const fitH = avail / (GRID_H * COS_RX);
-  const fitW = (vpW - (lg ? 96 : 24)) / GRID_W;
+  const fitH = avail / (gridH * COS_RX);
+  const fitW = (vpW - (lg ? 96 : 24)) / gridW;
   const sEnd = vpH === 0 ? 1.4 : Math.max(0.7, Math.min(fitH, fitW));
   // Vertical placement. The plan's top edge sits `planTop` down the viewport;
   // solving the camera translate for that lands the transform origin (the hero
-  // court centre, HERO_CY plan-units down the grid) in the right place.
-  const planH = GRID_H * sEnd * COS_RX;
+  // court centre, heroCY plan-units down the grid) in the right place.
+  const planH = gridH * sEnd * COS_RX;
   const planTop = TOP + (avail - planH) / 2;
   const tyEnd =
-    vpH === 0 ? 200 : planTop + HERO_CY * COS_RX * sEnd - vpH / 2;
+    vpH === 0 ? 200 : planTop + heroCY * COS_RX * sEnd - vpH / 2;
   // Horizontal: centre the whole grid. The hero court (the transform origin)
-  // sits GRID_W/2 − HERO_CX plan-units left of the grid centre, so translating
-  // by (HERO_CX − GRID_W/2)·s lands the grid centre on the viewport centre for
+  // sits gridW/2 − heroCX plan-units left of the grid centre, so translating
+  // by (heroCX − gridW/2)·s lands the grid centre on the viewport centre for
   // any hero-court choice or grid width.
-  const txEnd = (HERO_CX - GRID_W / 2) * sEnd;
+  const txEnd = (heroCX - gridW / 2) * sEnd;
 
   const { scrollYProgress } = useScroll({
     target: wrapRef,
@@ -146,9 +168,17 @@ export function Hero() {
     damping: 32,
     mass: 0.4,
   });
-  // The camera completes in the first 78% of the (320svh) track; the rest is
-  // a dwell that holds the finished facility on screen before the page moves.
-  const t = useTransform(p, [0, 0.78, 1], [0, 1, 1]);
+  // The pin travels (TRACK − 100svh). The camera completes at CAM_END of that
+  // travel; the remainder is a dwell holding the finished facility before the
+  // pin releases and the next section (the stats band) scrolls up.
+  //
+  // Mobile cuts the dwell right down — the stats should arrive as the courts
+  // land, not after another half-screen of scrolling past a finished picture —
+  // and shortens the track to match, so the fly-over itself still takes about
+  // the same amount of scrolling as before (~170svh) rather than stretching.
+  const TRACK = lg ? 320 : 280; // svh
+  const CAM_END = lg ? 0.78 : 0.94;
+  const t = useTransform(p, [0, CAM_END, 1], [0, 1, 1]);
 
   // Camera: angled hero court bottom-right → flattens overhead, centered →
   // pulls back to the facility.
@@ -179,18 +209,17 @@ export function Hero() {
       ref={wrapRef}
       className="hero-wrap"
       // reduced-motion users get no camera move — collapse the scroll track so
-      // there's no dead pinned region. 320svh: camera uses ~78%, the rest
-      // dwells on the finished facility.
-      style={reduce ? { height: "auto" } : { height: "320svh" }}
+      // there's no dead pinned region.
+      style={reduce ? { height: "auto" } : { height: `${TRACK}svh` }}
     >
-      {/* nav anchor: lands on the assembled facility. Solving for it, rather
-          than eyeballing an offset:
-            scroll progress p = scrollY / (320svh − 100svh)   [the pin's travel]
-            the camera finishes at p = 0.78, then dwells to p = 1
-          so landing at p = 0.85 is comfortably inside the dwell — camera done,
-          33svh of track still to run before the pin releases. Jumping here
-          also looks right: scrollYProgress is springed, so the fly-over plays
-          itself in over ~half a second rather than snapping.
+      {/* nav anchor: lands on the assembled facility. Solved from the timeline
+          above rather than eyeballed, so it tracks whichever TRACK/CAM_END
+          pair is in play:
+            scrollY = p · (TRACK − 100svh)          [the pin's travel]
+          landing 35% into the dwell puts it past the camera with room to
+          spare before the pin releases. Jumping here also looks right:
+          scrollYProgress is springed, so the fly-over plays itself in over
+          ~half a second rather than snapping.
           The +96px is the `scroll-padding-top: 6rem` the browser subtracts
           when it scrolls a hash target into view.
           Reduce mode has no track to land on, so it sits at the top of the
@@ -202,7 +231,12 @@ export function Hero() {
         <div
           id="courts"
           className="hero-courts-anchor"
-          style={{ top: "calc(187svh + 96px)" }}
+          style={{
+            top: `calc(${(
+              (CAM_END + (1 - CAM_END) * 0.35) *
+              (TRACK - 100)
+            ).toFixed(1)}svh + 96px)`,
+          }}
           aria-hidden
         />
       )}
@@ -229,15 +263,15 @@ export function Hero() {
           <motion.div
             className="hero-floor"
             style={{
-              width: GRID_W * K,
-              height: GRID_H * K,
-              marginLeft: -HERO_CX * K,
-              marginTop: -HERO_CY * K,
-              transformOrigin: `${HERO_CX * K}px ${HERO_CY * K}px`,
+              width: gridW * K,
+              height: gridH * K,
+              marginLeft: -heroCX * K,
+              marginTop: -heroCY * K,
+              transformOrigin: `${heroCX * K}px ${heroCY * K}px`,
               ...staticFloor,
             }}
           >
-            {COURTS.map((court, i) => (
+            {courts.map((court, i) => (
               <motion.div
                 key={i}
                 className="hero-court-tile"
