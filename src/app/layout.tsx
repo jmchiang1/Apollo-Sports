@@ -56,6 +56,42 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Runs during HTML parse — see the note where it is rendered for why it cannot
+ * be an effect or a `next/script`. Kept as a string constant so the layout's
+ * JSX stays readable.
+ */
+const SCROLL_TO_TOP_ON_RELOAD = `(function () {
+  try {
+    var nav = performance.getEntriesByType("navigation")[0];
+    if (!nav || nav.type !== "reload") return;
+    // An explicit fragment is a deliberate destination, so a refresh of
+    // /#pricing stays on pricing. Only an offset-restoring reload is reset.
+    if (location.hash) return;
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
+    // SETTING "manual" IS NOT ENOUGH ON ITS OWN. Measured: on the first
+    // refresh of an entry Chrome had already committed its restore before this
+    // script ran, landing at 5200px with scrollRestoration reading "manual" —
+    // it only held from the SECOND refresh on, once the entry was already
+    // manual. The restore also lands late, after streamed content grows the
+    // document, so a single scrollTo here runs against a zero-height page and
+    // does nothing. Hence re-asserting the top at each point the height can
+    // change.
+    var stop = false;
+    ["wheel", "touchstart", "keydown"].forEach(function (evt) {
+      addEventListener(evt, function () { stop = true; }, { once: true, passive: true });
+    });
+    function top() { if (!stop) window.scrollTo(0, 0); }
+    top();
+    document.addEventListener("DOMContentLoaded", top);
+    addEventListener("load", function () {
+      top();
+      requestAnimationFrame(top);
+    });
+  } catch (e) {}
+})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -71,6 +107,30 @@ export default function RootLayout({
       className={cn("h-full", manrope.variable, marcellus.variable, "font-sans")}
     >
       <body className="min-h-full flex flex-col bg-onyx text-ink">
+        {/*
+          A refresh must land at the top of the page.
+
+          Browsers default `history.scrollRestoration` to "auto" and put a
+          reload back at its previous offset — measured 5200px on this page.
+          That is wrong here specifically: the hero is a PINNED scroll
+          fly-over and the brand intro plays on every load, so restoring a
+          mid-page offset drops you into a half-run animation behind a loader
+          that is animating something you cannot see.
+
+          A RAW PARSE-TIME SCRIPT, not `next/script` and not an effect. This
+          has to beat the browser's own restore, which happens as soon as the
+          document is scrollable — long before hydration, so an effect in a
+          client component is far too late. Inline in the body's head position
+          it runs during parse, before there is anything to scroll.
+
+          Scoped to `nav.type === "reload"` so back/forward keeps its normal
+          restore behaviour, which is what people expect from those buttons.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: SCROLL_TO_TOP_ON_RELOAD,
+          }}
+        />
         <PageLoader />
         {children}
         <ButtonPointerGlow />
