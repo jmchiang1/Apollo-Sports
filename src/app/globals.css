@@ -583,10 +583,27 @@ body.is-loading {
    those elements carry onyx text, so they stay legible. */
 /* `.vision-section` is `display: none` today (see the note in siteConfig.ts).
    It is listed anyway so the band is already correct if it is ever unhidden. */
+/* WHICH BANDS ARE MARBLE, and why these ones.
+   Reading down the page the tones have to alternate, and both ends are pinned
+   dark — the hero opens on onyx and the footer closes on it. Treating the hero
+   and the stats frieze as one dark opening (same tone, no seam between them)
+   leaves seven bands, so the only arrangement that alternates cleanly is:
+
+     hero + stats   onyx      <- pinned
+     programs       marble
+     memberships    onyx
+     pay as you go  marble
+     waitlist       onyx
+     FAQ            marble
+     footer         onyx      <- pinned
+
+   Waitlist used to be marble and FAQ onyx, which was fine while Location sat
+   between them. With Location gone, pay-as-you-go and waitlist became adjacent
+   marble bands and read as one long beige block — so the two swapped. */
 .vision-section,
 .programs-section,
 .rates-section,
-.waitlist-section {
+.faq-section {
   --color-onyx: var(--color-stone);
   --color-onyx-2: var(--color-stone-2);
   --color-onyx-3: var(--color-stone-3);
@@ -618,8 +635,9 @@ body.is-loading {
 .rates-section .btn-primary,
 .rates-section .btn-accent,
 .rates-section .pricing-badge,
-.waitlist-section .btn-primary,
-.waitlist-section .btn-accent {
+/* The FAQ's open toggle is a gold-filled chip carrying onyx text, so it needs
+   true gold rather than the carved variant. */
+.faq-section .faq-toggle-open {
   --color-gold: #c6a15b;
   --color-gold-light: #d9bc88;
 }
@@ -1490,7 +1508,7 @@ body.is-loading {
        sit behind the content via a negative z-index. */
     @apply relative isolate flex h-full flex-col rounded-none bg-onyx-3 p-8 ring-1 ring-gold/20 transition-colors duration-300;
   }
-  /* Featured tier (Athlete): brighter surface, accent ring + glow, and lifted a
+  /* Featured tier (Player): brighter surface, accent ring + glow, and lifted a
      touch on desktop so it reads as the headline choice.
      `lg:-translate-y-3` IS that lift — it is the only thing raising this card,
      and without it the headline tier sits flush with the other two. It has been
@@ -1929,6 +1947,52 @@ body.is-loading {
     @apply text-xs text-muted;
   }
 
+  /* ── Closing epigraph ───────────────────────────────────────────────────
+     Onyx on purpose, sharing the footer's ground — see the note in
+     Epigraph.tsx for why this is not its own band. Centred, and given far more
+     air than a normal section: it is the one place on the page carrying a
+     single thought, and crowding it would make it read as a pull-quote in an
+     article rather than an inscription. */
+  .epigraph {
+    @apply relative bg-onyx px-6 pb-4 pt-24 sm:px-8 sm:pt-28 md:pt-32;
+  }
+  .epigraph-inner {
+    @apply mx-auto flex max-w-2xl flex-col items-center text-center;
+  }
+  .epigraph-mark {
+    @apply h-7 w-7 text-gold/60 sm:h-8 sm:w-8;
+  }
+  /* Marcellus is a latin-only face, so Greek falls back to the serif stack.
+     Declared explicitly rather than left to chance, and kept small and
+     letterspaced so the fallback reads as a carved label instead of a mismatched
+     headline sitting next to the English line. */
+  .epigraph-greek {
+    @apply mt-6 font-normal text-gold;
+    font-family: ui-serif, Georgia, "Times New Roman", serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.34em;
+    margin-right: -0.34em;
+  }
+  .epigraph-quote {
+    @apply mt-4;
+  }
+  .epigraph-line {
+    @apply font-display text-3xl font-normal leading-tight text-ink sm:text-4xl md:text-5xl;
+  }
+  .epigraph-source {
+    @apply mt-5;
+  }
+  /* NOT dimmer than this. At `text-cream/45` the attribution measured 3.98:1 on
+     onyx — under AA for text this small, and this is the line that makes the
+     quote a citation rather than a decorative flourish. If it cannot be read,
+     the epigraph is just words in a serif. */
+  .epigraph-source cite {
+    @apply font-sans text-[0.7rem] font-medium uppercase not-italic tracking-[0.2em] text-cream/60;
+  }
+  .epigraph-gloss {
+    @apply mt-8 max-w-md text-[1.02rem] leading-relaxed text-cream/60;
+  }
+
   /* ── Footer ──────────────────────────────────────────────────────────── */
   .footer {
     @apply relative overflow-hidden bg-onyx text-cream;
@@ -2051,6 +2115,7 @@ body.is-loading {
     .location-card:hover {
       @apply border-gold/40;
     }
+
   }
 
   /* ── SiteOriginal shell ──────────────────────────────────────────────── */

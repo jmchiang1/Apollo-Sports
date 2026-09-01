@@ -65,7 +65,8 @@ export const nav = [
   { label: "Courts", href: "#courts" },
   { label: "Programs", href: "#programs" },
   { label: "Pricing", href: "#pricing" },
-  { label: "Location", href: "#location" },
+  // Location is out until there is an address to publish — restore this entry
+  // when LocationSection is mounted again.
   { label: "FAQ", href: "#faq" },
 ] as const;
 
@@ -191,52 +192,56 @@ export const pricing = {
           unit: "to join",
           cta: { label: "Join Now", href: "#waitlist" },
           features: [
-            "Non priority booking - 7 Days",
+            "7-day advance booking, non-priority",
             "Account + signed waiver",
             "No card, no commitment",
             "Upgrade to a paid tier anytime",
           ],
-          // Perks this tier is missing — shown as struck-through to nudge upgrades.
+          // Perks this tier is missing — struck through to nudge upgrades. These
+          // MIRROR the paid tiers' benefit names on purpose: if those change,
+          // change these, or the comparison is against things that do not exist.
           excluded: [
-            "Court-hour discounts",
-            "Priority booking window",
-            "Member events & socials",
-            "Included open-play sessions",
-            "Guest passes",
+            "Court-rental discounts",
+            "Open-play discounts",
+            "Guest open-play passes",
+            "Extended booking window",
+            "Pro-shop discount",
           ],
         },
         {
-          name: "Athlete",
-          tagline: "For regulars.",
+          name: "Player",
+          // The tagline is the headline discount rather than a mood line — it is
+          // the thing the tier is actually bought for.
+          tagline: "15% off court bookings",
           price: "$59",
           unit: "per month",
           featured: true,
           badge: "Most popular",
           cta: { label: "Join Now", href: "#waitlist" },
           features: [
-            "15% off every court hour",
-            "Priority booking window - 14 Days",
-            "Member-only events & socials",
-            "Founding rate locked in",
-          ],
-          excluded: [
-            "Included open-play sessions",
-            "Guest passes",
+            "15% off all private court rentals",
+            "50% off drop-in open play",
+            "1 guest open-play pass per month",
+            "14-day advance booking",
+            "Pro-shop discount (~10%)",
+            "Member pricing on classes, clinics, and events",
+            "Priority league/event registration",
           ],
         },
         {
-          name: "Olympian",
-          tagline: "The best way to play.",
+          name: "Premier",
+          tagline: "30% off court bookings",
           price: "$129",
           unit: "per month",
           cta: { label: "Join Now", href: "#waitlist" },
           features: [
-            "30% off every court hour",
-            "Priority booking window - 21 Days",
-            "4 open-play sessions / month",
-            "Member-only events & socials",
-            "Guest passes included",
-            "Founding rate locked in",
+            "30% off all private court rentals",
+            "Free off-peak open play",
+            "50% off peak open play",
+            "2 guest open-play passes per month",
+            "21-day advance booking",
+            "Pro-shop discount (~15%)",
+            "Member pricing on clinics + 1 free member social event per month",
           ],
         },
       ],
@@ -391,9 +396,33 @@ export const faq = {
     },
     {
       q: "How much will membership cost?",
-      a: "Two paid tiers: Athlete at $59/month (15% off court time) and Olympian at $129/month (30% off, monthly open-play sessions, and priority booking). A free Initiate account books at list rate. Waitlist members lock in founding rates.",
+      a: "Two paid tiers: Player at $59/month (15% off private court rentals, 50% off drop-in open play, 14-day advance booking) and Premier at $129/month (30% off rentals, free off-peak open play, 21-day advance booking). A free Initiate account books at list rate. Waitlist members lock in founding rates.",
     },
   ],
+} as const;
+
+/**
+ * Closing epigraph.
+ *
+ * ATTRIBUTION MATTERS HERE. There are no authentic quotations from Apollo — he
+ * is a deity, not a historical speaker, and every "Apollo quote" circulating
+ * online is invented. What IS real is the Delphic maxim inscribed in the
+ * forecourt of his temple at Delphi, attested by Plato and Pausanias. So the
+ * attribution is to the temple, not to the god putting words in his mouth.
+ *
+ * It also happens to be the aptest possible line for this club: the whole
+ * differentiator is the rating system that sorts players into credible skill
+ * bands (see `programs`). "Know thyself" is what that system is for.
+ *
+ * If this is ever replaced, keep the same rule — cite a real source or write it
+ * in the club's own voice unattributed. Do not attribute anything to Apollo.
+ */
+export const epigraph = {
+  greek: "ΓΝΩΘΙ ΣΕΑΥΤΟΝ",
+  line: "Know thyself.",
+  source: "Inscribed at the Temple of Apollo, Delphi",
+  gloss:
+    "Know your level, find your match, and play the game in front of you.",
 } as const;
 
 export const footer = {
@@ -420,6 +449,7 @@ export const siteConfig = {
   location,
   waitlist,
   faq,
+  epigraph,
   footer,
 } as const;
 

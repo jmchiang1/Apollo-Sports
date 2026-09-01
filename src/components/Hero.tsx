@@ -37,8 +37,8 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  *   · `.hero-pin` stops being sticky, so it cannot slide over the next section
  *   · the #courts anchor takes the `-top` class, which the header's solidify
  *     check deliberately ignores (see Header.tsx). With the fly-over ON, that
- *     anchor is also what gives the "Courts" nav link a real target — the
- *     assembled facility — so it is meaningful again.
+ *     anchor is also what gives the "Courts" nav link its target — the
+ *     assembled facility.
  *   · the copy stops fading on scroll — there is no camera move to hand the
  *     frame over to
  */
@@ -261,9 +261,10 @@ export function Hero() {
       // fly-over; this overrides it.)
       style={staticHero ? { height: "auto" } : { height: `${TRACK}svh` }}
     >
-      {/* nav anchor: lands on the assembled facility. Solved from the timeline
-          above rather than eyeballed, so it tracks whichever TRACK/CAM_END
-          pair is in play:
+      {/* Two jobs: it is the `#courts` nav target AND the signal Header.tsx
+          watches to turn the bar opaque at the fly-over's payoff. Its position
+          is solved from the timeline above rather than eyeballed, so it tracks
+          whichever TRACK/CAM_END pair is in play:
             scrollY = p · (TRACK − 100svh)          [the pin's travel]
           landing 35% into the dwell puts it past the camera with room to
           spare before the pin releases. Jumping here also looks right:
@@ -271,9 +272,9 @@ export function Hero() {
           ~half a second rather than snapping.
           The +96px is the `scroll-padding-top: 6rem` the browser subtracts
           when it scrolls a hash target into view.
-          Reduce mode has no track to land on, so it sits at the top of the
-          hero — and takes a DIFFERENT class, because the header's solidify
-          check looks for the fly-over anchor specifically. */}
+          Reduce mode and the still hero have no track to land on, so it sits at
+          the top of the hero — and takes a DIFFERENT class, because the
+          solidify check looks for the fly-over anchor specifically. */}
       {staticHero ? (
         <div id="courts" className="hero-courts-anchor-top" aria-hidden />
       ) : (
