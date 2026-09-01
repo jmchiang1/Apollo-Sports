@@ -502,6 +502,77 @@ body.is-loading {
   }
 }
 
+/* ── The epigraph's own reveal ────────────────────────────────────────────
+   DELIBERATELY NOT `heading-cut`. Every section heading on the page uses that
+   chisel wipe, and reusing it here made the closing line read as one more
+   heading. This is the last thing on the site and the only place carrying a
+   single thought, so it gets its own gesture.
+
+   Apollo is the god of LIGHT, so the line is lit rather than cut: each word
+   rises out of the stone already glowing gold, then cools to ivory as the next
+   one catches. Staggered across the words it reads as dawn moving along an
+   inscription — related to the gold-and-carved-stone vocabulary the rest of the
+   page uses, but not a repeat of any of it. */
+@keyframes epigraph-word {
+  0% {
+    opacity: 0;
+    transform: translateY(0.22em);
+    color: var(--color-gold);
+  }
+  45% {
+    opacity: 1;
+    color: var(--color-gold);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    color: var(--color-ink);
+  }
+}
+
+/* The Greek label is SET rather than lit — letters tracking apart into place,
+   which is how an inscription gets laid out. `margin-right` is animated in
+   lockstep with `letter-spacing` because it exists to cancel the trailing
+   letter-space; animate one without the other and the label drifts off centre
+   for the whole reveal. */
+@keyframes epigraph-track {
+  from {
+    opacity: 0;
+    letter-spacing: 0.08em;
+    margin-right: -0.08em;
+  }
+  to {
+    opacity: 1;
+    letter-spacing: 0.34em;
+    margin-right: -0.34em;
+  }
+}
+
+/* Copy confirmation. Comes in from the right edge it is anchored to. */
+@keyframes copy-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The epigraph's attribution and gloss. A short rise only — they sit UNDER the
+   lit line and should not compete with it. */
+@keyframes epigraph-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Draws one palmette blade. `pathLength="1"` on the paths is what lets a single
    dash length cover every blade regardless of its real length. */
 @keyframes palmette-draw {
@@ -1953,8 +2024,14 @@ body.is-loading {
      air than a normal section: it is the one place on the page carrying a
      single thought, and crowding it would make it read as a pull-quote in an
      article rather than an inscription. */
+  /* Padding is SYMMETRIC top and bottom, and has to stay that way. It was
+     `pb-4` against a `pt-32`, which left 128px above the palmette and 16px
+     below the last line — the block read as sitting too low in its own band and
+     all but touched the footer's meander frieze. Because this section shares the
+     footer's ground there is no colour change to mark the seam, so the only
+     thing separating the quote from the frieze is this padding. */
   .epigraph {
-    @apply relative bg-onyx px-6 pb-4 pt-24 sm:px-8 sm:pt-28 md:pt-32;
+    @apply relative bg-onyx px-6 pb-24 pt-24 sm:px-8 sm:pb-28 sm:pt-28 md:pb-32 md:pt-32;
   }
   .epigraph-inner {
     @apply mx-auto flex max-w-2xl flex-col items-center text-center;
@@ -1991,6 +2068,92 @@ body.is-loading {
   }
   .epigraph-gloss {
     @apply mt-8 max-w-md text-[1.02rem] leading-relaxed text-cream/60;
+  }
+
+  /* ── Lighting the epigraph ─────────────────────────────────────────────
+     Driven by one `.is-carved` class from `CarveIn`. Every rule below is scoped
+     to it, which is what keeps the un-animated epigraph fully visible for the
+     no-JS and reduced-motion renders — nothing here hides anything until the
+     class lands.
+
+     TIMING TABLE. Steps overlap so the block reads as one gesture rather than
+     three. If you lengthen a step, push the ones after it or they collide:
+
+       palmette   0ms +stagger 110ms/pair    420ms each   ends  750ms
+       greek      300ms                      800ms        ends 1100ms
+       words      700ms +stagger 85ms/word   620ms each   ends ~2340ms
+
+     The two below only apply if `epigraph.source` / `.gloss` are uncommented in
+     siteConfig — kept so restoring those two config lines needs no CSS work,
+     alongside the `.epigraph-source` / `.epigraph-gloss` style rules above,
+     which are dormant for the same reason:
+
+       source    2200ms                      800ms        ends 3000ms
+       gloss     2450ms                      800ms        ends 3250ms
+
+     Slower overall than the section headings, deliberately: this is the last
+     thing on the page and has nothing to be read after it. */
+
+  /* `inline-block` unconditionally, NOT only under `.is-carved`. Words need it
+     for `transform` to apply, and switching it on with the class would relayout
+     the line the moment the animation starts. Spaces between the words are real
+     text nodes (see Epigraph.tsx), so lines still break normally. */
+  .epigraph-word {
+    display: inline-block;
+  }
+
+  /* `pretty`, not `balance`. The copy wraps to 3 lines on desktop and 4 on a
+     phone, which left "this." alone on the last line. `balance` evens every
+     line by making them all shorter, which would pull the block in from the
+     measure; `pretty` only pulls back the short last line. Unsupported browsers
+     fall back to normal wrapping, which is where this started. */
+  .epigraph-line {
+    text-wrap: pretty;
+  }
+
+  .epigraph.is-carved .epigraph-greek {
+    animation: epigraph-track 800ms var(--ease-out-soft) 300ms both;
+  }
+  .epigraph.is-carved .epigraph-word {
+    animation: epigraph-word 620ms var(--ease-out-soft) both;
+    animation-delay: calc(700ms + var(--i) * 85ms);
+  }
+
+  /* Blade by blade, centre outward, base last — the same order and cadence as
+     the FAQ indicator, so the two palmettes behave like one motif. */
+  .epigraph.is-carved .epigraph-mark path {
+    stroke-dasharray: 1;
+    animation: palmette-draw 420ms var(--ease-out-soft) both;
+  }
+  .epigraph.is-carved .epigraph-mark path:nth-of-type(2),
+  .epigraph.is-carved .epigraph-mark path:nth-of-type(3) {
+    animation-delay: 110ms;
+  }
+  .epigraph.is-carved .epigraph-mark path:nth-of-type(4),
+  .epigraph.is-carved .epigraph-mark path:nth-of-type(5) {
+    animation-delay: 220ms;
+  }
+  .epigraph.is-carved .epigraph-mark path:nth-of-type(6) {
+    animation-delay: 330ms;
+  }
+
+  .epigraph.is-carved .epigraph-source {
+    animation: epigraph-rise 800ms var(--ease-out-soft) 2200ms both;
+  }
+  .epigraph.is-carved .epigraph-gloss {
+    animation: epigraph-rise 800ms var(--ease-out-soft) 2450ms both;
+  }
+
+  /* Belt and braces — `CarveIn` already withholds the class under reduced
+     motion, so this only matters if `.is-carved` ever arrives another way. */
+  @media (prefers-reduced-motion: reduce) {
+    .epigraph.is-carved .epigraph-greek,
+    .epigraph.is-carved .epigraph-word,
+    .epigraph.is-carved .epigraph-mark path,
+    .epigraph.is-carved .epigraph-source,
+    .epigraph.is-carved .epigraph-gloss {
+      animation: none;
+    }
   }
 
   /* ── Footer ──────────────────────────────────────────────────────────── */
@@ -2045,6 +2208,51 @@ body.is-loading {
   }
   .footer-contact-icon {
     @apply h-4 w-4 shrink-0 text-gold;
+  }
+  /* Click-to-copy email. Left-aligned and inheriting the list's type so it sits
+     flush with the phone row beneath it rather than looking like a control
+     dropped into a list of plain text. */
+  .footer-copy {
+    @apply -mx-1.5 flex items-center gap-2.5 rounded-none px-1.5 py-0.5 text-left text-sm text-cream/70 transition-colors;
+    @apply hover:text-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold;
+  }
+  /* The copy affordance. Hidden until hover or keyboard focus on pointer
+     devices, but ALWAYS shown where hover does not exist — on a phone there is
+     no way to discover that the address is tappable otherwise. */
+  .footer-copy-hint {
+    @apply h-3.5 w-3.5 shrink-0 text-gold/70 transition-opacity;
+  }
+  @media (hover: hover) {
+    .footer-copy-hint {
+      @apply opacity-0;
+    }
+    .footer-copy:hover .footer-copy-hint,
+    .footer-copy:focus-visible .footer-copy-hint {
+      @apply opacity-100;
+    }
+  }
+  /* Stays visible regardless — it is confirming something happened. */
+  .footer-copy-hint-done {
+    @apply text-gold opacity-100;
+  }
+
+  /* Sits ABOVE the back-to-top button rather than beside it: that button is
+     `fixed bottom-6 right-6` at 3rem square, so anything at the same offset
+     lands on top of it. `bottom-24` clears it with room to spare. */
+  .copy-toast-region {
+    @apply pointer-events-none fixed bottom-24 right-6 z-50 sm:bottom-28 sm:right-8;
+  }
+  .copy-toast {
+    @apply flex items-center rounded-none border border-gold/40 bg-onyx-3 px-4 py-2.5 text-sm font-medium text-cream shadow-lg;
+    animation: copy-toast-in 220ms var(--ease-out-soft) both;
+  }
+  .copy-toast-failed {
+    @apply border-cream/25 text-cream/80;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .copy-toast {
+      animation: none;
+    }
   }
   .footer-bottom {
     @apply mt-14 flex flex-col gap-3 border-t border-gold/15 pt-6 sm:flex-row sm:items-center sm:justify-between;

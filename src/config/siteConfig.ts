@@ -419,10 +419,10 @@ export const faq = {
  */
 export const epigraph = {
   greek: "ΓΝΩΘΙ ΣΕΑΥΤΟΝ",
-  line: "Know thyself.",
-  source: "Inscribed at the Temple of Apollo, Delphi",
-  gloss:
-    "Know your level, find your match, and play the game in front of you.",
+  line: "'Know the right moment, knowing that all other things are secondary to this.'",
+  // source: "Inscribed at the Temple of Apollo, Delphi",
+  // gloss:
+    // "Know your level, find your match, and play the game in front of you.",
 } as const;
 
 export const footer = {

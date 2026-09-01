@@ -1,7 +1,12 @@
 "use client";
 
 import { motion, useInView, useReducedMotion, type Variants } from "motion/react";
-import { useRef, useSyncExternalStore, type ReactNode } from "react";
+import {
+  useRef,
+  useSyncExternalStore,
+  type ComponentPropsWithoutRef,
+  type ReactNode,
+} from "react";
 import { cn } from "@/lib/cn";
 
 /**
@@ -173,6 +178,49 @@ export function RevealOnScroll({
  * fold, so the wipe plays into view rather than snapping over a heading the
  * reader can already see.
  */
+/**
+ * Renders a `<section>` and adds `flag` to it once it scrolls into view. That
+ * is all it does — the animation itself, and any staggering between children,
+ * lives in CSS under that class.
+ *
+ * WHY A CLASS AND NOT MOTION VARIANTS: the same reason as `HeadingCut` below.
+ * A variant bakes its `initial` into the SSR HTML as an inline `opacity: 0`,
+ * and this page already renders blank without JS — animating a section this way
+ * would add one hide per child. Because the keyframes only exist under the flag
+ * class, an element that never receives it is simply visible, so this costs
+ * nothing in the no-JS render. One ref can then drive any number of staggered
+ * children, which Motion would need a wrapper per child to do.
+ *
+ * The generous default `margin` matters: the flag has to land while the section
+ * is still below the fold, because `backwards` fill snaps the children to their
+ * hidden state the instant the class arrives. Fire it on something already on
+ * screen and you get a visible revealed -> hidden -> replay flicker.
+ */
+export function CarveIn({
+  className,
+  flag = "is-carved",
+  children,
+  ...rest
+}: {
+  className?: string;
+  flag?: string;
+  children: ReactNode;
+} & Omit<ComponentPropsWithoutRef<"section">, "className" | "children">) {
+  const reduce = useSafeReducedMotion();
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, margin: "0px 0px 25% 0px" });
+
+  return (
+    <section
+      ref={ref}
+      className={cn(className, !reduce && inView && flag)}
+      {...rest}
+    >
+      {children}
+    </section>
+  );
+}
+
 export function HeadingCut({
   children,
   className,

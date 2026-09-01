@@ -1,6 +1,7 @@
-import { Mail, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 import { footer, nav, todo } from "@/config/siteConfig";
 import { Wordmark } from "./Wordmark";
+import { CopyEmail } from "./CopyEmail";
 import { TodoText } from "./Todo";
 import { InstagramIcon, FacebookIcon } from "./SocialIcons";
 
@@ -54,8 +55,7 @@ export function Footer() {
             <h4 className="footer-col-title">Contact</h4>
             <ul className="footer-contact-list">
               <li className="footer-contact-item">
-                <Mail className="footer-contact-icon" />
-                <TodoText>{footer.contact.email}</TodoText>
+                <CopyEmail address={footer.contact.email} />
               </li>
               <li className="footer-contact-item">
                 <Phone className="footer-contact-icon" />
