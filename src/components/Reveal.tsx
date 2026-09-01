@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion, type Variants } from "motion/react";
-import { useSyncExternalStore, type ReactNode } from "react";
+import { motion, useInView, useReducedMotion, type Variants } from "motion/react";
+import { useRef, useSyncExternalStore, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /**
@@ -149,6 +149,50 @@ export function RevealOnScroll({
     >
       {children}
     </motion.div>
+  );
+}
+
+/**
+ * Inscriptional heading. Renders a real <h2> that is VISIBLE by default, and
+ * adds `.is-cut` shortly before it scrolls into view to start the left-to-right
+ * wipe (see `.heading-cut` in globals.css).
+ *
+ * WHY NOT A MOTION VARIANT: Motion writes its `initial` straight into the SSR
+ * HTML. The page already ships 52 inline `opacity: 0` and renders blank without
+ * JS; using `Reveal`/`RevealOnScroll` here would have added eight more, on the
+ * headings — the worst possible elements to lose. Here JS only ever ADDS the
+ * animation, so a heading whose script never runs is simply present.
+ *
+ * WHY NOT `animation-timeline: view()`: that resolves against the nearest
+ * SCROLL CONTAINER, and these sections carry `overflow: hidden` to clip their
+ * motifs. Measured it — the timeline's source came back as the section itself,
+ * which never scrolls, so progress sat pinned at 1 and every heading rendered
+ * fully revealed at all scroll positions.
+ *
+ * The 20% bottom margin fires the class while the heading is still below the
+ * fold, so the wipe plays into view rather than snapping over a heading the
+ * reader can already see.
+ */
+export function HeadingCut({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const reduce = useSafeReducedMotion();
+  const ref = useRef<HTMLHeadingElement>(null);
+  // 30%, up from 20%: the wipe now runs 2s, so it needs a longer run-up to do
+  // most of its work before the heading is actually on screen.
+  const inView = useInView(ref, { once: true, margin: "0px 0px 30% 0px" });
+
+  return (
+    <h2
+      ref={ref}
+      className={cn("heading-cut", className, !reduce && inView && "is-cut")}
+    >
+      {children}
+    </h2>
   );
 }
 

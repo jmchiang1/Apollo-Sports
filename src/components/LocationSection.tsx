@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { MapPin, Clock, Car, type LucideIcon } from "lucide-react";
 import { location, todo } from "@/config/siteConfig";
-import { SectionWrapper, Reveal } from "./Reveal";
+import { HeadingCut, SectionWrapper, Reveal } from "./Reveal";
 import { TodoText } from "./Todo";
 import { HoursDialog } from "./HoursDialog";
 
@@ -44,9 +44,9 @@ export function LocationSection() {
       <div className="location-grid">
         {/* copy */}
         <div>
-          <Reveal as="h2" className="location-heading">
+          <HeadingCut className="location-heading">
             {location.heading}
-          </Reveal>
+          </HeadingCut>
           <Reveal as="p" className="location-body">
             {location.body}
           </Reveal>

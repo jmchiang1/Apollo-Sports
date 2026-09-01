@@ -15,6 +15,10 @@ import type { SVGProps } from "react";
  * one family.
  *
  * Uses `currentColor`, so the colour comes from whatever it sits in.
+ *
+ * Every path carries `pathLength={1}`: that normalises each blade's length to 1
+ * so a single `stroke-dasharray: 1` draws all six exactly, whatever their real
+ * lengths are. `.faq-toggle-open` uses it to draw the fan blade by blade.
  */
 export function Palmette({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -32,13 +36,13 @@ export function Palmette({ className, ...props }: SVGProps<SVGSVGElement>) {
       {/* Five blades from one origin at the base. The quadratic control points
           bow each blade outward, which is what separates an anthemion from a
           plain sunburst. */}
-      <path d="M12 18.6 Q12 11 12 4.2" />
-      <path d="M12 18.6 Q9.1 11.8 7.2 6.6" />
-      <path d="M12 18.6 Q14.9 11.8 16.8 6.6" />
-      <path d="M12 18.6 Q6.2 14.6 3.3 10.4" />
-      <path d="M12 18.6 Q17.8 14.6 20.7 10.4" />
+      <path pathLength={1} d="M12 18.6 Q12 11 12 4.2" />
+      <path pathLength={1} d="M12 18.6 Q9.1 11.8 7.2 6.6" />
+      <path pathLength={1} d="M12 18.6 Q14.9 11.8 16.8 6.6" />
+      <path pathLength={1} d="M12 18.6 Q6.2 14.6 3.3 10.4" />
+      <path pathLength={1} d="M12 18.6 Q17.8 14.6 20.7 10.4" />
       {/* The bound base, as on the mark. */}
-      <path d="M8.6 21 H15.4" />
+      <path pathLength={1} d="M8.6 21 H15.4" />
     </svg>
   );
 }

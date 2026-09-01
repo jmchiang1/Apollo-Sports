@@ -4,7 +4,7 @@ import { useSyncExternalStore } from "react";
 import { motion, type Variants } from "motion/react";
 import { Check, X } from "lucide-react";
 import { pricing } from "@/config/siteConfig";
-import { SectionWrapper, Reveal, RevealGroup, useSafeReducedMotion } from "./Reveal";
+import { HeadingCut, SectionWrapper, Reveal, RevealGroup, useSafeReducedMotion } from "./Reveal";
 import { iconMap, type IconName } from "./icons";
 import { TodoText } from "./Todo";
 import { ButtonLink } from "./Button";
@@ -19,8 +19,8 @@ type Group = (typeof pricing.groups)[number];
 type Plan = Group["plans"][number];
 type DealRole = "center" | "left" | "right";
 
-// The membership grid "deals" outward: the featured Player reveals first, then
-// Free and Premier slide out from behind it to the left and right.
+// The membership grid "deals" outward: the featured Athlete reveals first, then
+// Initiate and Olympian slide out from behind it to the left and right.
 const dealVariants: Record<DealRole, Variants> = {
   center: {
     hidden: { opacity: 0, y: 28 },
@@ -36,8 +36,8 @@ const dealVariants: Record<DealRole, Variants> = {
         duration: 0.9,
         ease: EASE,
         delay: 0.55,
-        // Hold the (translucent) card invisible while it's still behind Player,
-        // then fade to 100% as it clears — no ghosting through Player's fill.
+        // Hold the (translucent) card invisible while it's still behind Athlete,
+        // then fade to 100% as it clears — no ghosting through Athlete's fill.
         opacity: { duration: 0.5, ease: EASE, delay: 0.85 },
       },
     },
@@ -52,8 +52,8 @@ const dealVariants: Record<DealRole, Variants> = {
         duration: 0.9,
         ease: EASE,
         delay: 0.55,
-        // Hold the (translucent) card invisible while it's still behind Player,
-        // then fade to 100% as it clears — no ghosting through Player's fill.
+        // Hold the (translucent) card invisible while it's still behind Athlete,
+        // then fade to 100% as it clears — no ghosting through Athlete's fill.
         opacity: { duration: 0.5, ease: EASE, delay: 0.85 },
       },
     },
@@ -95,6 +95,10 @@ function PricingCard({
         muted && "pricing-card-muted",
       )}
     >
+      {/* Laurel wreath, top-right of the featured (Athlete) card. Painted as a
+          mask so it takes `currentColor` and stays on the gold palette. */}
+      {featured && <span aria-hidden className="pricing-wreath" />}
+
       {badge && (
         <span className="pricing-badge">
           {badge}
@@ -227,9 +231,9 @@ function PlanGrid({
 function PricingHead({ heading, sub }: { heading: string; sub: string }) {
   return (
     <div className="pricing-heading-wrap">
-      <Reveal as="h2" className="pricing-heading">
+      <HeadingCut className="pricing-heading">
         {heading}
-      </Reveal>
+      </HeadingCut>
       <Reveal as="p" className="pricing-note">
         {sub}
       </Reveal>
@@ -238,9 +242,9 @@ function PricingHead({ heading, sub }: { heading: string; sub: string }) {
 }
 
 /**
- * Memberships — the recurring tiers (Free / Player / Premier), on the dark plum
- * band. Player is the featured "Most popular" tier. On desktop the three cards
- * "deal out" from behind Player; on mobile they use the standard fade-up.
+ * Memberships — the recurring tiers (Initiate / Athlete / Olympian), on the
+ * dark onyx band. Athlete is the featured "Most popular" tier. On desktop the
+ * three cards "deal out" from behind Athlete; on mobile they fade up.
  */
 export function MembershipSection() {
   const lg = useSyncExternalStore(resizeSubscribe, readLg, readFalse);

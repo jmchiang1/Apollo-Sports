@@ -1,5 +1,5 @@
 import { waitlist } from "@/config/siteConfig";
-import { SectionWrapper, Reveal } from "./Reveal";
+import { HeadingCut, SectionWrapper, Reveal } from "./Reveal";
 import { WaitlistForm } from "./WaitlistForm";
 import { OverlayGraphic } from "./OverlayGraphic";
 
@@ -12,9 +12,9 @@ export function WaitlistSection() {
       <div className="waitlist-layout">
         {/* how it works */}
         <div>
-          <Reveal as="h2" className="waitlist-heading">
+          <HeadingCut className="waitlist-heading">
             {waitlist.heading}
-          </Reveal>
+          </HeadingCut>
           <Reveal as="p" className="waitlist-body">
             {waitlist.body}
           </Reveal>

@@ -1,7 +1,7 @@
 import { Check } from "lucide-react";
 import { sports } from "@/config/siteConfig";
 import { cn } from "@/lib/cn";
-import { SectionWrapper, Reveal } from "./Reveal";
+import { HeadingCut, SectionWrapper, Reveal } from "./Reveal";
 import { OverlayGraphic } from "./OverlayGraphic";
 import { IsoCourt } from "./IsoCourt";
 
@@ -82,9 +82,9 @@ export function SportsSection() {
 
       <div className="sports-inner">
         <div className="sports-heading-wrap">
-          <Reveal as="h2" className="sports-heading">
+          <HeadingCut className="sports-heading">
             {sports.heading}
-          </Reveal>
+          </HeadingCut>
         </div>
 
         <div className="sports-rows">

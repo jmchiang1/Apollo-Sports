@@ -1,5 +1,5 @@
 import { programs } from "@/config/siteConfig";
-import { SectionWrapper, Reveal, RevealOnScroll } from "./Reveal";
+import { HeadingCut, SectionWrapper, RevealOnScroll } from "./Reveal";
 import { iconMap, type IconName } from "./icons";
 
 export function ProgramsSection() {
@@ -7,9 +7,9 @@ export function ProgramsSection() {
     <SectionWrapper id="programs" className="programs-section">
 
       <div className="programs-heading-wrap">
-        <Reveal as="h2" className="programs-heading">
+        <HeadingCut className="programs-heading">
           {programs.heading}
-        </Reveal>
+        </HeadingCut>
       </div>
 
       <div className="programs-list">

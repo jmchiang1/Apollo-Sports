@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { faq } from "@/config/siteConfig";
 import { Palmette } from "./Palmette";
-import { SectionWrapper, Reveal } from "./Reveal";
+import { HeadingCut, SectionWrapper, Reveal } from "./Reveal";
 import { TodoText } from "./Todo";
 import { cn } from "@/lib/cn";
 
@@ -48,9 +48,9 @@ export function FAQAccordion() {
     <SectionWrapper id="faq" className="faq-section">
       <div className="faq-grid">
         <div>
-          <Reveal as="h2" className="faq-heading">
+          <HeadingCut className="faq-heading">
             {faq.heading}
-          </Reveal>
+          </HeadingCut>
         </div>
 
         <Reveal>

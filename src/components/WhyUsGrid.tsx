@@ -1,5 +1,5 @@
 import { whyUs } from "@/config/siteConfig";
-import { SectionWrapper, Reveal } from "./Reveal";
+import { HeadingCut, SectionWrapper, Reveal } from "./Reveal";
 import { iconMap, type IconName } from "./icons";
 import { OverlayGraphic } from "./OverlayGraphic";
 
@@ -20,9 +20,9 @@ export function WhyUsGrid() {
       <OverlayGraphic src="/birdie.svg" invert className="whyus-birdie" />
 
       <div className="whyus-heading-wrap">
-        <Reveal as="h2" className="whyus-heading">
+        <HeadingCut className="whyus-heading">
           {whyUs.heading}
-        </Reveal>
+        </HeadingCut>
       </div>
 
       <div className="whyus-grid">

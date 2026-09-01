@@ -246,6 +246,31 @@ body::after {
    covers the page must be able to remove itself without a script. See the note
    in PageLoader.tsx. Timings are mirrored there and must move together.
    ────────────────────────────────────────────────────────────────────────── */
+/* The header's logo slot stays empty until the flight arrives in it.
+   The flying mark is the same artwork at the same size and position by the
+   time this fires, so the swap is invisible: both are painted for the ~200ms
+   before the overlay is removed, and the flyer sits on top.
+
+   It starts a beat BEFORE the landing on purpose, so the real logo is already
+   at full opacity when the flyer goes — reversing that order would show a dip.
+
+   `backwards` fill and no `forwards`, like `page-arrive` below: if this
+   animation never runs, the logo is simply visible. It cannot be stranded
+   hidden by a flight that failed. Scoped to the header so the footer's
+   wordmark is untouched. */
+.header-bar .wordmark-logo {
+  animation: logo-land 150ms var(--ease-out-soft) 2250ms backwards;
+}
+
+@keyframes logo-land {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Hand-off from the intro to the page.
    Without this the overlay clears onto a hero that is already fully settled,
    which reads as a cut rather than an arrival. The page fades up as the
@@ -270,7 +295,7 @@ body::after {
    visible — this can never strand the site at opacity 0. */
 .site-main,
 .header-bar {
-  animation: page-arrive 900ms var(--ease-out-soft) 1620ms backwards;
+  animation: page-arrive 900ms var(--ease-out-soft) 1520ms backwards;
 }
 
 @keyframes page-arrive {
@@ -294,7 +319,37 @@ body.is-loading {
   z-index: 9998; /* over the header (z-50), under the grain (9999) */
   display: grid;
   place-items: center;
+  /* No ground here: `.page-loader-scrim` owns it, so it can clear on its own
+     while the mark stays opaque and flies over the revealed page. */
+  pointer-events: none;
+  /* Failsafe only. If the JS flight never runs, this still takes the whole
+     overlay out of the hit grid and the a11y tree on schedule. */
+  animation: loader-out 1ms linear 2450ms forwards;
+}
+
+/* The onyx ground. Clears as the flight begins, so the page is arriving
+   underneath the mark rather than after it. */
+.page-loader-scrim {
+  position: absolute;
+  inset: 0;
   background-color: var(--color-onyx);
+  animation: scrim-out 600ms var(--ease-out-soft) 1450ms forwards;
+}
+
+@keyframes scrim-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* The element that actually flies. A plain div rather than the <svg> itself:
+   CSS transforms on an SVG root interact with `transform-box`, and the paths
+   inside already set their own. Wrapping keeps the flight in ordinary HTML box
+   terms, where `transform-origin: top left` means what it says.
+   The fade here is the no-JS path — the flight cancels it (see PageLoader). */
+.page-loader-flyer {
+  position: relative;
+  line-height: 0;
   animation: loader-out 550ms var(--ease-out-soft) 1550ms forwards;
 }
 
@@ -313,7 +368,6 @@ body.is-loading {
   100% {
     opacity: 0;
     visibility: hidden;
-    pointer-events: none;
   }
 }
 
@@ -366,6 +420,99 @@ body.is-loading {
   }
 }
 
+/* ── Inscriptional heading reveal ─────────────────────────────────────────
+   Marcellus is a Roman inscriptional face; a fade-up reads as a web page
+   arriving, where a left-to-right wipe reads as letters being cut. A soft-edged
+   MASK rather than `clip-path` — the 10% feather is the difference between a
+   chisel and a sliding door.
+
+   CSS, NOT A MOTION VARIANT, and that is the point. Motion bakes its `initial`
+   straight into the SSR HTML: the page already ships 52 inline `opacity: 0` and
+   renders blank without JS, and doing this as a variant would have added eight
+   more, on the headings specifically. As an animation with `both` fill, a
+   heading whose animation never runs is simply visible. Replacing the old
+   `<Reveal as="h2">` wrappers with plain `<h2 class="... heading-cut">` took
+   eight of those 52 inline hides away.
+
+   `view()` scroll-links it where supported. Where it is not, `animation-timeline`
+   is ignored, the declared duration applies and it plays once on load — either
+   way it ends revealed.
+   ────────────────────────────────────────────────────────────────────────── */
+/* initial-value is the REVEALED end state, not the hidden start: an unanimated
+   heading must be fully visible. `.is-cut` is what runs the wipe from 0%. */
+@property --cut {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 112%;
+}
+
+@keyframes heading-cut {
+  from {
+    --cut: 0%;
+  }
+  to {
+    --cut: 112%;
+  }
+}
+
+.heading-cut {
+  /* THE BOX MUST HUG THE INK. A mask gradient's percentages resolve against the
+     element's width, and an <h2> is a block spanning the whole container — so on
+     a 1088px box with ~490px of text, a 42% wipe had already uncovered ~88% of
+     the letters and the rest of the sweep crossed empty space. Measured it.
+     `fit-content` shrinks the box to the text while still wrapping at the
+     container width when a heading is long, so the wipe is paced by the
+     letterforms. None of the eight headings is centred, so there is nothing for
+     this to knock out of alignment. */
+  width: fit-content;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0 var(--cut),
+    transparent calc(var(--cut) + 10%)
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 0 var(--cut),
+    transparent calc(var(--cut) + 10%)
+  );
+}
+
+/* Added by `HeadingCut` just before the heading scrolls in. NOT a
+   `view()` timeline: these sections carry `overflow: hidden` to clip their
+   motifs, which makes the SECTION the nearest scroll container — measured, and
+   the timeline's source came back as the section, which never scrolls, so
+   progress sat pinned at 1 and every heading rendered fully revealed. */
+.heading-cut.is-cut {
+  /* NOT `--ease-out-soft`. A strong ease-out front-loads the sweep, so most of
+     the reveal lands in the first third and the whole thing reads quick however
+     long the duration is — the same trap as the hero image fade. A symmetric
+     S holds roughly half the wipe at half the time, which is what actually
+     reads as a slow, deliberate cut. */
+  animation: heading-cut 2s cubic-bezier(0.4, 0, 0.6, 1) both;
+}
+
+/* Belt and braces. `HeadingCut` already withholds `.is-cut` under reduced
+   motion, so this only matters if the class ever arrives by another route. */
+@media (prefers-reduced-motion: reduce) {
+  .heading-cut,
+  .heading-cut.is-cut {
+    animation: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+/* Draws one palmette blade. `pathLength="1"` on the paths is what lets a single
+   dash length cover every blade regardless of its real length. */
+@keyframes palmette-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 /* ── Classical motifs ──────────────────────────────────────────────────────
    These replace the old `.tex-dots` / `.tex-waffle` polka-dot and waffle
    textures, which read as casual and fought the theme. Both take their colour
@@ -377,10 +524,14 @@ body.is-loading {
    Held in a custom property so a pseudo-element can reuse it without the
    gradient being written out twice (same reason as `--meander` below). */
 :root {
+  /* `--fluting-pitch` is resolved at the USE site, so any element can set its
+     own spacing and reuse the same gradient — a short surface can dial the
+     pitch down so the reeding reads as a fluted shaft rather than a barcode. */
+  --fluting-pitch: 13px;
   --fluting: repeating-linear-gradient(
     90deg,
     currentColor 0 1px,
-    transparent 1px 13px
+    transparent 1px var(--fluting-pitch)
   );
 }
 
@@ -514,7 +665,7 @@ body.is-loading {
     @apply flex w-full items-center justify-between gap-4 py-5 text-left;
   }
   .faq-question-text {
-    @apply font-display text-lg font-normal text-ink;
+    @apply font-display text-lg font-normal text-ink transition-colors duration-200;
   }
   .faq-toggle {
     @apply grid h-8 w-8 shrink-0 place-items-center rounded-none bg-onyx-3 text-gold transition-all duration-300;
@@ -535,6 +686,25 @@ body.is-loading {
      The chip stays h-8/w-8, so nothing reflows. */
   .faq-toggle-icon {
     @apply h-5 w-5;
+  }
+  /* The palmette re-draws itself, blade by blade, when a row opens — the moment
+     the eye is already on the chip, rather than an entrance nobody watches.
+     Order matches the way the loader mark unfurls: centre, inner pair, outer
+     pair, then the bound base. */
+  .faq-toggle-open .faq-toggle-icon path {
+    stroke-dasharray: 1;
+    animation: palmette-draw 420ms var(--ease-out-soft) both;
+  }
+  .faq-toggle-open .faq-toggle-icon path:nth-of-type(2),
+  .faq-toggle-open .faq-toggle-icon path:nth-of-type(3) {
+    animation-delay: 70ms;
+  }
+  .faq-toggle-open .faq-toggle-icon path:nth-of-type(4),
+  .faq-toggle-open .faq-toggle-icon path:nth-of-type(5) {
+    animation-delay: 140ms;
+  }
+  .faq-toggle-open .faq-toggle-icon path:nth-of-type(6) {
+    animation-delay: 210ms;
   }
   .faq-answer-wrap {
     @apply overflow-hidden;
@@ -765,6 +935,14 @@ body.is-loading {
   .header-bar-top .wordmark-logo {
     @apply h-14 sm:h-24;
   }
+  /* Compact bar: the mark drops to 40px, so the text comes down with it. This
+     lands the text block at ~0.75x the mark height, close to the 0.5x the
+     oversized top state holds and well clear of the 1.2x it used to sit at.
+     Deliberately NOT on `.wordmark` itself — the footer and the menu overlay
+     are not in a scrolled header and keep the full 2rem. */
+  .header-bar-scrolled .wordmark {
+    --wm-name: 1.25rem;
+  }
   .header-overlay {
     @apply fixed inset-0 z-50 bg-onyx md:hidden;
   }
@@ -803,8 +981,18 @@ body.is-loading {
   /* Mark + a stacked, letterspaced two-line lockup. `items-center` keeps the
      text block optically centred on the mark at every mark height (the header
      grows the mark to h-14/h-24 in its top state). */
+  /* ONE DRIVER FOR THE WHOLE LOCKUP.
+     `--wm-name` is the "APOLLO" size; the sub-line and the gap between the two
+     lines are both solved from it, so the text block always scales as a unit
+     and can never drift out of proportion with itself. The two ratios below
+     are exactly the values the lockup already used (0.7rem sub and 0.32em gap
+     against a 2rem name), so pulling them into the variable changed nothing.
+     The mark shrinks with the bar (`.header-bar-top .wordmark-logo` is 96px,
+     the base is 40px), and before this the text did NOT — leaving the text
+     block 1.2-1.3x TALLER than the mark in the compact bar. Now it follows. */
   .wordmark {
     @apply inline-flex items-center gap-3 transition-colors duration-500 sm:gap-3.5;
+    --wm-name: 2rem;
   }
   .wordmark-cream {
     @apply text-cream;
@@ -819,7 +1007,9 @@ body.is-loading {
     @apply h-9 w-auto transition-[height] duration-500 ease-out sm:h-10;
   }
   .wordmark-text {
-    @apply flex flex-col items-center justify-center gap-[0.32em] whitespace-nowrap;
+    @apply flex flex-col items-center justify-center whitespace-nowrap;
+    gap: calc(var(--wm-name) * 0.16);
+    transition: gap 500ms var(--ease-out-soft);
   }
   /* "APOLLO" — the title face, wide-tracked. Marcellus has one weight, so this
      stays at 400; `font-extrabold` here would synthesise a fake bold. The
@@ -827,17 +1017,21 @@ body.is-loading {
      after the final glyph, so the block's right edge is where it looks. */
   .wordmark-name {
     @apply font-display font-normal uppercase leading-none text-gold;
-    font-size: 2rem;
+    font-size: var(--wm-name);
     letter-spacing: 0.26em;
     margin-right: -0.26em;
+    /* Matches `.wordmark-logo`'s height transition so the mark and the text
+       resize together rather than the text snapping. */
+    transition: font-size 500ms var(--ease-out-soft);
   }
   /* "BADMINTON CLUB" — the body face, smaller and dimmer. Sized against the
      name line (~0.46x) rather than the mark; see the note in Wordmark.tsx. */
   .wordmark-sub {
     @apply font-sans font-medium uppercase leading-none text-gold/65;
-    font-size: 0.7rem;
+    font-size: calc(var(--wm-name) * 0.35);
     letter-spacing: 0.2em;
     margin-right: -0.2em;
+    transition: font-size 500ms var(--ease-out-soft);
   }
 
   /* ── Hero (dark "spotlight" — a pinned 3D camera fly-over) ───────────── */
@@ -1219,10 +1413,10 @@ body.is-loading {
     @apply mt-12 border-t border-gold/20;
   }
   .programs-row {
-    @apply flex items-center gap-5 border-b border-gold/20 py-6 sm:gap-8 sm:px-4;
+    @apply flex items-center gap-5 border-b border-gold/20 py-6 transition-colors duration-300 sm:gap-8 sm:px-4;
   }
   .programs-index {
-    @apply w-14 shrink-0 font-display text-4xl font-normal leading-none text-gold/45 sm:w-24 sm:text-6xl;
+    @apply w-14 shrink-0 font-display text-4xl font-normal leading-none text-gold/45 transition-colors duration-300 sm:w-24 sm:text-6xl;
     font-variant-numeric: tabular-nums;
   }
   .programs-row-body {
@@ -1237,7 +1431,7 @@ body.is-loading {
     @apply mt-1.5 max-w-2xl leading-relaxed text-cream/70;
   }
   .programs-icon-chip {
-    @apply hidden h-12 w-12 shrink-0 place-items-center rounded-none bg-onyx-3 text-gold sm:grid;
+    @apply hidden h-12 w-12 shrink-0 place-items-center rounded-none bg-onyx-3 text-gold transition-colors duration-300 sm:grid;
   }
   .programs-icon {
     @apply h-6 w-6;
@@ -1283,21 +1477,40 @@ body.is-loading {
   /* A group with a featured (middle) plan: widen the centre column and give the
      row headroom for the raised card + its badge. */
   .pricing-grid-featured {
-    @apply lg:grid-cols-[minmax(0,1fr)_minmax(0,1.16fr)_minmax(0,1fr)] lg:pt-4;
+    /* Headroom for the featured card's badge, which hangs 12px above its top
+       edge. */
+    /* 12px lift + a badge hanging 12px above it = 24px, and pt-6 IS 24px —
+       measured the badge landing flush on the grid's top edge with zero spare.
+       pt-7 carries a little slack for font-metric drift. (The committed
+       baseline was pt-4, which overflowed by 8px.) */
+    @apply lg:grid-cols-[minmax(0,1fr)_minmax(0,1.16fr)_minmax(0,1fr)] lg:pt-7;
   }
   .pricing-card {
     /* `isolate` makes the card its own stacking context so the dog watermark can
        sit behind the content via a negative z-index. */
-    @apply relative isolate flex h-full flex-col rounded-none bg-onyx-3 p-8 ring-1 ring-gold/20;
+    @apply relative isolate flex h-full flex-col rounded-none bg-onyx-3 p-8 ring-1 ring-gold/20 transition-colors duration-300;
   }
-  /* Featured tier (Player): brighter surface, accent ring + glow, and lifted a
-     touch on desktop so it reads as the headline choice. */
+  /* Featured tier (Athlete): brighter surface, accent ring + glow, and lifted a
+     touch on desktop so it reads as the headline choice.
+     `lg:-translate-y-3` IS that lift — it is the only thing raising this card,
+     and without it the headline tier sits flush with the other two. It has been
+     lost once already by being folded into a larger treatment that was later
+     removed, so if you replace it, replace it with something, and keep
+     `.pricing-card-muted`'s `transform-origin: bottom` in step: those two cards
+     pin to the grid baseline while this one sits 12px above it. */
   .pricing-card-featured {
     @apply bg-onyx-4 ring-2 ring-gold lg:-translate-y-3 lg:p-9 lg:shadow-[0_24px_60px_-24px_rgba(198,161,91,0.3)];
   }
-  /* The other tiers in a featured group step back a little. */
+  /* The other tiers in a featured group step back a little.
+     `transform-origin: bottom` is load-bearing, not styling: scaling about the
+     default centre lifts a card's bottom edge by half the height it loses
+     (~12px at 0.96), so these two would float off the grid's baseline. Scaling
+     about the bottom pins them to it. Note the featured card is deliberately
+     12px ABOVE that baseline — these two align with each other and the row, not
+     with it. */
   .pricing-card-muted {
     @apply lg:scale-[0.96] lg:opacity-90;
+    transform-origin: bottom;
   }
   /* "Most popular" pill, centred over the featured card's top edge.
      THE ONE JEWEL SWAP: repoint these two custom properties at
@@ -1309,6 +1522,35 @@ body.is-loading {
     @apply absolute -top-3 left-1/2 z-10 inline-flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-none px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.2em];
     background-color: var(--badge-bg);
     color: var(--badge-fg);
+  }
+  /* Laurel wreath in the featured card's top-right corner. Painted as a mask
+     rather than an <img> so it takes `currentColor` and stays on the gold
+     palette; the negative z-index parks it behind the card's text inside the
+     card's own stacking context (`.pricing-card` is `isolate`), so it reads as
+     a watermark on the surface rather than a sticker over the copy. */
+  .pricing-wreath {
+    @apply pointer-events-none absolute top-8 -z-10 h-56 w-56 text-gold opacity-[0.16] lg:h-64 lg:w-64;
+    /* Centred ON the card's right edge, then cut in half, so what shows is one
+       laurel branch bleeding off the side rather than a small whole wreath
+       sitting in the corner. The offset is half the box width at each step. */
+    right: -7rem;
+    background-color: currentColor;
+    /* CLIPPED HERE, NOT BY THE CARD. The box is centred ON the right edge, so
+       half of it lies outside the card, and `.pricing-card` does not clip its
+       children. Clipping the wreath itself cuts the silhouette without
+       reaching for `overflow: hidden` on the card, which would also crop the
+       badge hanging above its top edge. Only the right half is cut — the top
+       and bottom are untouched, so `top-8` keeps the height inside the card. */
+    clip-path: inset(0 50% 0 0);
+    mask-image: url("/wreath.svg");
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+  }
+  @media (min-width: 1024px) {
+    .pricing-wreath {
+      right: -8rem;
+    }
   }
   .pricing-card-head {
     @apply flex items-center gap-3;
@@ -1374,9 +1616,8 @@ body.is-loading {
   .rates-section {
     @apply bg-onyx-2;
   }
-  /* Memberships: leave room at the bottom for Apollo to peek in. */
   .membership-section {
-    @apply pb-40 sm:pb-44;
+    @apply pb-20 sm:pb-24 md:pb-28;
   }
   /* Reeded wall behind the membership tiers. This band is the largest flat
      surface on the page, and the fluting gives it the grain of a colonnade
@@ -1496,7 +1737,7 @@ body.is-loading {
     @apply mt-10 grid gap-5 sm:grid-cols-3;
   }
   .location-card {
-    @apply flex h-full items-start gap-4 rounded-none border border-gold/20 bg-onyx-3 p-6;
+    @apply flex h-full items-start gap-4 rounded-none border border-gold/20 bg-onyx-3 p-6 transition-colors duration-300;
   }
   .location-card-chip {
     @apply grid h-11 w-11 shrink-0 place-items-center rounded-none bg-gold text-plum;
@@ -1752,6 +1993,65 @@ body.is-loading {
   }
   /* Replaces the 🐾 emoji, which sat outside the palette. Inline (not a flex
      item) so the line keeps wrapping as ordinary text. */
+
+  /* ── Hover states ───────────────────────────────────────────────────────
+     There were NONE below the nav before this — nothing on the programs rows,
+     the pricing cards, the location cards, or even `.faq-question`, which is a
+     real <button>. Two rules held here:
+
+     COLOUR AND SURFACE, NEVER MOVEMENT. The hard offset shadows and the button
+     click-press were deliberately removed in the flattening pass, so a card
+     that lifts or nudges on hover would fight that decision. Stone does not
+     bounce.
+
+     WEIGHT MATCHED TO ACTUAL INTERACTIVITY. `.faq-question` is a control and
+     gets the clearest response. The programs rows and location cards are
+     static content and get only enough to aid scanning — a strong hover on
+     something unclickable reads as a broken link. `.stats-item` and
+     `.location-pill` get nothing at all for that reason: they are numbers and
+     tags, not affordances.
+
+     Gated on `(hover: hover)` because these are raw `:hover` rules rather than
+     Tailwind's `hover:` variant (which carries that query itself). Without the
+     gate, a tap on a touch device leaves the state stuck on.
+     ────────────────────────────────────────────────────────────────────── */
+  @media (hover: hover) {
+    /* The FAQ control. Descendant selectors rather than adding a `group` class,
+       so the markup is untouched. */
+    .faq-question:hover .faq-question-text {
+      @apply text-gold;
+    }
+    /* Skips the open row, which is already a gold-filled chip. */
+    .faq-question:hover .faq-toggle:not(.faq-toggle-open) {
+      @apply bg-onyx-4 text-gold-light;
+    }
+
+    /* Programs list: the row tints and its numeral comes up out of 45%. Gold at
+       4% rather than a token surface, so it reads the same on an onyx band and
+       on a marble one. */
+    .programs-row:hover {
+      @apply bg-gold/[0.04];
+    }
+    .programs-row:hover .programs-index {
+      @apply text-gold/75;
+    }
+    .programs-row:hover .programs-icon-chip {
+      @apply bg-onyx-4 text-gold-light;
+    }
+
+    /* Pricing: surface steps up and the hairline strengthens. The featured tier
+       is excluded — it already carries a full 2px gold ring, and a bare
+       `.pricing-card:hover` would DIM it to 45%, since a pseudo-class outranks
+       the plain `.pricing-card-featured` class. Its emphasis is permanent and
+       its CTA carries its own hover. */
+    .pricing-card:not(.pricing-card-featured):hover {
+      @apply bg-onyx-4 ring-gold/45;
+    }
+
+    .location-card:hover {
+      @apply border-gold/40;
+    }
+  }
 
   /* ── SiteOriginal shell ──────────────────────────────────────────────── */
   .site-shell {

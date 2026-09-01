@@ -1,5 +1,5 @@
 import { vision } from "@/config/siteConfig";
-import { SectionWrapper, Reveal } from "./Reveal";
+import { HeadingCut, SectionWrapper, Reveal } from "./Reveal";
 import { DogPawing } from "./DogPawing";
 
 export function VisionSection() {
@@ -8,9 +8,9 @@ export function VisionSection() {
       <div className="vision-grid">
         {/* copy */}
         <div className="vision-copy">
-          <Reveal as="h2" className="vision-heading">
+          <HeadingCut className="vision-heading">
             {vision.heading}
-          </Reveal>
+          </HeadingCut>
           <div className="vision-paragraphs">
             {vision.paragraphs.map((p, i) => (
               <Reveal as="p" key={i} className="vision-paragraph">
