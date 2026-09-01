@@ -27,7 +27,7 @@ export function Marquee() {
   );
 
   return (
-    <div className="relative overflow-hidden border-y-2 border-plum-deep bg-plum py-4">
+    <div className="relative overflow-hidden border-y border-gold/20 bg-plum py-4">
       <div className="flex w-max animate-[marquee_30s_linear_infinite] motion-reduce:animate-none">
         {row}
         {row}

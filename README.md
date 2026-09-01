@@ -1,11 +1,11 @@
-# Apollo Racquet Club — pre-launch site
+# Apollo Racket Club — pre-launch site
 
-A single-page marketing site for a **badminton-led indoor racquet club** in
+A single-page marketing site for a **badminton-led indoor racket club** in
 Nassau County, Long Island. Its job is to build anticipation and capture a
 waitlist before the facility opens. Pickleball, coaching, open play, leagues,
 and youth programming are secondary layers.
 
-> **Brand name is a placeholder.** "Apollo Racquet Club" (named after Apollo,
+> **Brand name is a placeholder.** "Apollo Racket Club" (named after Apollo,
 > the founder's English Cream Golden Retriever — who is also the site mascot) is
 > the working default while the franchise-vs-independent decision is open. Swap
 > it in **one line**: `brand.name` in

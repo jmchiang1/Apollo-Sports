@@ -21,9 +21,10 @@ const SITE = "https://apolloracketclub.com";
 const copy = {
   subject: `You're on the ${brand.name} waitlist`,
   preheader: "Founding-member perks and opening-day news are on the way.",
-  heading: "You're in the pack!",
-  // Word inside `heading` to highlight with the site's marker sweep.
-  headingHighlight: "in the pack",
+  heading: "Welcome to Apollo.",
+  // Word inside `heading` to highlight with the site's marker sweep. Must
+  // appear in `heading` verbatim.
+  headingHighlight: "Apollo",
   greeting: "Hey {first},",
   paragraphs: [
     `You're officially on the waitlist for ${brand.name}, ${brand.tagline}.`,
@@ -62,7 +63,7 @@ const copy = {
   ],
   cta: { label: "See what we're building", href: `${SITE}/#programs` },
   signOff: "See you on the court,",
-  signName: "The Apollo pack",
+  signName: "The Apollo team",
   socials: [
     { label: "Instagram", url: todo.social.instagram },
     { label: "Facebook", url: todo.social.facebook },
@@ -70,22 +71,26 @@ const copy = {
 };
 
 // ── palette (matches the site tokens in globals.css) ─────────────────────
-const PLUM = "#1D3C44"; // dark anchor
-const PLUM_2 = "#244a54"; // dark anchor, lifted
-const TEAL = "#159e8a"; // accent
-const TEAL_DEEP = "#0e7466"; // accent, pressed
-const TEAL_SOFT = "#cfeae3"; // pale accent (marker sweep)
-const CREAM = "#f6f5f0"; // canvas
-const CREAM_2 = "#e9e9e2"; // deeper canvas
-const SAND = "#FFFFFF"; // pastel block
-const MINT = "#cde7de"; // pastel block
-const VIOLET = "#e7e1f0"; // pastel block
-const INK = "#1f2340"; // primary text
-const MUTED = "#6c6f80"; // secondary text
-const LINE = "#e2ded4"; // hairline
+// NOTE: the site is onyx-on-dark, but this email deliberately keeps its LIGHT
+// ivory canvas — dark email bodies render unpredictably across clients, and a
+// light canvas with the onyx header band and gold accents carries the same
+// brand. The names are the site's legacy ones; the values are onyx + gold.
+const PLUM = "#050f0e"; // onyx — dark anchor (header band)
+const PLUM_2 = "#0a1513"; // onyx, lifted
+const TEAL = "#c6a15b"; // gold accent
+const TEAL_DEEP = "#8a6f3c"; // gold, pressed — deep enough to read on ivory
+const TEAL_SOFT = "#f0e4cb"; // pale gold (marker sweep) — this surface is light
+const CREAM = "#f2ece0"; // ivory canvas
+const CREAM_2 = "#e6dfd0"; // deeper ivory canvas
+const SAND = "#FFFFFF"; // raised block
+const MINT = "#f2ece0"; // block tint
+const VIOLET = "#efe7d8"; // block tint
+const INK = "#141d1b"; // primary text on the light canvas
+const MUTED = "#6e736c"; // secondary text
+const LINE = "#ded5c4"; // hairline
 
-const DISPLAY = `'Bricolage Grotesque','Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif`;
-const SANS = `'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif`;
+const DISPLAY = `'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif`;
+const SANS = `'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif`;
 
 /** Dot texture from `.tex-dots`, tinted for a light or dark surface. */
 function dots(color: string) {
@@ -203,7 +208,7 @@ export function waitlistConfirmationEmail(
   <meta name="supported-color-schemes" content="light">
   <title>${copy.subject}</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
     :root { color-scheme: light; supported-color-schemes: light; }
     a { color: ${TEAL_DEEP}; }
     @media only screen and (max-width:600px) {
@@ -216,17 +221,17 @@ export function waitlistConfirmationEmail(
 <body style="margin:0;padding:0;width:100%;background-color:${CREAM};font-family:${SANS};">
   <span style="display:none;max-height:0;overflow:hidden;opacity:0;visibility:hidden;">${copy.preheader}</span>
 
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM};${dots("rgba(29,60,68,0.055)")}">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM};${dots("rgba(5,15,14,0.05)")}">
     <tr><td align="center" style="padding:32px 16px 40px;">
 
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;background-color:#ffffff;border-radius:28px;overflow:hidden;box-shadow:10px 10px 0 0 rgba(29,60,68,0.13);">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;background-color:#ffffff;border-radius:28px;overflow:hidden;box-shadow:10px 10px 0 0 rgba(5,15,14,0.12);">
 
         <!-- Header band: deep teal + dot texture, same as the site's dark blocks -->
-        <tr><td style="background-color:${PLUM};${dots("rgba(246,245,240,0.10)")}padding:24px 32px;" class="px">
+        <tr><td style="background-color:${PLUM};${dots("rgba(242,236,224,0.10)")}padding:24px 32px;" class="px">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
             <tr>
               <td align="left" style="font-family:${DISPLAY};font-size:19px;font-weight:800;letter-spacing:-0.01em;color:#ffffff;">${brand.name}</td>
-              <td align="right" style="font-family:${SANS};font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#8fd6c8;white-space:nowrap;">${todo.opening}</td>
+              <td align="right" style="font-family:${SANS};font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#d9bc88;white-space:nowrap;">${todo.opening}</td>
             </tr>
           </table>
         </td></tr>
@@ -240,11 +245,11 @@ export function waitlistConfirmationEmail(
 
         <!-- Founding-member card: sand block, dashed edge, teal rule -->
         <tr><td style="padding:22px 32px 0;" class="px">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${SAND};border:2px dashed rgba(29,60,68,0.22);border-radius:22px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${SAND};border:2px dashed rgba(138,111,60,0.35);border-radius:22px;">
             <tr><td style="padding:22px 24px;">
               <div style="font-family:${SANS};font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:${TEAL_DEEP};">${copy.card.label}</div>
               <div class="card-name" style="font-family:${DISPLAY};font-size:25px;font-weight:800;letter-spacing:-0.01em;color:${PLUM};padding-top:8px;">${cleanName}</div>
-              <div style="height:2px;background-color:${TEAL};opacity:0.35;margin:14px 0 12px;font-size:0;line-height:0;">&nbsp;</div>
+              <div style="height:2px;background-color:${TEAL};opacity:0.55;margin:14px 0 12px;font-size:0;line-height:0;">&nbsp;</div>
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td align="left" style="font-family:${SANS};font-size:13px;font-weight:700;color:${PLUM};">${copy.card.footLeft}</td>
@@ -267,7 +272,7 @@ export function waitlistConfirmationEmail(
 
         <!-- CTA -->
         <tr><td align="center" style="padding:30px 32px 4px;" class="px">
-          <a href="${copy.cta.href}" style="display:inline-block;background-color:${TEAL};color:#ffffff;font-family:${DISPLAY};font-size:16px;font-weight:800;text-decoration:none;padding:15px 30px;border-radius:999px;box-shadow:0 4px 0 0 ${TEAL_DEEP};">${copy.cta.label}</a>
+          <a href="${copy.cta.href}" style="display:inline-block;background-color:${TEAL};color:${PLUM};font-family:${DISPLAY};font-size:16px;font-weight:800;text-decoration:none;padding:15px 30px;border-radius:999px;box-shadow:0 4px 0 0 ${TEAL_DEEP};">${copy.cta.label}</a>
         </td></tr>
 
         <!-- Sign-off -->

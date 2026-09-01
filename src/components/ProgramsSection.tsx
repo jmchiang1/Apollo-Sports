@@ -1,12 +1,10 @@
 import { programs } from "@/config/siteConfig";
 import { SectionWrapper, Reveal, RevealOnScroll } from "./Reveal";
 import { iconMap, type IconName } from "./icons";
-import { ProgramsDog } from "./ProgramsDog";
 
 export function ProgramsSection() {
   return (
     <SectionWrapper id="programs" className="programs-section">
-      <ProgramsDog />
 
       <div className="programs-heading-wrap">
         <Reveal as="h2" className="programs-heading">

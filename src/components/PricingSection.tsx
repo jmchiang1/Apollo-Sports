@@ -9,20 +9,9 @@ import { iconMap, type IconName } from "./icons";
 import { TodoText } from "./Todo";
 import { ButtonLink } from "./Button";
 import { OverlayGraphic } from "./OverlayGraphic";
-import { PawPrint } from "./PawPrint";
-import { DogSleeping } from "./DogSleeping";
-import { DogWalking } from "./DogWalking";
-import { DogPlaying } from "./DogPlaying";
 import { cn } from "@/lib/cn";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-/** Membership tiers lead with an Apollo illustration instead of an icon. */
-const DOG_GRAPHICS = {
-  sleeping: DogSleeping,
-  walking: DogWalking,
-  playing: DogPlaying,
-} as const;
 
 const [membership, rates] = pricing.groups;
 
@@ -82,27 +71,21 @@ const resizeSubscribe = (cb: () => void) => {
 const readLg = () => window.innerWidth >= 1024;
 const readFalse = () => false;
 
-/** One pricing tier card. `dog` swaps the check bullets for Apollo's paw. */
+/** One pricing tier card. */
 function PricingCard({
   plan,
   featured,
   muted,
-  dog,
   role,
 }: {
   plan: Plan;
   featured?: boolean;
   muted?: boolean;
-  dog?: boolean;
   role?: DealRole;
 }) {
   const Icon = "icon" in plan ? iconMap[plan.icon as IconName] : undefined;
   const badge = "badge" in plan ? plan.badge : undefined;
-  const graphic = "graphic" in plan ? plan.graphic : undefined;
   const excluded = "excluded" in plan ? plan.excluded : undefined;
-  const Dog = graphic ? DOG_GRAPHICS[graphic] : undefined;
-  // Player + Premier illustrations read better facing inward — flip them.
-  const dogFlip = graphic !== undefined && graphic !== "sleeping";
 
   const card = (
     <div
@@ -114,24 +97,8 @@ function PricingCard({
     >
       {badge && (
         <span className="pricing-badge">
-          {/* <PawPrint className="pricing-badge-paw" aria-hidden /> */}
           {badge}
         </span>
-      )}
-
-      {/* Apollo illustration as a faint top-right watermark, oversized so it
-          bleeds off the card edge. Clipped to the card's rounded rect by its
-          own wrapper so the badge (outside it) stays uncut. */}
-      {Dog && (
-        <div className="pricing-card-dog-clip" aria-hidden>
-          <Dog
-            className={cn(
-              "pricing-card-dog",
-              graphic && `pricing-card-dog-${graphic}`,
-              dogFlip && "pricing-card-dog-flip",
-            )}
-          />
-        </div>
       )}
 
       {Icon && (
@@ -156,17 +123,8 @@ function PricingCard({
       <ul className="pricing-features">
         {plan.features.map((f) => (
           <li key={f} className="pricing-feature">
-            <span
-              className={cn(
-                "pricing-feature-check",
-                dog && "pricing-feature-check-paw",
-              )}
-            >
-              {dog ? (
-                <PawPrint className="pricing-feature-icon" aria-hidden />
-              ) : (
-                <Check className="pricing-feature-icon" strokeWidth={3} />
-              )}
+            <span className="pricing-feature-check">
+              <Check className="pricing-feature-icon" strokeWidth={3} />
             </span>
             <span className="pricing-feature-label">{f}</span>
           </li>
@@ -212,11 +170,9 @@ function PricingCard({
 
 function PlanGrid({
   group,
-  dog,
   deal,
 }: {
   group: Group;
-  dog?: boolean;
   deal?: boolean;
 }) {
   const reduce = useSafeReducedMotion();
@@ -242,7 +198,6 @@ function PlanGrid({
         plan={plan}
         featured={isFeatured}
         muted={hasFeatured && !isFeatured}
-        dog={dog}
         role={role}
       />
     );
@@ -292,7 +247,7 @@ export function MembershipSection() {
   return (
     <SectionWrapper id="pricing" className="pricing-section membership-section">
       <PricingHead heading={membership.heading} sub={pricing.note} />
-      <PlanGrid group={membership} dog deal={lg} />
+      <PlanGrid group={membership} deal={lg} />
     </SectionWrapper>
   );
 }
@@ -307,7 +262,7 @@ export function RatesSection() {
     <SectionWrapper id="rates" className="pricing-section rates-section">
       <OverlayGraphic src="/birdie.svg" invert className="pricing-birdie" />
       <PricingHead heading={rates.heading} sub={rates.subtitle} />
-      <PlanGrid group={rates} dog />
+      <PlanGrid group={rates} />
     </SectionWrapper>
   );
 }

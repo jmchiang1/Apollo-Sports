@@ -1,25 +1,25 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Figtree, Geist } from "next/font/google";
+import { Manrope, Marcellus } from "next/font/google";
 import "./globals.css";
 import { brand } from "@/config/siteConfig";
 import { cn } from "@/lib/utils";
 import { ButtonPointerGlow } from "@/components/ButtonPointerGlow";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-
-// Display face — warm, characterful grotesque with personality.
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
+// Body face — Manrope carries everything that is not a title.
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
 });
 
-// Body face — clean, friendly, comfortable line-height.
-const figtree = Figtree({
-  variable: "--font-figtree",
+// Title face — Marcellus. NOTE: it ships a SINGLE weight (400). Any bold
+// utility on a Marcellus element makes the browser synthesise a fake bold,
+// which smears a serif, so display type is pinned to 400 (see globals.css).
+const marcellus = Marcellus({
+  variable: "--font-marcellus",
   subsets: ["latin"],
+  weight: ["400"],
   display: "swap",
 });
 
@@ -67,9 +67,9 @@ export default function RootLayout({
     // descendant (the hero pin). Sideways clipping lives on body instead.
     <html
       lang="en"
-      className={cn("h-full", bricolage.variable, figtree.variable, "font-sans", geist.variable)}
+      className={cn("h-full", manrope.variable, marcellus.variable, "font-sans")}
     >
-      <body className="min-h-full flex flex-col bg-cream text-ink">
+      <body className="min-h-full flex flex-col bg-onyx text-ink">
         {children}
         <ButtonPointerGlow />
       </body>

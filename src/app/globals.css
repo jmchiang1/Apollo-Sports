@@ -4,41 +4,98 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ────────────────────────────────────────────────────────────────────────
-   Apollo Racket Club — theme  (playful-warm / retro-casual)
-   Multi-color flat blocks, chunky rounded type, warm sunny palette that nods
-   to Apollo, the English Cream Golden Retriever. Tailwind v4 CSS-first config.
-   ──────────────────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────────
+   Apollo Racket Club — theme  (onyx + gold)
+   Near-black onyx grounds, a single caramel-gold accent, ivory body copy, and
+   gold hairline borders. Tailwind v4 CSS-first config.
+
+   GOLD IS AN ACCENT ONLY: headings, numerals, borders, icons, and one filled
+   button per view. Body copy is always ivory (`text-cream` / `text-ink`).
+
+   TOKEN-NAME MISNOMERS — deliberate, and load-bearing. Two names carry a role
+   rather than a hue, and the whole stylesheet is written against them:
+     • `cream`  = "the light colour" — its value is ivory #F2ECE0. It is the
+                  text colour on onyx, and the source of the translucent ivory
+                  washes (`bg-cream/[0.06]`) used for raised surfaces.
+     • `plum`   = "the dark anchor" — its value is onyx #050F0E. Use it for
+                  dark grounds and for text sitting ON a gold fill.
+   Renaming either would touch ~70 call sites for zero visual gain, so they
+   stay. When you need an explicit surface step, prefer the `onyx-*` tokens.
+   ───────────────────────────────────────────────────────────────────────── */
 @theme {
-  /* Cool ivory canvas (Cove — coastal purple / blue / green) */
-  --color-cream: #f6f5f0; /* base canvas */
-  --color-cream-2: #e9e9e2; /* deeper cream / neutral tint */
-  --color-ink: #1f2340; /* primary text on light (deep indigo) */
-  --color-muted: #6c6f80; /* secondary text on light */
+  /* Onyx surface steps — darkest ground → most-raised surface. */
+  --color-onyx: #050f0e; /* base ground / primary section band */
+  --color-onyx-2: #0a1513; /* alternate section band */
+  --color-onyx-3: #0e1b19; /* card / raised surface */
+  --color-onyx-4: #12211e; /* input / inset surface */
 
-  /* Playful pastel section blocks (PKLYN-style, toned down) */
-  --color-peach: #F5F0E6; /* SAND block (Sports, Waitlist) */
-  --color-peach-soft: #F5F0E6; /* light sand tint */
-  --color-rose: #d5cde8; /* VIOLET block (Vision, Location) */
-  --color-rose-soft: #e7e1f0; /* light violet tint */
-  --color-foam: #cde7de; /* MINT/GREEN block (Programs) */
+  /* Text. `cream` and `ink` are the same ivory; `cream` is used on dark
+     grounds by convention, `ink` where the old light-canvas classes read
+     "primary text". */
+  --color-cream: #f2ece0; /* ivory */
+  --color-ink: #f2ece0; /* primary text — ivory */
+  --color-muted: #a7ada6; /* secondary / muted text */
 
-  /* Teal — the lone action/accent color.
-     Token names stay `gold*` so the whole system keeps working; the values
-     are now teal. `gold-light` is the accent for DARK sections, where the
-     mid-dark teal would vanish against the indigo backgrounds. */
-  --color-gold: #159e8a; /* accent fill on light */
-  --color-gold-deep: #0e7466; /* accent text/shadow on light */
-  --color-gold-light: #5fc5b3; /* accent on dark surfaces */
-  --color-gold-soft: #cfeae3; /* pale accent tint */
+  /* Section bands. The old pastel-block tokens all resolve to onyx steps now,
+     which is what keeps the band rhythm without touching any markup.
+     `peach` (Sports, Waitlist) and `foam` (Programs) are the two still in use;
+     the rest are kept so no stale utility class can fail to compile. */
+  --color-peach: #0a1513;
+  --color-peach-soft: #0a1513;
+  --color-rose: #0a1513;
+  --color-rose-soft: #0e1b19;
+  --color-foam: #0a1513;
 
-  /* Dark anchor — deep teal */
-  --color-plum: #1D3C44;
-  --color-plum-deep: #244a54;
+  /* Gold — the lone accent colour.
+     `gold` is the accent proper; `gold-light` is the hover/brighter step;
+     `gold-soft` is a deep gold TINT for fills on onyx (it is dark, not pale —
+     another inherited name whose role flipped with the palette). */
+  --color-gold: #c6a15b;
+  --color-gold-deep: #c6a15b; /* accent text — same gold; kept for call sites */
+  --color-gold-light: #d9bc88; /* accent hover */
+  --color-gold-soft: #2a2114; /* deep gold tint for fills */
+  --color-gold-press: #8a6f3c; /* the buttons' hard offset shadow */
 
-  /* Type */
-  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  /* Dark anchor (legacy names — see the misnomer note above). */
+  --color-plum: #050f0e;
+  --color-plum-deep: #0a1513;
+
+  /* Jewel accent — DEFERRED. The site defaults to onyx + gold + ivory; the
+     only jewel touch is the pricing badge, and it is a one-line swap: point
+     `--badge-bg` / `--badge-fg` on `.pricing-badge` at this pair. */
+  --color-jewel: #5a2530; /* oxblood */
+  --color-champagne: #ebd3ab;
+
+  /* Stone / alabaster — the marble bands.
+     Mirrors the `--color-onyx-*` ladder so the two grounds are swappable: the
+     band rule below simply re-points `--color-onyx*` at these, and every
+     `bg-onyx-3` card inside flips without touching a single component class.
+     As with onyx, the ladder runs ground → most-raised, but INVERTED: a raised
+     surface on marble is LIGHTER than its ground, where on onyx it is darker.
+     Contrast against `--color-stone`, measured:
+       stone-ink  13.70:1   body text
+       stone-mute  5.72:1   secondary text (AA)
+       gold-carved 5.60:1   accent text (AA) — true gold is 1.99:1 and FAILS,
+                            so gold is a FILL or a hairline on marble, never
+                            small text. See the band rule for how that splits. */
+  --color-stone: #ede8de; /* base ground / primary marble band */
+  --color-stone-2: #e4ded1; /* alternate band */
+  --color-stone-3: #f5f1e9; /* card / raised surface (lighter than ground) */
+  --color-stone-4: #ded7c7; /* input / inset surface */
+  --color-stone-ink: #14201e; /* primary text on marble */
+  --color-stone-mute: #545b56; /* secondary text on marble */
+  --color-gold-carved: #6e5730; /* gold dark enough to read as text on marble */
+
+  /* Functional states. Only wired where the UI already had one (the waitlist
+     form error). Do not add new states. */
+  --color-jade: #6fb09a; /* success / live */
+  --color-terracotta: #bc5b44; /* error / alert */
+
+  /* Type — Marcellus for titles, Manrope for everything else.
+     Marcellus is a SINGLE-WEIGHT face (400): see `.font-display` below, which
+     pins the weight so no bold utility can trigger a synthetic bold. */
+  --font-display: var(--font-marcellus), ui-serif, Georgia, serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -51,7 +108,7 @@ html {
 }
 
 body {
-  background-color: var(--color-cream);
+  background-color: var(--color-onyx);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -63,20 +120,59 @@ body {
   overflow-x: clip;
 }
 
+/* 1–2% desaturated film grain so the onyx never reads as flat. A fixed,
+   non-interactive overlay: sections paint their own opaque grounds, so grain
+   on `body` itself would be covered. `position: fixed` keeps it out of flow
+   (it is not a flex item of the body column), so it cannot shift layout. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
 ::selection {
   background: var(--color-gold);
   color: var(--color-plum);
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-gold-deep);
+  outline: 3px solid var(--color-gold);
   outline-offset: 2px;
-  border-radius: 8px;
+  border-radius: 0;
 }
 
-/* Display face runs a touch tight and heavy */
+/* Display face: Marcellus. Serifs at large sizes want tighter tracking than a
+   sans, but nothing like the old grotesque's -0.015em.
+
+   WEIGHT: Marcellus ships a SINGLE cut (400). Every class that @applies
+   `font-display` therefore also carries `font-normal` — never a bold utility.
+   A bold utility here does not fail loudly; the browser silently synthesises
+   the bold by thickening every stroke, which levels Marcellus's hairlines
+   against its stems and throws away the reason to use a serif. If a heading
+   needs more presence, reach for size, tracking, or gold — not weight. */
 .font-display {
-  letter-spacing: -0.015em;
+  /* CAREFUL — this rule reaches almost nothing, and it is not a safety net.
+     `font-display` is never a class in the markup: every heading carries a
+     SEMANTIC class (`.hero-headline`, `.faq-heading`, ...) that @applies
+     `font-display` inside `@layer components`, which compiles to a
+     `font-family` declaration on that class. So this selector matches only a
+     literal `class="font-display"`, of which there is exactly one in the repo
+     — in Marquee.tsx, which nothing renders.
+
+     Being outside every @layer therefore buys nothing here: there is no
+     element for it to outrank on. The real mechanism is the explicit
+     `font-normal` on all 31 classes that @apply `font-display` — that is what
+     keeps Marcellus off the browser's synthetic bold. If you add a heading
+     class, put `font-normal` on it; do not rely on this block.
+
+     Both declarations are kept as the correct defaults for any future direct
+     use of the class, not as enforcement. */
+  font-weight: 400;
+  letter-spacing: 0.012em;
 }
 
 /* Pointer position inside a button, as a percentage of its box. Registering
@@ -109,17 +205,21 @@ body {
 }
 
 /* ── Reusable helpers ──────────────────────────────────────────────────── */
-/* Uppercase eyebrow label */
+/* Uppercase eyebrow label.
+   DEAD SELECTOR — same trap as `.font-display` below: nothing in the markup
+   carries `class="eyebrow"`. The live eyebrows are `.hero-eyebrow` /
+   `.hero-eyebrow-bottom`, plus the per-section eyebrow classes, and each sets
+   its own tracking. Editing this block changes nothing on screen. */
 .eyebrow {
   font-family: var(--font-sans);
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.22em;
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--color-gold-deep);
 }
 
-/* Marker-style highlight behind a word (hero) */
+/* Marker-style highlight behind a word (hero) — a deep gold band. */
 .marker {
   background-image: linear-gradient(
     var(--color-gold-soft),
@@ -131,16 +231,111 @@ body {
   padding: 0 0.06em;
 }
 
-/* Playful textures — tint via the element's text color (currentColor) */
-.tex-dots {
-  background-image: radial-gradient(currentColor 1.6px, transparent 1.7px);
-  background-size: 22px 22px;
+/* ── Classical motifs ──────────────────────────────────────────────────────
+   These replace the old `.tex-dots` / `.tex-waffle` polka-dot and waffle
+   textures, which read as casual and fought the theme. Both take their colour
+   from the element (currentColor), so a single class works on the onyx bands
+   AND on the stone ones — no light/dark variant needed.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Column fluting: vertical reeding, the surface texture of a Doric shaft. */
+.tex-fluting {
+  background-image: repeating-linear-gradient(
+    90deg,
+    currentColor 0 1px,
+    transparent 1px 13px
+  );
 }
-.tex-waffle {
-  background-image:
-    linear-gradient(currentColor 1.5px, transparent 1.5px),
-    linear-gradient(90deg, currentColor 1.5px, transparent 1.5px);
-  background-size: 26px 26px;
+
+/* One tile of a Greek key (meander), as a MASK rather than a background image.
+   That is the whole trick: a data-URI background can only carry a hard-coded
+   hex, so it could not follow the band it sits on. Masking a `currentColor`
+   fill lets the same rule render gold on onyx and deep-gold on stone.
+   The tile carries its own baseline segment (`M0 18H20`), which is what makes
+   consecutive tiles join into a continuous running band instead of a row of
+   detached spirals. */
+:root {
+  /* Height of one meander course. The tile is SQUARE: this drives both the
+     element height and the mask-size, so the two can never drift apart and
+     squash the key. Change it here only. */
+  --meander-h: 28px;
+  --meander: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M0 18H20M2 18V2H18V14H6V6H14V10' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+.rule-meander {
+  height: var(--meander-h);
+  background-color: currentColor;
+  -webkit-mask-image: var(--meander);
+  mask-image: var(--meander);
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-size: var(--meander-h) var(--meander-h);
+  mask-size: var(--meander-h) var(--meander-h);
+}
+
+/* ── Marble bands ──────────────────────────────────────────────────────────
+   Four sections stand on marble instead of onyx, so the page alternates
+   dark/light instead of running one tone top to bottom.
+
+   HOW: nothing here restyles a component. The rule re-points the ROLE tokens
+   on the section element itself, and because Tailwind v4 utilities compile to
+   `var(--color-*)`, every descendant follows automatically — `bg-onyx-3` on a
+   card resolves to stone-3, `text-ink` on a heading resolves to stone-ink. The
+   section's own `bg-onyx` / `bg-peach` resolves against the rebound value too,
+   since custom properties declared on an element are visible to that element's
+   own declarations. That is why the component classes stay untouched.
+
+   WHY IT IS NEEDED: `cream` and `ink` are both ivory and `plum` is onyx (see
+   the token note above) — every one of them assumes a dark ground. Left alone,
+   ivory body copy on marble measures 1.04:1. Invisible.
+
+   THE GOLD SPLIT is the one subtlety. True gold (#c6a15b) is only 1.99:1 on
+   marble, so it cannot be text here — `--color-gold` is rebound to the darker
+   `gold-carved` for text, icons and hairlines. But gold FILLS must stay bright,
+   or a gold button turns into a muddy bronze plate. The exception list below
+   restores true gold on exactly the elements that use it as a background, and
+   those elements carry onyx text, so they stay legible. */
+/* `.vision-section` is `display: none` today (see the note in siteConfig.ts).
+   It is listed anyway so the band is already correct if it is ever unhidden. */
+.vision-section,
+.programs-section,
+.rates-section,
+.waitlist-section {
+  --color-onyx: var(--color-stone);
+  --color-onyx-2: var(--color-stone-2);
+  --color-onyx-3: var(--color-stone-3);
+  --color-onyx-4: var(--color-stone-4);
+  /* The band-ground aliases resolve here too (see the token note). */
+  --color-peach: var(--color-stone);
+  --color-peach-soft: var(--color-stone);
+  --color-foam: var(--color-stone);
+  --color-rose: var(--color-stone);
+  --color-rose-soft: var(--color-stone-3);
+  /* Text roles flip to their marble equivalents. */
+  --color-ink: var(--color-stone-ink);
+  --color-cream: var(--color-stone-ink);
+  --color-muted: var(--color-stone-mute);
+  /* Gold as text / icon / hairline. Fills are restored below. */
+  --color-gold: var(--color-gold-carved);
+  --color-gold-deep: var(--color-gold-carved);
+  --color-gold-light: #5a4626;
+  --color-gold-soft: #e0d5bc;
+}
+
+/* Gold FILLS keep the true gold. `--color-plum` is deliberately NOT rebound
+   anywhere, so the onyx text these carry stays onyx and reads against it. */
+.vision-section .btn-primary,
+.vision-section .btn-accent,
+.vision-section .vision-quote,
+.programs-section .btn-primary,
+.programs-section .btn-accent,
+.rates-section .btn-primary,
+.rates-section .btn-accent,
+.rates-section .pricing-badge,
+.waitlist-section .btn-primary,
+.waitlist-section .btn-accent {
+  --color-gold: #c6a15b;
+  --color-gold-light: #d9bc88;
 }
 
 /* ── Semantic component classes ────────────────────────────────────────────
@@ -166,34 +361,31 @@ body {
 
   /* FAQ ("Good questions.") */
   .faq-section {
-    /* Extra bottom padding on mobile so the peeking dog (pinned to the section
-       floor) clears the stacked questions instead of overlapping the last one.
-       sm+ keeps the standard .section rhythm. */
-    @apply relative overflow-hidden bg-cream pb-40 sm:pb-28 md:pb-32;
+    @apply relative overflow-hidden bg-onyx;
   }
   .faq-grid {
     @apply grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16;
   }
   .faq-heading {
-    @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[2.9rem];
+    @apply font-display text-3xl font-normal text-ink sm:text-4xl lg:text-[2.9rem];
   }
   .faq-list {
-    @apply border-t-2 border-plum/10;
+    @apply border-t border-gold/20;
   }
   .faq-item {
-    @apply border-b-2 border-plum/10;
+    @apply border-b border-gold/20;
   }
   .faq-question {
     @apply flex w-full items-center justify-between gap-4 py-5 text-left;
   }
   .faq-question-text {
-    @apply font-display text-lg font-extrabold text-ink;
+    @apply font-display text-lg font-normal text-ink;
   }
   .faq-toggle {
-    @apply grid h-8 w-8 shrink-0 place-items-center rounded-full bg-cream-2 text-gold-deep transition-all duration-300;
+    @apply grid h-8 w-8 shrink-0 place-items-center rounded-none bg-onyx-3 text-gold transition-all duration-300;
   }
   .faq-toggle-open {
-    @apply rotate-45 bg-gold text-cream;
+    @apply rotate-45 bg-gold text-plum;
   }
   .faq-toggle-icon {
     @apply h-4 w-4;
@@ -202,14 +394,7 @@ body {
     @apply overflow-hidden;
   }
   .faq-answer {
-    @apply pb-5 pr-8 text-[1.02rem] leading-relaxed text-plum/80;
-  }
-  /* centred anchor so the dog lines up with the container (heading) edge */
-  .faq-peeking-wrap {
-    @apply pointer-events-none absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl;
-  }
-  .peeking-dog {
-    @apply pointer-events-none absolute -bottom-4 left-6 h-36 w-auto text-plum sm:left-8 sm:h-44;
+    @apply pb-5 pr-8 text-[1.02rem] leading-relaxed text-cream/70;
   }
 
   /* ── Buttons ─────────────────────────────────────────────────────────── */
@@ -220,7 +405,7 @@ body {
      @property colours, which is what lets the split animate — a plain
      `background-image` swap would pop, since gradients don't interpolate. */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold disabled:opacity-60 disabled:pointer-events-none active:translate-y-[3px];
+    @apply inline-flex items-center justify-center gap-2 rounded-none font-semibold disabled:opacity-60 disabled:pointer-events-none;
     background-image: radial-gradient(
       circle 9rem at var(--btn-x) var(--btn-y),
       var(--btn-from),
@@ -250,40 +435,42 @@ body {
       --btn-to 320ms 160ms;
   }
   .btn-primary {
-    @apply bg-plum text-cream shadow-[0_5px_0_0_#133239] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#133239] active:shadow-[0_2px_0_0_#133239];
-    --btn-from: var(--color-plum);
-    --btn-to: var(--color-plum);
+    @apply bg-gold text-plum;
+    --btn-from: var(--color-gold);
+    --btn-to: var(--color-gold);
   }
   .btn-primary:hover {
-    --btn-from: #0b1d21;
-    --btn-to: #2f6b78;
+    --btn-from: var(--color-gold-press);
+    --btn-to: var(--color-gold-light);
   }
   /* Hover stops are the Figma pair for this button (node 220:908), ordered
      dark-centre → light-edge: the pointer sinks a well into the button rather
      than carrying a highlight around with it. */
   .btn-accent {
-    @apply bg-gold text-cream shadow-[0_5px_0_0_#0c5f52] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_#0c5f52] active:shadow-[0_2px_0_0_#0c5f52];
+    @apply bg-gold text-plum;
     --btn-from: var(--color-gold);
     --btn-to: var(--color-gold);
   }
   .btn-accent:hover {
-    --btn-from: #073831;
-    --btn-to: #159e8a;
+    --btn-from: var(--color-gold-press);
+    --btn-to: var(--color-gold-light);
   }
+  /* The quiet action. Onyx surface, gold hairline, gold label — so the gold
+     FILL stays reserved for the one primary button per view. */
   .btn-cream {
-    @apply bg-cream text-plum shadow-[0_5px_0_0_rgba(0,0,0,0.28)] hover:-translate-y-0.5 hover:shadow-[0_7px_0_0_rgba(0,0,0,0.28)] active:shadow-[0_2px_0_0_rgba(0,0,0,0.28)];
-    --btn-from: var(--color-cream);
-    --btn-to: var(--color-cream);
+    @apply bg-onyx-4 text-gold ring-1 ring-inset ring-gold/35 hover:ring-gold/60;
+    --btn-from: var(--color-onyx-4);
+    --btn-to: var(--color-onyx-4);
   }
-  /* The pricing CTAs. cream-2 against cream is too close a pair to read as a
-     gradient, so the well takes the pale teal tint instead — same dark-centre
-     → light-edge direction as the other variants, just in this palette. */
+  /* The pricing CTAs. Onyx-on-onyx is too close a pair to read as a gradient,
+     so the well takes the deep gold tint instead — same dark-centre →
+     light-edge direction as the other variants, just in this palette. */
   .btn-cream:hover {
     --btn-from: var(--color-gold-soft);
-    --btn-to: #ffffff;
+    --btn-to: var(--color-onyx-4);
   }
   .btn-outline {
-    @apply text-plum ring-2 ring-inset ring-plum/25 hover:ring-plum/50 hover:bg-plum/[0.04] active:translate-y-0;
+    @apply text-gold ring-2 ring-inset ring-gold/35 hover:ring-gold/60 hover:bg-gold/[0.08];
   }
   .btn-md {
     @apply px-5 py-2.5 text-sm;
@@ -305,16 +492,16 @@ body {
       animation: btn-idle-glow 5s linear infinite;
     }
     .btn-primary {
-      --btn-from: #0b1d21;
-      --btn-to: #2f6b78;
+      --btn-from: var(--color-gold-press);
+      --btn-to: var(--color-gold-light);
     }
     .btn-accent {
-      --btn-from: #073831;
-      --btn-to: #159e8a;
+      --btn-from: var(--color-gold-press);
+      --btn-to: var(--color-gold-light);
     }
     .btn-cream {
       --btn-from: var(--color-gold-soft);
-      --btn-to: #ffffff;
+      --btn-to: var(--color-onyx-4);
     }
   }
 
@@ -325,15 +512,15 @@ body {
 
   /* ── TODO placeholder tokens ─────────────────────────────────────────── */
   .todo-token {
-    @apply mx-0.5 whitespace-normal rounded-md bg-gold-soft/80 px-1.5 py-0.5 align-baseline text-[0.85em] font-semibold tracking-tight text-gold-deep ring-1 ring-gold/50;
+    @apply mx-0.5 whitespace-normal rounded-none bg-gold-soft/80 px-1.5 py-0.5 align-baseline text-[0.85em] font-semibold tracking-tight text-gold-deep ring-1 ring-gold/50;
   }
   .todo-badge {
-    @apply inline-flex items-center rounded-md bg-gold-soft/80 px-2 py-1 text-sm font-semibold text-gold-deep ring-1 ring-gold/50;
+    @apply inline-flex items-center rounded-none bg-gold-soft/80 px-2 py-1 text-sm font-semibold text-gold-deep ring-1 ring-gold/50;
   }
 
   /* ── Back-to-top button ──────────────────────────────────────────────── */
   .back-to-top {
-    @apply fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full bg-gold text-cream shadow-[0_5px_0_0_#0c5f52] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_7px_0_0_#0c5f52] active:translate-y-[2px] active:shadow-[0_2px_0_0_#0c5f52] sm:bottom-8 sm:right-8;
+    @apply fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-none bg-gold text-plum transition-all duration-300 sm:bottom-8 sm:right-8;
   }
   .back-to-top-hidden {
     @apply pointer-events-none translate-y-4 opacity-0;
@@ -347,10 +534,29 @@ body {
     @apply fixed inset-x-0 top-0 z-50 transition-all duration-500;
   }
   .header-bar-scrolled {
-    @apply border-b border-plum/10 bg-cream/90 backdrop-blur-md;
+    @apply border-b border-gold/20 bg-onyx/70 backdrop-blur-md;
   }
   .header-bar-top {
-    @apply border-b border-transparent bg-cream/0;
+    @apply border-b border-transparent bg-onyx/0;
+  }
+  /* The bar is deliberately transparent for the whole pinned fly-over, but the
+     courts pass directly behind it — ivory lines with a glow, on near-black —
+     and they wash the nav and the wordmark out completely mid-flight. This is
+     a scrim, not a bar: a soft top-down gradient that gives the header content
+     something dark to sit on without reintroducing a hard edge. Over the hero
+     at rest the ground is already onyx, so it is invisible there and the
+     transparent look is preserved. Drops away with the class once the bar
+     solidifies, where the opaque background takes over. */
+  .header-bar-top::before {
+    content: "";
+    @apply pointer-events-none absolute inset-x-0 top-0 h-40;
+    z-index: -1;
+    background: linear-gradient(
+      to bottom,
+      rgba(5, 15, 14, 0.82) 0%,
+      rgba(5, 15, 14, 0.55) 42%,
+      rgba(5, 15, 14, 0) 100%
+    );
   }
   .header-inner {
     @apply mx-auto flex max-w-6xl items-center justify-between px-6 transition-all duration-500 sm:px-8;
@@ -372,15 +578,15 @@ body {
     @apply hidden items-center gap-8 md:flex;
   }
   .header-nav-link {
-    @apply relative text-sm font-semibold text-ink/70 transition-colors hover:text-ink;
+    @apply relative text-sm font-semibold text-ink/70 transition-colors hover:text-gold;
   }
   .header-nav-underline {
-    @apply absolute -bottom-1.5 left-0 h-[3px] w-full origin-left scale-x-0 rounded-full bg-gold transition-transform duration-300 ease-out group-hover:scale-x-100;
+    @apply absolute -bottom-1.5 left-0 h-[3px] w-full origin-left scale-x-0 rounded-none bg-gold transition-transform duration-300 ease-out group-hover:scale-x-100;
   }
   /* Scroll-spy indicator — same geometry as the hover underline; slides
      between links via Motion layoutId (see Header). */
   .header-nav-active {
-    @apply absolute -bottom-1.5 left-0 h-[3px] w-full rounded-full bg-gold;
+    @apply absolute -bottom-1.5 left-0 h-[3px] w-full rounded-none bg-gold;
   }
   .header-actions {
     @apply flex items-center gap-2;
@@ -389,7 +595,7 @@ body {
     @apply hidden sm:inline-flex;
   }
   .header-menu-btn {
-    @apply grid h-10 w-10 place-items-center rounded-full text-ink transition-colors hover:bg-plum/[0.06] md:hidden;
+    @apply grid h-10 w-10 place-items-center rounded-none text-ink transition-colors hover:bg-gold/[0.12] md:hidden;
   }
   .header-icon {
     @apply h-5 w-5;
@@ -403,7 +609,7 @@ body {
     @apply text-cream/75 hover:text-cream;
   }
   .header-bar-top .header-nav-active {
-    @apply bg-gold-light;
+    @apply bg-gold;
   }
   .header-bar-top .header-menu-btn {
     @apply text-cream hover:bg-cream/10;
@@ -414,7 +620,7 @@ body {
     @apply h-14 sm:h-24;
   }
   .header-overlay {
-    @apply fixed inset-0 z-50 bg-cream md:hidden;
+    @apply fixed inset-0 z-50 bg-onyx md:hidden;
   }
   /* Mirror .header-inner's geometry (top state: h-24, same max-width + padding)
      so the close (X) lands exactly where the hamburger was — no shift when the
@@ -432,13 +638,13 @@ body {
     @apply invisible;
   }
   .header-overlay-close {
-    @apply grid h-10 w-10 place-items-center rounded-full text-ink transition-colors hover:bg-plum/[0.06];
+    @apply grid h-10 w-10 place-items-center rounded-none text-ink transition-colors hover:bg-gold/[0.12];
   }
   .header-overlay-nav {
     @apply flex flex-col gap-1 px-6 pt-6;
   }
   .header-overlay-link {
-    @apply border-b border-plum/10 py-4 font-display text-3xl font-extrabold text-ink;
+    @apply border-b border-gold/20 py-4 font-display text-3xl font-normal text-ink;
   }
   .header-overlay-cta-wrap {
     @apply pt-8;
@@ -448,8 +654,11 @@ body {
   }
 
   /* ── Wordmark ────────────────────────────────────────────────────────── */
+  /* Mark + a stacked, letterspaced two-line lockup. `items-center` keeps the
+     text block optically centred on the mark at every mark height (the header
+     grows the mark to h-14/h-24 in its top state). */
   .wordmark {
-    @apply inline-flex items-center gap-2.5 font-display text-xl font-extrabold tracking-tight transition-colors duration-500 sm:text-2xl;
+    @apply inline-flex items-center gap-3 transition-colors duration-500 sm:gap-3.5;
   }
   .wordmark-cream {
     @apply text-cream;
@@ -457,11 +666,32 @@ body {
   .wordmark-ink {
     @apply text-ink;
   }
+  /* The mark paints its own gold gradient (see ApolloLogo), so only the
+     wordmark text follows `color` / the invert flip. Sized by height with
+     `w-auto` — the art is portrait, so it reads narrow at a given height. */
   .wordmark-logo {
     @apply h-9 w-auto transition-[height] duration-500 ease-out sm:h-10;
   }
   .wordmark-text {
-    @apply leading-none whitespace-nowrap;
+    @apply flex flex-col items-center justify-center gap-[0.32em] whitespace-nowrap;
+  }
+  /* "APOLLO" — the title face, wide-tracked. Marcellus has one weight, so this
+     stays at 400; `font-extrabold` here would synthesise a fake bold. The
+     negative right margin cancels the trailing letter-space that tracking adds
+     after the final glyph, so the block's right edge is where it looks. */
+  .wordmark-name {
+    @apply font-display font-normal uppercase leading-none text-gold;
+    font-size: 2rem;
+    letter-spacing: 0.26em;
+    margin-right: -0.26em;
+  }
+  /* "BADMINTON CLUB" — the body face, smaller and dimmer. Sized against the
+     name line (~0.46x) rather than the mark; see the note in Wordmark.tsx. */
+  .wordmark-sub {
+    @apply font-sans font-medium uppercase leading-none text-gold/65;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    margin-right: -0.2em;
   }
 
   /* ── Hero (dark "spotlight" — a pinned 3D camera fly-over) ───────────── */
@@ -474,6 +704,97 @@ body {
     /* Mobile top-aligns the copy under the header (Figma mobile hero), leaving
        the lower half to the full-bleed court; desktop centres it. */
     @apply sticky top-0 flex h-[100svh] w-full items-start overflow-hidden bg-plum sm:items-center;
+  }
+
+  /* ── Still hero (parked) ──────────────────────────────────────────────
+     One image on a parallax drift. Currently OFF: HERO_FLYOVER in Hero.tsx is
+     `true`, so the 8-court fly-over renders instead and the markup these
+     classes style is not emitted at all. Kept intact — flipping that flag back
+     to `false` restores this hero with no other change. */
+  .hero-media {
+    @apply absolute inset-0 overflow-hidden;
+  }
+  /* Taller than the frame on purpose: the overflow is the parallax's travel
+     room. Hero.tsx drifts this by a fraction of the VIEWPORT height and keeps
+     that fraction below the margin here, so an edge can never come into view.
+     The two must be kept in step — the pairs are 15%/12% and 30%/26%.
+     WHY THE BREAKPOINT SPLIT: the source is portrait (1122x1402) and
+     `object-cover` scales along whichever axis is short. On a landscape frame
+     that is the WIDTH, so the image is already ~2x taller than the frame and
+     growing this box only moves the clip window — the zoom does not change,
+     which is why desktop can afford a big 30% margin. On a portrait phone
+     cover scales by HEIGHT instead, so the same change would crop the sides
+     and zoom in; mobile keeps the tighter 15%. */
+  .hero-media-inner {
+    @apply absolute inset-x-0;
+    top: -15%;
+    height: 130%;
+    will-change: transform, opacity;
+    /* Slow reveal on load. Deliberately a CSS animation and not a motion prop:
+       an `initial={{opacity:0}}` would be baked into the SSR HTML, so if JS
+       never arrives the hero image stays invisible. This way the fade is
+       progressive enhancement — and `prefers-reduced-motion` is already
+       handled, because the global reduce block forces animation-duration to
+       0.001ms, which lands straight on the `to` frame. `both` holds opacity 1
+       afterwards. Only opacity is animated, so it never fights the inline
+       transform the parallax writes. */
+    /* Symmetric S-curve, not the site's ease-out token: an ease-out front-loads
+       the opacity, so 2.2s of it still reads as a quick fade with a long tail.
+       This holds ~50% opacity at ~50% of the duration, which is what actually
+       reads as slow. */
+    animation: hero-media-in 2.2s cubic-bezier(0.4, 0, 0.6, 1) 0.15s both;
+  }
+  @media (min-width: 640px) {
+    .hero-media-inner {
+      top: -30%;
+      height: 160%;
+    }
+  }
+  /* The art is portrait (1122x1402), so a landscape frame crops top and bottom;
+     biasing the crop above centre keeps the subject in shot rather than filling
+     the frame with its lower third.
+     NOTE: the 30% desktop overflow above assumes a PORTRAIT source. Swap in a
+     landscape image (assets/hero2.png is 1536x1024) and `object-cover` starts
+     scaling by height instead, which zooms it ~1.5x — retune both numbers if
+     the import in Hero.tsx changes shape. */
+  .hero-media-img {
+    @apply object-cover;
+    object-position: 50% 40%;
+  }
+  /* Scrim. Mobile puts the copy at the top, desktop puts it left, so each
+     darkens the edge it needs and leaves the court legible in between. */
+  .hero-media-scrim {
+    @apply pointer-events-none absolute inset-0;
+    background: linear-gradient(
+      to bottom,
+      rgba(5, 15, 14, 0.92) 0%,
+      rgba(5, 15, 14, 0.3) 44%,
+      rgba(5, 15, 14, 0.9) 100%
+    );
+  }
+  @media (min-width: 640px) {
+    .hero-media-scrim {
+      background:
+        linear-gradient(
+          to right,
+          rgba(5, 15, 14, 0.95) 0%,
+          rgba(5, 15, 14, 0.88) 30%,
+          rgba(5, 15, 14, 0.58) 52%,
+          rgba(5, 15, 14, 0.08) 78%,
+          rgba(5, 15, 14, 0.3) 100%
+        ),
+        linear-gradient(
+          to bottom,
+          rgba(5, 15, 14, 0.45) 0%,
+          rgba(5, 15, 14, 0) 32%,
+          rgba(5, 15, 14, 0.55) 100%
+        );
+    }
+  }
+  /* Parks the fly-over when HERO_FLYOVER is `false`. Unused while it is `true`,
+     but kept so the switch stays a one-liner. */
+  .hero-scene-off {
+    display: none;
   }
 
   /* 3D scene — the camera lives in `perspective`; the floor holds the courts. */
@@ -523,22 +844,22 @@ body {
   /* Top eyebrow — desktop only. On mobile the status moves to a bottom-centre
      pill over the court (see `.hero-eyebrow-bottom`). */
   .hero-eyebrow {
-    @apply mb-6 hidden items-center rounded-full bg-cream/10 px-4 py-2 text-sm font-semibold text-cream backdrop-blur-sm sm:inline-flex;
+    @apply mb-6 hidden items-center rounded-none bg-cream/[0.06] px-4 py-2 text-sm font-semibold text-cream backdrop-blur-sm sm:inline-flex;
   }
   /* Mobile status pill: shortened copy on a translucent-black chip, centred at
      the bottom of the hero over the court. Hidden from sm up. */
   .hero-eyebrow-bottom {
-    @apply pointer-events-none absolute bottom-[3%] left-1/2 z-10 inline-flex -translate-x-1/2 items-center rounded-full px-4 py-2 text-sm font-semibold text-cream backdrop-blur-md sm:hidden;
+    @apply pointer-events-none absolute bottom-[3%] left-1/2 z-10 inline-flex -translate-x-1/2 items-center rounded-none px-4 py-2 text-sm font-semibold text-cream backdrop-blur-md sm:hidden;
     background-color: rgba(0, 0, 0, 0.25);
   }
   .hero-headline {
-    @apply text-center font-display text-[clamp(2.15rem,9vw,2.85rem)] font-extrabold leading-[0.98] tracking-tight text-cream sm:text-left sm:text-6xl lg:text-[3.4rem] xl:text-[4.1rem];
+    @apply text-center font-display text-[clamp(2.15rem,9vw,2.85rem)] font-normal leading-[0.98] text-cream sm:text-left sm:text-6xl lg:text-[3.4rem] xl:text-[4.1rem];
   }
   .hero-headline-line {
     display: block;
   }
   .hero-headline-accent {
-    @apply text-gold-light;
+    @apply text-gold;
   }
   .hero-subhead {
     /* Hidden on mobile to de-clutter the hero (headline + CTA + court only);
@@ -551,7 +872,7 @@ body {
   /* Secondary "See what we're building" link — desktop only; the Figma mobile
      hero drops it. */
   .hero-secondary {
-    @apply hidden items-center gap-2 text-[0.95rem] font-semibold text-cream transition-colors hover:text-gold-light sm:inline-flex;
+    @apply hidden items-center gap-2 text-[0.95rem] font-semibold text-cream transition-colors hover:text-gold sm:inline-flex;
   }
   .hero-secondary-icon {
     @apply h-4 w-4 transition-transform duration-300 group-hover:translate-x-1;
@@ -563,7 +884,7 @@ body {
     @apply text-xs font-semibold uppercase tracking-[0.22em] text-cream/50;
   }
   .hero-facility-line {
-    @apply font-display text-xl font-bold capitalize text-cream/90;
+    @apply font-display text-xl font-normal capitalize text-cream/90;
   }
 
   /* Nav anchor for #courts. In the fly-over its `top` is solved inline in
@@ -577,7 +898,7 @@ body {
 
   /* ── Vision ──────────────────────────────────────────────────────────── */
   .vision-section {
-    @apply relative overflow-hidden bg-cream;
+    @apply relative overflow-hidden bg-onyx;
     /* temporarily hidden */
     display: none;
   }
@@ -588,7 +909,7 @@ body {
     @apply lg:col-span-7;
   }
   .vision-heading {
-    @apply font-display text-4xl font-extrabold leading-[1.0] tracking-tight text-ink sm:text-5xl lg:text-[3.4rem];
+    @apply font-display text-4xl font-normal leading-[1.0] text-ink sm:text-5xl lg:text-[3.4rem];
   }
   .vision-paragraphs {
     @apply mt-7 max-w-xl space-y-5;
@@ -600,28 +921,25 @@ body {
     @apply relative lg:col-span-5;
   }
   .vision-polaroid {
-    @apply mx-auto max-w-xs rotate-[2.5deg] rounded-[2rem] border-2 border-plum/10 bg-cream p-4 shadow-[10px_10px_0_0_rgba(38,34,30,0.14)];
+    @apply mx-auto max-w-xs rounded-none border border-gold/20 bg-onyx-3 p-4;
   }
   .vision-polaroid-frame {
-    @apply relative grid aspect-square place-items-center overflow-hidden rounded-2xl bg-peach;
+    @apply relative grid aspect-square place-items-center overflow-hidden rounded-none bg-peach;
   }
   .vision-polaroid-tex {
-    @apply absolute inset-0 text-plum/[0.09];
+    @apply absolute inset-0 text-gold/[0.10];
   }
   .vision-polaroid-dog {
-    @apply relative h-44 w-auto text-plum;
+    @apply relative h-44 w-auto text-gold/40;
   }
   .vision-polaroid-caption {
-    @apply mt-3 text-center font-display text-sm font-bold text-ink;
+    @apply mt-3 text-center font-display text-sm font-normal text-ink;
   }
   .vision-quote {
-    @apply relative z-10 mx-auto mt-6 max-w-sm -rotate-2 rounded-2xl border-2 border-plum/10 bg-gold px-6 py-5 shadow-[6px_6px_0_0_rgba(38,34,30,0.16)];
-  }
-  .vision-quote-icon {
-    @apply mb-2 h-6 w-6 text-cream/80;
+    @apply relative z-10 mx-auto mt-6 max-w-sm rounded-none border border-gold/40 bg-gold px-6 py-5;
   }
   .vision-quote-text {
-    @apply font-display text-base font-bold leading-snug text-cream;
+    @apply font-display text-base font-normal leading-snug text-plum;
   }
 
   /* ── Sports ──────────────────────────────────────────────────────────── */
@@ -640,7 +958,7 @@ body {
     @apply max-w-none;
   }
   .sports-heading {
-    @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[3rem];
+    @apply font-display text-3xl font-normal text-ink sm:text-4xl lg:text-[3rem];
   }
   .sports-rows {
     @apply mt-14 space-y-14 sm:mt-16 sm:space-y-20;
@@ -667,10 +985,10 @@ body {
     @apply grid-cols-1;
   }
   .sports-cluster-court {
-    @apply drop-shadow-[0_12px_16px_rgba(38,34,30,0.14)];
+    @apply drop-shadow-[0_12px_16px_rgba(0,0,0,0.45)];
   }
   .sports-row-title {
-    @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl;
+    @apply font-display text-3xl font-normal text-ink sm:text-4xl;
   }
   .sports-row-body {
     @apply mt-4 max-w-lg text-lg leading-relaxed text-ink/75;
@@ -682,7 +1000,7 @@ body {
     @apply flex items-center gap-3;
   }
   .sports-feature-check {
-    @apply grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold text-cream;
+    @apply grid h-6 w-6 shrink-0 place-items-center rounded-none bg-gold text-plum;
   }
   .sports-feature-icon {
     @apply h-4 w-4;
@@ -692,20 +1010,47 @@ body {
   }
 
   /* ── Stats band ──────────────────────────────────────────────────────── */
+  /* The page's frieze. Meander rules top and bottom turn the stat strip into
+     a banded course rather than a floating row of numbers. The rules are
+     pseudo-elements so no markup change is needed; `text-gold` on the section
+     is what tints them (the mask paints currentColor), and the children set
+     their own colours, so it does not leak into the labels. */
   .stats-section {
-    @apply bg-plum text-cream;
+    @apply relative bg-plum text-gold;
+  }
+  .stats-section::before,
+  .stats-section::after {
+    content: "";
+    @apply pointer-events-none absolute inset-x-0 opacity-45;
+    height: var(--meander-h);
+    background-color: currentColor;
+    -webkit-mask-image: var(--meander);
+    mask-image: var(--meander);
+    -webkit-mask-repeat: repeat-x;
+    mask-repeat: repeat-x;
+    -webkit-mask-size: var(--meander-h) var(--meander-h);
+    mask-size: var(--meander-h) var(--meander-h);
+  }
+  .stats-section::before {
+    @apply top-0;
+  }
+  /* Flipped so the key runs mirrored along the bottom edge and the two rules
+     read as a matched pair framing the band. */
+  .stats-section::after {
+    @apply bottom-0 -scale-y-100;
   }
   .stats-grid {
     @apply mx-auto grid max-w-6xl grid-cols-2 gap-x-8 gap-y-10 px-6 py-12 sm:grid-cols-4 sm:px-8 sm:py-14;
   }
   .stats-item {
-    @apply border-l-[3px] border-gold-light/40 pl-4;
+    @apply border-l-[3px] border-gold/45 pl-4;
   }
   .stats-value {
-    @apply font-display text-5xl font-extrabold leading-none tracking-tight text-gold-light sm:text-6xl;
+    @apply font-display text-5xl font-normal leading-none text-gold sm:text-6xl;
+    font-variant-numeric: tabular-nums;
   }
   .stats-label {
-    @apply mt-2 text-sm font-extrabold uppercase tracking-wide text-cream;
+    @apply mt-2 text-sm font-extrabold uppercase tracking-[0.2em] text-cream;
   }
   .stats-note {
     @apply text-xs font-semibold text-cream/50;
@@ -715,46 +1060,38 @@ body {
   .programs-section {
     @apply relative overflow-hidden bg-foam;
   }
-  /* Scroll-driven running dog (see ProgramsDog): a full-width track measures
-     scroll progress; the mover starts at the left edge and travels right.
-     The sprite keeps its original (unmirrored) pose. */
-  .programs-dog-track {
-    @apply pointer-events-none absolute inset-x-0 top-8 hidden sm:block;
-  }
-  .programs-dog-mover {
-    @apply absolute left-6 lg:left-10;
-  }
   .programs-running-dog-svg {
-    @apply h-[200px] w-auto rotate-[35deg] text-plum;
+    @apply h-[200px] w-auto rotate-[35deg] text-gold/[0.12];
   }
   .programs-heading-wrap {
     @apply max-w-none;
   }
   .programs-heading {
-    @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[3rem];
+    @apply font-display text-3xl font-normal text-ink sm:text-4xl lg:text-[3rem];
   }
   .programs-list {
-    @apply mt-12 border-t-2 border-plum/10;
+    @apply mt-12 border-t border-gold/20;
   }
   .programs-row {
-    @apply flex items-center gap-5 border-b-2 border-plum/10 py-6 sm:gap-8 sm:px-4;
+    @apply flex items-center gap-5 border-b border-gold/20 py-6 sm:gap-8 sm:px-4;
   }
   .programs-index {
-    @apply w-14 shrink-0 font-display text-4xl font-extrabold leading-none text-plum/60 sm:w-24 sm:text-6xl;
+    @apply w-14 shrink-0 font-display text-4xl font-normal leading-none text-gold/45 sm:w-24 sm:text-6xl;
+    font-variant-numeric: tabular-nums;
   }
   .programs-row-body {
     @apply flex-1;
   }
   .programs-title {
-    @apply font-display text-xl font-extrabold text-ink sm:text-2xl;
+    @apply font-display text-xl font-normal text-ink sm:text-2xl;
   }
-  /* `text-muted` is tuned for the cream canvas; on the mint block it washes
-     out, so the body copy leans on the dark teal anchor instead. */
+  /* `text-muted` is a touch cool against the onyx band, so the body copy
+     leans on dimmed ivory instead. */
   .programs-body {
-    @apply mt-1.5 max-w-2xl leading-relaxed text-plum/80;
+    @apply mt-1.5 max-w-2xl leading-relaxed text-cream/70;
   }
   .programs-icon-chip {
-    @apply hidden h-12 w-12 shrink-0 place-items-center rounded-2xl bg-plum text-gold-light sm:grid;
+    @apply hidden h-12 w-12 shrink-0 place-items-center rounded-none bg-onyx-3 text-gold sm:grid;
   }
   .programs-icon {
     @apply h-6 w-6;
@@ -765,13 +1102,13 @@ body {
     @apply relative overflow-hidden bg-plum text-cream;
   }
   .pricing-birdie {
-    @apply -bottom-24 -left-16 h-40 w-40 rotate-12 opacity-70 sm:h-60 sm:w-60;
+    @apply -bottom-24 -left-16 h-40 w-40 rotate-12 opacity-[0.06] sm:h-60 sm:w-60;
   }
   .pricing-heading-wrap {
     @apply relative;
   }
   .pricing-heading {
-    @apply font-display text-3xl font-extrabold tracking-tight text-cream sm:text-4xl lg:text-[3rem];
+    @apply font-display text-3xl font-normal text-cream sm:text-4xl lg:text-[3rem];
   }
   .pricing-note {
     @apply mt-4 text-lg leading-relaxed text-cream/60;
@@ -781,10 +1118,10 @@ body {
     @apply relative mt-12 sm:mt-16;
   }
   .pricing-group-head {
-    @apply mb-6 border-t border-cream/10 pt-8;
+    @apply mb-6 border-t border-gold/15 pt-8;
   }
   .pricing-group-title {
-    @apply font-display text-2xl font-extrabold tracking-tight text-cream;
+    @apply font-display text-2xl font-normal text-cream;
   }
   .pricing-group-subtitle {
     @apply mt-1 text-sm font-semibold text-cream/50;
@@ -805,35 +1142,39 @@ body {
   .pricing-card {
     /* `isolate` makes the card its own stacking context so the dog watermark can
        sit behind the content via a negative z-index. */
-    @apply relative isolate flex h-full flex-col rounded-3xl bg-cream/[0.06] p-8 ring-1 ring-cream/10;
+    @apply relative isolate flex h-full flex-col rounded-none bg-onyx-3 p-8 ring-1 ring-gold/20;
   }
   /* Featured tier (Player): brighter surface, accent ring + glow, and lifted a
      touch on desktop so it reads as the headline choice. */
   .pricing-card-featured {
-    @apply bg-cream/[0.11] ring-2 ring-gold-light/70 lg:-translate-y-3 lg:p-9 lg:shadow-[0_24px_60px_-24px_rgba(95,197,179,0.4)];
+    @apply bg-onyx-4 ring-2 ring-gold lg:-translate-y-3 lg:p-9 lg:shadow-[0_24px_60px_-24px_rgba(198,161,91,0.3)];
   }
   /* The other tiers in a featured group step back a little. */
   .pricing-card-muted {
     @apply lg:scale-[0.96] lg:opacity-90;
   }
-  /* "Most popular" pill, centred over the featured card's top edge. */
+  /* "Most popular" pill, centred over the featured card's top edge.
+     THE ONE JEWEL SWAP: repoint these two custom properties at
+     `var(--color-jewel)` / `var(--color-champagne)` for the oxblood chip.
+     Everything else on the site stays onyx + gold + ivory. */
   .pricing-badge {
-    @apply absolute -top-3 left-1/2 z-10 inline-flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-gold-light px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.12em] text-plum shadow-md;
-  }
-  .pricing-badge-paw {
-    @apply h-3.5 w-3.5;
+    --badge-bg: var(--color-gold);
+    --badge-fg: var(--color-plum);
+    @apply absolute -top-3 left-1/2 z-10 inline-flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-none px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.2em];
+    background-color: var(--badge-bg);
+    color: var(--badge-fg);
   }
   .pricing-card-head {
     @apply flex items-center gap-3;
   }
   .pricing-icon {
-    @apply grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-cream/[0.07] text-gold-light ring-1 ring-cream/10;
+    @apply grid h-12 w-12 shrink-0 place-items-center rounded-none bg-onyx-4 text-gold;
   }
   .pricing-icon-glyph {
     @apply h-6 w-6;
   }
   .pricing-plan-name {
-    @apply mt-6 font-display text-2xl font-extrabold text-cream;
+    @apply mt-6 font-display text-2xl font-normal text-cream;
   }
   .pricing-plan-tagline {
     @apply mt-1 text-sm font-semibold text-cream/55;
@@ -845,19 +1186,20 @@ body {
     @apply text-sm font-semibold text-cream/50;
   }
   .pricing-price {
-    @apply font-display text-xl font-extrabold text-gold-light;
+    @apply font-display text-xl font-normal text-gold;
+    font-variant-numeric: tabular-nums;
   }
   .pricing-unit {
     @apply text-sm font-semibold text-cream/50;
   }
   .pricing-features {
-    @apply mt-6 space-y-3 border-t border-cream/10 pt-6;
+    @apply mt-6 space-y-3 border-t border-gold/15 pt-6;
   }
   .pricing-feature {
     @apply flex items-start gap-3;
   }
   .pricing-feature-check {
-    @apply mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-cream/10 text-gold-light;
+    @apply mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-none bg-gold/[0.14] text-gold;
   }
   .pricing-feature-icon {
     @apply h-3 w-3;
@@ -871,33 +1213,6 @@ body {
   .pricing-cta {
     @apply w-full;
   }
-  /* Clips the oversized dog to the card's rounded rect so it "cuts off" at the
-     right edge — without clipping the badge, which lives outside this wrapper.
-     Negative z (within the card's isolate context) keeps it behind content. */
-  .pricing-card-dog-clip {
-    @apply pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-3xl;
-  }
-  /* Apollo illustration: oversized, pushed to the top-right so it bleeds off. */
-  .pricing-card-dog {
-    @apply absolute -top-4 -right-16 h-44 w-auto text-white/20 sm:-right-20 sm:h-56;
-  }
-  .pricing-card-dog-flip {
-    @apply -scale-x-100;
-  }
-  /* Per-tier nudges on top of the shared position. */
-  .pricing-card-dog-walking {
-    @apply -right-28 sm:-right-36;
-  }
-  .pricing-card-dog-playing {
-    @apply -top-16 sm:-top-16;
-  }
-  /* Paw-print bullets (memberships): drop the round chip, show Apollo's paw. */
-  .pricing-feature-check-paw {
-    @apply bg-transparent text-gold-light;
-  }
-  .pricing-feature-check-paw .pricing-feature-icon {
-    @apply h-4 w-4;
-  }
   /* Not-included perks: a muted X and struck-through label, to nudge upgrades. */
   .pricing-feature-check-x {
     @apply bg-transparent text-cream/30;
@@ -908,9 +1223,10 @@ body {
   .pricing-feature-off .pricing-feature-label {
     @apply text-cream/35 line-through;
   }
-  /* Pay-as-you-go sits on a lighter plum so it reads as its own section. */
+  /* Pay-as-you-go sits on the alternate onyx band so it reads as its own
+     section. */
   .rates-section {
-    @apply bg-plum-deep;
+    @apply bg-onyx-2;
   }
   /* Memberships: leave room at the bottom for Apollo to peek in. */
   .membership-section {
@@ -920,7 +1236,7 @@ body {
     @apply pointer-events-none absolute inset-x-0 bottom-0 z-0 mx-auto flex max-w-6xl justify-end px-6 sm:px-8;
   }
   .membership-peek {
-    @apply h-32 w-auto translate-y-2 text-gold-light/25 sm:h-44;
+    @apply h-32 w-auto translate-y-2 text-gold/25 sm:h-44;
   }
 
   /* ── Why us ──────────────────────────────────────────────────────────── */
@@ -931,13 +1247,13 @@ body {
     @apply pointer-events-none absolute -bottom-40 -right-24 h-[36rem] w-[36rem] rounded-full opacity-40 blur-3xl;
   }
   .whyus-birdie {
-    @apply -left-16 -top-24 h-56 w-48 rotate-[35deg] opacity-80 sm:h-96 sm:w-80;
+    @apply -left-16 -top-24 h-56 w-48 rotate-[35deg] opacity-[0.06] sm:h-96 sm:w-80;
   }
   .whyus-heading-wrap {
     @apply relative max-w-2xl;
   }
   .whyus-heading {
-    @apply font-display text-3xl font-extrabold tracking-tight text-cream sm:text-4xl lg:text-[3rem];
+    @apply font-display text-3xl font-normal text-cream sm:text-4xl lg:text-[3rem];
   }
   .whyus-grid {
     @apply relative mt-14 grid gap-6 lg:grid-cols-5;
@@ -946,46 +1262,37 @@ body {
     @apply lg:col-span-2;
   }
   .whyus-feature-card {
-    @apply flex h-full flex-col justify-between gap-8 overflow-hidden rounded-3xl bg-cream/[0.06] p-8 ring-1 ring-cream/10;
+    @apply flex h-full flex-col justify-between gap-8 overflow-hidden rounded-none bg-onyx-3 p-8 ring-1 ring-gold/20;
   }
   .whyus-feature-chip {
-    @apply mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-gold text-cream;
+    @apply mb-6 grid h-14 w-14 place-items-center rounded-none bg-gold text-plum;
   }
   .whyus-feature-icon {
     @apply h-7 w-7;
   }
   .whyus-feature-title {
-    @apply font-display text-2xl font-extrabold text-cream sm:text-3xl;
+    @apply font-display text-2xl font-normal text-cream sm:text-3xl;
   }
   .whyus-feature-body {
     @apply mt-3 leading-relaxed text-cream/65;
-  }
-  .whyus-feature-footer {
-    @apply flex items-center gap-3 border-t border-cream/10 pt-5;
-  }
-  .whyus-mascot {
-    @apply h-11 w-11 shrink-0;
-  }
-  .whyus-mascot-note {
-    @apply font-display text-sm font-bold text-cream/70;
   }
   .whyus-list-col {
     @apply lg:col-span-3;
   }
   .whyus-list {
-    @apply flex h-full flex-col divide-y divide-cream/10 rounded-3xl bg-cream/[0.04] ring-1 ring-cream/10;
+    @apply flex h-full flex-col divide-y divide-gold/12 rounded-none bg-onyx-3 ring-1 ring-gold/20;
   }
   .whyus-list-item {
     @apply flex flex-1 items-start gap-4 p-6 sm:p-7;
   }
   .whyus-list-chip {
-    @apply grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-cream/[0.07] text-gold-light ring-1 ring-cream/10 transition-colors duration-300 group-hover:bg-gold group-hover:text-cream;
+    @apply grid h-12 w-12 shrink-0 place-items-center rounded-none bg-onyx-4 text-gold transition-colors duration-300 group-hover:bg-gold group-hover:text-plum;
   }
   .whyus-list-icon {
     @apply h-6 w-6;
   }
   .whyus-list-title {
-    @apply font-display text-lg font-extrabold text-cream;
+    @apply font-display text-lg font-normal text-cream;
   }
   .whyus-list-body {
     @apply mt-1 text-sm leading-relaxed text-cream/60;
@@ -993,93 +1300,98 @@ body {
 
   /* ── Location ────────────────────────────────────────────────────────── */
   .location-section {
-    @apply bg-cream;
+    @apply bg-onyx;
   }
   .location-grid {
     @apply grid items-center gap-10 lg:grid-cols-2 lg:gap-16;
   }
   .location-heading {
-    @apply font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-[3rem];
+    @apply font-display text-3xl font-normal text-ink sm:text-4xl lg:text-[3rem];
   }
   .location-body {
-    @apply mt-5 max-w-lg text-lg leading-relaxed text-plum/80;
+    @apply mt-5 max-w-lg text-lg leading-relaxed text-cream/70;
   }
   .location-pills {
     @apply mt-7 flex flex-wrap gap-2.5;
   }
   .location-pill {
-    @apply rounded-full bg-cream-2 px-4 py-1.5 text-sm font-semibold text-ink;
+    @apply rounded-none bg-onyx-3 px-4 py-1.5 text-sm font-semibold text-ink ring-1 ring-gold/20;
   }
   .location-map {
     display: grid;
-    @apply relative aspect-[4/3] place-items-center overflow-hidden rounded-[2rem] border-2 border-plum/10 bg-cream-2 shadow-[10px_10px_0_0_rgba(38,34,30,0.1)];
+    @apply relative aspect-[4/3] place-items-center overflow-hidden rounded-none border border-gold/20 bg-onyx-3;
   }
   .location-map-pin-icon {
     @apply h-14 w-14 text-gold;
   }
   .location-map-frame {
     @apply absolute inset-0 block h-full w-full border-0;
+    /* Live Google embed — its tiles cannot be tokenised, so they are re-toned
+       with the standard dark-map inversion and pulled toward the onyx. */
+    filter: invert(0.92) hue-rotate(180deg) saturate(0.5) brightness(0.95)
+      contrast(1.05);
   }
   .location-cards {
     @apply mt-10 grid gap-5 sm:grid-cols-3;
   }
   .location-card {
-    @apply flex h-full items-start gap-4 rounded-3xl border-2 border-plum/10 bg-cream-2 p-6;
+    @apply flex h-full items-start gap-4 rounded-none border border-gold/20 bg-onyx-3 p-6;
   }
   .location-card-chip {
-    @apply grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gold text-cream;
+    @apply grid h-11 w-11 shrink-0 place-items-center rounded-none bg-gold text-plum;
   }
   .location-card-icon {
     @apply h-5 w-5;
   }
   .location-card-label {
-    @apply text-xs font-extrabold uppercase tracking-[0.14em] text-gold-deep;
+    @apply text-xs font-extrabold uppercase tracking-[0.2em] text-gold-deep;
   }
   .location-card-value {
-    @apply mt-1 font-display text-base font-bold text-ink;
+    @apply mt-1 font-display text-base font-normal text-ink;
   }
   .location-card-sub {
-    @apply mt-0.5 text-sm text-plum/80;
+    @apply mt-0.5 text-sm text-cream/65;
   }
   /* Peak / non-peak hours — a trigger in the Hours card, detail in a dialog
      (see HoursDialog.tsx). Spelled out, the windows are far too long to sit in
      the card itself. */
   .hours-trigger {
-    @apply mt-3 inline-flex items-center rounded-full border-2 border-plum/15 bg-cream px-3 py-1.5 text-xs font-extrabold uppercase tracking-[0.12em] text-gold-deep transition-colors hover:border-gold hover:bg-gold hover:text-cream;
+    @apply mt-3 inline-flex items-center rounded-none border border-gold/30 bg-onyx-4 px-3 py-1.5 text-xs font-extrabold uppercase tracking-[0.2em] text-gold transition-colors hover:border-gold hover:bg-gold hover:text-plum;
   }
   /* Base UI drives the transitions off these data attributes. */
   .hours-backdrop {
-    @apply fixed inset-0 z-50 bg-plum/60 backdrop-blur-sm transition-opacity duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0;
+    @apply fixed inset-0 z-50 bg-onyx/75 backdrop-blur-sm transition-opacity duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0;
   }
   .hours-popup {
-    @apply fixed left-1/2 top-1/2 z-50 w-[min(30rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-3xl border-2 border-plum/10 bg-cream p-6 text-ink shadow-2xl transition-[opacity,scale] duration-200 data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0 sm:p-7;
+    @apply fixed left-1/2 top-1/2 z-50 w-[min(30rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-none border border-gold/25 bg-onyx-3 p-6 text-ink transition-[opacity,scale] duration-200 data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0 sm:p-7;
   }
   .hours-popup-head {
     @apply flex items-start gap-4 pr-8;
   }
   .hours-popup-chip {
-    @apply grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gold text-cream;
+    @apply grid h-11 w-11 shrink-0 place-items-center rounded-none bg-gold text-plum;
   }
   .hours-popup-chip-icon {
     @apply h-5 w-5;
   }
   .hours-title {
-    @apply font-display text-xl font-extrabold tracking-tight text-ink;
+    @apply font-display text-xl font-normal text-ink;
   }
   .hours-desc {
-    @apply mt-1 text-sm text-plum/80;
+    @apply mt-1 text-sm text-cream/70;
   }
   .hours-bands {
-    @apply mt-5 space-y-4 border-t-2 border-plum/10 pt-5;
+    @apply mt-5 space-y-4 border-t border-gold/20 pt-5;
   }
   .hours-band-label {
-    @apply text-xs font-extrabold uppercase tracking-[0.14em] text-gold-deep;
+    @apply text-xs font-extrabold uppercase tracking-[0.2em] text-gold-deep;
   }
   .hours-band-value {
-    @apply mt-1 text-[0.95rem] leading-relaxed text-plum/85;
+    @apply mt-1 text-[0.95rem] leading-relaxed text-cream/80;
+    font-variant-numeric: tabular-nums;
   }
   .hours-close {
-    @apply absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full bg-cream-2 text-plum/70 transition-colors hover:bg-plum/10 hover:text-ink;
+    @apply absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-none bg-onyx-4 text-cream/60 transition-colors hover:bg-gold/15 hover:text-ink;
   }
   .hours-close-icon {
     @apply h-4 w-4;
@@ -1093,7 +1405,10 @@ body {
     @apply relative z-10 overflow-hidden bg-peach;
   }
   .waitlist-birdie {
-    @apply -bottom-24 -left-32 h-52 w-44 -rotate-[18deg] sm:h-[20rem] sm:w-[16rem];
+    @apply -bottom-24 -left-32 h-52 w-44 -rotate-[18deg] opacity-[0.06] sm:h-[20rem] sm:w-[16rem];
+    /* Black art on onyx would vanish; invert it to ivory. (OverlayGraphic only
+       sets an inline `filter` when its `invert` prop is passed, so this wins.) */
+    filter: invert(1);
   }
   /* Uneven split on purpose: the copy column is already capped (`max-w-md` on
      the body, `max-w-sm` on the step text), so the leftover width is better
@@ -1102,7 +1417,7 @@ body {
     @apply relative grid items-center gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-14;
   }
   .waitlist-heading {
-    @apply font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl;
+    @apply font-display text-4xl font-normal text-ink sm:text-5xl;
   }
   .waitlist-body {
     @apply mt-4 max-w-md text-lg leading-relaxed text-ink/75;
@@ -1117,10 +1432,10 @@ body {
     @apply flex flex-col items-center;
   }
   .waitlist-step-number {
-    @apply grid h-11 w-11 shrink-0 place-items-center rounded-full bg-plum font-display text-lg font-extrabold text-cream;
+    @apply grid h-11 w-11 shrink-0 place-items-center rounded-none bg-onyx-3 font-display text-lg font-normal text-gold;
   }
   .waitlist-step-connector {
-    @apply my-1 w-[3px] flex-1 rounded bg-plum/20;
+    @apply my-1 w-[3px] flex-1 rounded-none bg-gold/20;
   }
   .waitlist-step-body {
     @apply pb-7;
@@ -1129,7 +1444,7 @@ body {
     @apply pb-0;
   }
   .waitlist-step-title {
-    @apply font-display text-lg font-extrabold text-ink;
+    @apply font-display text-lg font-normal text-ink;
   }
   .waitlist-step-text {
     @apply mt-1 max-w-sm text-[0.97rem] leading-relaxed text-ink/70;
@@ -1141,20 +1456,20 @@ body {
     @apply h-10 w-10 shrink-0;
   }
   .waitlist-mascot-note {
-    @apply font-display text-sm font-bold text-plum/70;
+    @apply font-display text-sm font-normal text-cream/60;
   }
   .waitlist-form-card {
-    @apply rounded-[2.5rem] border-2 border-plum/10 bg-cream p-6 shadow-[12px_12px_0_0_rgba(38,34,30,0.16)] sm:p-9;
+    @apply rounded-none border border-gold/20 bg-onyx-3 p-6 sm:p-9;
   }
 
   /* ── Waitlist form ───────────────────────────────────────────────────── */
   .waitlist-form-input {
-    @apply w-full rounded-2xl border-2 border-plum/12 bg-cream-2 px-4 py-3 text-ink placeholder:text-plum/80 outline-none transition focus:border-gold focus:bg-cream focus:ring-4 focus:ring-gold/20;
+    @apply w-full rounded-none border border-gold/20 bg-onyx-4 px-4 py-3 text-ink placeholder:text-cream/35 outline-none transition focus:border-gold focus:bg-onyx-4 focus:ring-4 focus:ring-gold/25;
   }
   .waitlist-form-label {
     @apply mb-1.5 block text-sm font-bold text-ink;
   }
-  /* Sits directly in the cream form card — no inner box or accent border. */
+  /* Sits directly in the onyx form card — no inner box or accent border. */
   .waitlist-form-success {
     @apply flex flex-col items-center gap-3 px-4 py-8 text-center sm:py-12;
   }
@@ -1162,13 +1477,13 @@ body {
     @apply inline-block;
   }
   .waitlist-form-success-logo-mark {
-    @apply h-20 w-auto text-plum sm:h-28;
+    @apply h-20 w-auto text-gold sm:h-28;
   }
   .waitlist-form-success-title {
-    @apply font-display text-2xl font-extrabold text-ink;
+    @apply font-display text-2xl font-normal text-ink;
   }
   .waitlist-form-success-note {
-    @apply mx-auto max-w-sm text-[0.95rem] leading-relaxed text-plum/70;
+    @apply mx-auto max-w-sm text-[0.95rem] leading-relaxed text-cream/65;
   }
   .waitlist-form {
     @apply grid gap-4 text-left;
@@ -1179,7 +1494,7 @@ body {
   .waitlist-form-label-muted {
     @apply font-medium text-muted;
   }
-  /* Required-field mark. Teal rather than the usual red — this is a waitlist,
+  /* Required-field mark. Gold rather than the usual red — this is a waitlist,
      not an error state, and red would read as a validation failure. */
   .waitlist-form-label-required {
     @apply text-gold-deep;
@@ -1188,19 +1503,19 @@ body {
     @apply flex flex-wrap gap-2;
   }
   .waitlist-form-chip {
-    @apply rounded-full border-2 px-4 py-2 text-sm font-bold transition;
+    @apply rounded-none border px-4 py-2 text-sm font-bold transition;
   }
   .waitlist-form-chip-active {
-    @apply border-plum bg-plum text-cream;
+    @apply border-gold bg-gold text-plum;
   }
   .waitlist-form-chip-idle {
-    @apply border-plum/15 bg-cream-2 text-ink/80 hover:border-plum/40;
+    @apply border-gold/20 bg-onyx-4 text-cream/75 hover:border-gold/45;
   }
   .waitlist-form-zip {
     @apply sm:max-w-[10rem];
   }
   .waitlist-form-error {
-    @apply text-sm font-semibold text-[#c0392b];
+    @apply text-sm font-semibold text-terracotta;
   }
   .waitlist-form-submit {
     @apply mt-1 w-full sm:w-auto;
@@ -1214,7 +1529,20 @@ body {
 
   /* ── Footer ──────────────────────────────────────────────────────────── */
   .footer {
-    @apply relative overflow-hidden bg-plum text-cream;
+    @apply relative overflow-hidden bg-onyx text-cream;
+  }
+  /* Meander course along the top edge, replacing the plain inset hairline. */
+  .footer::before {
+    content: "";
+    @apply pointer-events-none absolute inset-x-0 top-0 text-gold opacity-40;
+    height: var(--meander-h);
+    background-color: currentColor;
+    -webkit-mask-image: var(--meander);
+    mask-image: var(--meander);
+    -webkit-mask-repeat: repeat-x;
+    mask-repeat: repeat-x;
+    -webkit-mask-size: var(--meander-h) var(--meander-h);
+    mask-size: var(--meander-h) var(--meander-h);
   }
   .footer-inner {
     @apply mx-auto max-w-6xl px-6 py-16 sm:px-8;
@@ -1229,19 +1557,19 @@ body {
     @apply mt-6 flex items-center gap-3;
   }
   .footer-social {
-    @apply grid h-10 w-10 place-items-center rounded-full text-cream/70 ring-1 ring-cream/15 transition-colors hover:text-gold-light hover:ring-cream/40;
+    @apply grid h-10 w-10 place-items-center rounded-none text-cream/70 transition-colors hover:text-gold;
   }
   .footer-social-icon {
     @apply h-5 w-5;
   }
   .footer-col-title {
-    @apply text-xs font-bold uppercase tracking-[0.16em] text-cream/40;
+    @apply text-xs font-bold uppercase tracking-[0.2em] text-cream/40;
   }
   .footer-links {
     @apply mt-4 space-y-3;
   }
   .footer-link {
-    @apply text-sm font-medium text-cream/70 transition-colors hover:text-gold-light;
+    @apply text-sm font-medium text-cream/70 transition-colors hover:text-gold;
   }
   .footer-contact-list {
     @apply mt-4 space-y-3 text-sm text-cream/70;
@@ -1250,10 +1578,10 @@ body {
     @apply flex items-center gap-2.5;
   }
   .footer-contact-icon {
-    @apply h-4 w-4 shrink-0 text-gold-light;
+    @apply h-4 w-4 shrink-0 text-gold;
   }
   .footer-bottom {
-    @apply mt-14 flex flex-col gap-3 border-t border-cream/10 pt-6 sm:flex-row sm:items-center sm:justify-between;
+    @apply mt-14 flex flex-col gap-3 border-t border-gold/15 pt-6 sm:flex-row sm:items-center sm:justify-between;
   }
   .footer-legal {
     @apply text-xs text-cream/50;
@@ -1261,6 +1589,8 @@ body {
   .footer-note {
     @apply text-xs text-cream/40;
   }
+  /* Replaces the 🐾 emoji, which sat outside the palette. Inline (not a flex
+     item) so the line keeps wrapping as ordinary text. */
 
   /* ── SiteOriginal shell ──────────────────────────────────────────────── */
   .site-shell {
@@ -1268,6 +1598,16 @@ body {
   }
   .site-main {
     @apply flex-1;
+  }
+}
+
+/* Hero still: the image eases up out of the onyx rather than snapping in. */
+@keyframes hero-media-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
@@ -1312,8 +1652,11 @@ body {
 }
 
 @theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: var(--font-sans);
+  /* NOTE: do NOT re-declare `--font-sans` here. `@theme inline` still emits
+     the variable into :root, so `--font-sans: var(--font-sans)` is circular
+     and silently invalidates the body font family. The Manrope stack is
+     defined once, in the `@theme` block at the top of this file. */
+  --font-heading: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

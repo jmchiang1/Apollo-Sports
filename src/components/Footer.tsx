@@ -68,7 +68,7 @@ export function Footer() {
         <div className="footer-bottom">
           <p className="footer-legal">{footer.legal}</p>
           <p className="footer-note">
-            Made in Nassau County · {todo.opening} · 🐾
+            Made in Nassau County · {todo.opening}
           </p>
         </div>
       </div>

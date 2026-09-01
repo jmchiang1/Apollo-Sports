@@ -2,7 +2,6 @@ import { whyUs } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { iconMap, type IconName } from "./icons";
 import { OverlayGraphic } from "./OverlayGraphic";
-import { ApolloMascot } from "./ApolloMascot";
 
 export function WhyUsGrid() {
   const [feature, ...rest] = whyUs.items;
@@ -36,10 +35,6 @@ export function WhyUsGrid() {
               </span>
               <h3 className="whyus-feature-title">{feature.title}</h3>
               <p className="whyus-feature-body">{feature.body}</p>
-            </div>
-            <div className="whyus-feature-footer">
-              <ApolloMascot className="whyus-mascot" />
-              <span className="whyus-mascot-note">Apollo-approved.</span>
             </div>
           </div>
         </Reveal>

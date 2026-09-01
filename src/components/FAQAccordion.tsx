@@ -7,7 +7,6 @@ import { faq } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { TodoText } from "./Todo";
 import { cn } from "@/lib/cn";
-import { DogPeeking } from "./DogPeeking";
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
@@ -47,10 +46,6 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 export function FAQAccordion() {
   return (
     <SectionWrapper id="faq" className="faq-section">
-      <div aria-hidden className="faq-peeking-wrap">
-        <DogPeeking className="peeking-dog" />
-      </div>
-
       <div className="faq-grid">
         <div>
           <Reveal as="h2" className="faq-heading">

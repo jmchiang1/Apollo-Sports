@@ -1,7 +1,6 @@
 import { vision } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { DogPawing } from "./DogPawing";
-import { PawPrint } from "./PawPrint";
 
 export function VisionSection() {
   return (
@@ -26,7 +25,7 @@ export function VisionSection() {
           <Reveal>
             <div className="vision-polaroid">
               <div className="vision-polaroid-frame">
-                <div className="tex-dots vision-polaroid-tex" />
+                <div className="tex-fluting vision-polaroid-tex" />
                 <DogPawing className="vision-polaroid-dog" />
               </div>
               <p className="vision-polaroid-caption">
@@ -37,7 +36,6 @@ export function VisionSection() {
 
           <Reveal>
             <figure className="vision-quote">
-              {/* <PawPrint className="vision-quote-icon" /> */}
               <blockquote className="vision-quote-text">
                 {vision.founderNote}
               </blockquote>

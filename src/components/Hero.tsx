@@ -9,13 +9,40 @@ import {
   useMotionTemplate,
   type Variants,
 } from "motion/react";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { hero } from "@/config/siteConfig";
+import heroImage from "../../assets/hero2.png";
 import { ButtonLink } from "./Button";
 import { CourtPlan, W, L, type Sport } from "./CourtPlan";
 import { useSafeReducedMotion } from "./Reveal";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+/**
+ * THE HERO SWITCH. Two heroes live in this file; this picks one.
+ *
+ * `true` (current): the pinned 8-court fly-over — the camera rig, the two
+ * layouts, the CourtPlan tiles. `false`: a single still image on a parallax
+ * drift (see `.hero-media*` in globals.css).
+ *
+ * NEITHER is ever deleted. The still hero is skipped by a conditional render;
+ * the fly-over parks under `.hero-scene-off` (display: none). Both stay
+ * typechecked, so this one line is the whole switch — it has been flipped in
+ * both directions and verified in a browser each way.
+ *
+ * What it actually switches, when the fly-over is OFF (the no-track geometry
+ * the reduced-motion path has always used, so it is well-trodden):
+ *   · the section's scroll track collapses (no 320svh of pinned dead space)
+ *   · `.hero-pin` stops being sticky, so it cannot slide over the next section
+ *   · the #courts anchor takes the `-top` class, which the header's solidify
+ *     check deliberately ignores (see Header.tsx). With the fly-over ON, that
+ *     anchor is also what gives the "Courts" nav link a real target — the
+ *     assembled facility — so it is meaningful again.
+ *   · the copy stops fading on scroll — there is no camera move to hand the
+ *     frame over to
+ */
+const HERO_FLYOVER = true;
 
 // ── facility layout ─────────────────────────────────────────────────────
 // Eight badminton courts on one even grid — a dedicated all-badminton club —
@@ -159,10 +186,31 @@ export function Hero() {
   // any hero-court choice or grid width.
   const txEnd = (heroCX - gridW / 2) * sEnd;
 
+  // Both the fly-over and the still hero collapse to the same geometry when
+  // there is no camera to drive: no track, no sticky pin, anchor at the top.
+  const staticHero = !HERO_FLYOVER || reduce;
+
   const { scrollYProgress } = useScroll({
     target: wrapRef,
     offset: ["start start", "end end"],
   });
+
+  // Parallax for the still hero. Runs while the hero scrolls out of frame:
+  // 0 with the hero's top at the viewport top, 1 once its bottom reaches it.
+  const { scrollYProgress: exitProgress } = useScroll({
+    target: wrapRef,
+    offset: ["start start", "end start"],
+  });
+  // The image drifts DOWN as the page scrolls UP, so it travels slower than
+  // the copy — that difference IS the parallax, so it has to be big enough to
+  // read. Expressed in px off the viewport height rather than a percentage of
+  // the element, because the element's height differs per breakpoint (see
+  // `.hero-media-inner`) and a percentage would silently mean different
+  // distances. Each figure stays under that breakpoint's overflow margin
+  // (26% < 30% desktop, 12% < 15% mobile), which is what guarantees no edge
+  // is ever exposed. vpH is 0 until hydration, which parks the drift at 0.
+  const parallaxPx = vpH === 0 ? 0 : (vpW >= 640 ? 0.26 : 0.12) * vpH;
+  const mediaY = useTransform(exitProgress, [0, 1], [0, parallaxPx]);
   const p = useSpring(scrollYProgress, {
     stiffness: 120,
     damping: 32,
@@ -208,9 +256,10 @@ export function Hero() {
       id="top"
       ref={wrapRef}
       className="hero-wrap"
-      // reduced-motion users get no camera move — collapse the scroll track so
-      // there's no dead pinned region.
-      style={reduce ? { height: "auto" } : { height: `${TRACK}svh` }}
+      // No camera move means no need for a scroll track — collapse it so there
+      // is no dead pinned region. (`.hero-wrap` sets 300svh in CSS for the
+      // fly-over; this overrides it.)
+      style={staticHero ? { height: "auto" } : { height: `${TRACK}svh` }}
     >
       {/* nav anchor: lands on the assembled facility. Solved from the timeline
           above rather than eyeballed, so it tracks whichever TRACK/CAM_END
@@ -225,7 +274,7 @@ export function Hero() {
           Reduce mode has no track to land on, so it sits at the top of the
           hero — and takes a DIFFERENT class, because the header's solidify
           check looks for the fly-over anchor specifically. */}
-      {reduce ? (
+      {staticHero ? (
         <div id="courts" className="hero-courts-anchor-top" aria-hidden />
       ) : (
         <div
@@ -245,11 +294,38 @@ export function Hero() {
           a sticky element would slide down over the section below. */}
       <div
         className="hero-pin"
-        style={reduce ? { position: "relative" } : undefined}
+        style={staticHero ? { position: "relative" } : undefined}
       >
+        {/* ── still hero ──────────────────────────────────────────────── */}
+        {!HERO_FLYOVER && (
+          <div className="hero-media" aria-hidden={false}>
+            <motion.div
+              className="hero-media-inner"
+              style={reduce ? undefined : { y: mediaY }}
+            >
+              <Image
+                src={heroImage}
+                // Describes hero3.png. If the import above is pointed at a
+                // different file, this has to change with it.
+                alt="A fluted stone column carrying a gold laurel wreath, framed by olive branches."
+                fill
+                priority
+                sizes="100vw"
+                placeholder="blur"
+                className="hero-media-img"
+              />
+            </motion.div>
+            {/* Darkens the edges the copy sits on. The court itself stays
+                readable in between. */}
+            <div className="hero-media-scrim" />
+          </div>
+        )}
+
         {/* ── 3D camera scene ─────────────────────────────────────────── */}
         <motion.div
-          className="hero-scene"
+          // `.hero-scene-off` is display:none — the whole rig stays mounted and
+          // typechecked, ready for HERO_FLYOVER to be flipped back on.
+          className={HERO_FLYOVER ? "hero-scene" : "hero-scene hero-scene-off"}
           aria-hidden
           // Near-parallel projection: the original IsoCourt art had no
           // perspective — a long focal length keeps lines from diverging
@@ -350,7 +426,7 @@ export function Hero() {
         {/* ── copy overlay ────────────────────────────────────────────── */}
         <motion.div
           className="hero-copy-wrap"
-          style={reduce ? undefined : { opacity: copyOpacity, y: copyY }}
+          style={staticHero ? undefined : { opacity: copyOpacity, y: copyY }}
         >
           <motion.div
             initial={reduce ? "visible" : "hidden"}
@@ -396,7 +472,7 @@ export function Hero() {
             begins (desktop keeps the full eyebrow at the top instead). */}
         <motion.div
           className="hero-eyebrow-bottom"
-          style={reduce ? undefined : { opacity: copyOpacity }}
+          style={staticHero ? undefined : { opacity: copyOpacity }}
         >
           {hero.eyebrow.split("·").pop()?.trim()}
         </motion.div>

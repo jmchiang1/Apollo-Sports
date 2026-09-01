@@ -34,8 +34,14 @@ export function Header() {
       // anchor carries the same id but shouldn't trigger this.
       const courts = document.querySelector(".hero-courts-anchor");
       const atCourts = !!courts && courts.getBoundingClientRect().top <= 96;
+      // `.hero-courts-anchor` exists ONLY while the pinned fly-over is on (the
+      // still hero and the reduced-motion hero both use `-top`), so it doubles
+      // as the signal for which rule applies. Waiting on the pin's travel is
+      // right for a 320svh pinned track; on a one-screen hero there is no
+      // travel to wait for, and holding the bar transparent that long lets the
+      // hero copy scroll up into the nav. Fall back to the ordinary rule.
       setScrolled(
-        pin
+        pin && courts
           ? pin.getBoundingClientRect().bottom <= 80 || atCourts
           : window.scrollY > 16,
       );

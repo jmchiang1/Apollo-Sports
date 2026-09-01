@@ -29,7 +29,7 @@ const CHROME =
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 // Palette tokens, mirrored from globals.css / the email template.
-const PLUM = "#1D3C44";
+const PLUM = "#050f0e"; // onyx — the email's dark anchor
 
 /** lucide icons, imported from the same package the site renders. */
 const LUCIDE = {

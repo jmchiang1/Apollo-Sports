@@ -19,8 +19,10 @@ export const brand = {
   shortName: "Apollo",
   legalEntity: "Apollo Sports LLC",
   tagline: "Nassau County's dedicated badminton club",
-  // Named after Apollo — a Nassau local's English Cream Golden Retriever.
-  // Drives the warm cream + caramel-gold palette.
+  // Named after Apollo, a Nassau local's English Cream Golden Retriever. The
+  // namesake stands; the public voice does not lean on it. Copy is classical
+  // and restrained (see the membership ladder below), matching the onyx + gold
+  // palette that replaced the original cream one.
 } as const;
 
 /** Placeholders only Jonathan confirms. Rendered as visible [TODO] tokens. */
@@ -47,7 +49,7 @@ export const todo = {
   ],
   phone: "1 (917) 828 - 0104",
   email: "apolloracketclub@gmail.com",
-  opening: "Opening 2027", // brief-sanctioned soft default; confirm exact season
+  opening: "Fall 2027", // brief-sanctioned soft default; confirm exact season
   social: {
     instagram: "https://www.instagram.com/apolloracketclub/",
     facebook: "https://www.facebook.com/profile.php?id=61592577303122",
@@ -68,11 +70,14 @@ export const nav = [
 ] as const;
 
 export const hero = {
-  eyebrow: `Coming to Nassau County · ${todo.opening}`,
+  eyebrow: `Coming in ${todo.opening}`,
   // One line per entry — the hero breaks exactly here, no reflow. Line 1 is the
   // service area; swap it for whichever city/region the club lands in.
-  headlineLines: ["Nassau County's", "Premier Badminton", "Center"],
-  // Word within a headline line to accent in teal (must appear verbatim).
+  // "Club", not "Center" — the brand is Apollo Racket Club. `Badminton` stays
+  // as the SPORT: it is the differentiator the whole site argues for (see the
+  // pickleball FAQ), so it is not the brand name and does not become "Racket".
+  headlineLines: ["Nassau County's", "Premier Badminton", "Club"],
+  // Word within a headline line to accent in gold (must appear verbatim).
   headlineHighlight: "Badminton",
   subhead:
     "A dedicated indoor badminton club in central Nassau County: 8 courts, private bookings, open play, and leagues for every level.",
@@ -175,16 +180,15 @@ export const pricing = {
   note: "A free registered account (with signed waiver) is required to play and books at list rate. Member tiers unlock discounts on everything below. Waitlist members lock in founding rates ahead of our 2027 opening.",
   groups: [
     {
-      heading: "Join the pack.",
+      heading: "Take your place.",
       title: "Memberships",
       subtitle: "Start free to play, then upgrade to a paid tier for member pricing.",
       plans: [
         {
-          name: "Pup",
+          name: "Initiate",
           tagline: "Required to play.",
           price: "$0",
           unit: "to join",
-          graphic: "sleeping",
           cta: { label: "Join Now", href: "#waitlist" },
           features: [
             "Non priority booking - 7 Days",
@@ -202,11 +206,10 @@ export const pricing = {
           ],
         },
         {
-          name: "Good Boy",
+          name: "Athlete",
           tagline: "For regulars.",
           price: "$59",
           unit: "per month",
-          graphic: "walking",
           featured: true,
           badge: "Most popular",
           cta: { label: "Join Now", href: "#waitlist" },
@@ -222,11 +225,10 @@ export const pricing = {
           ],
         },
         {
-          name: "Top Dog",
+          name: "Olympian",
           tagline: "The best way to play.",
           price: "$129",
           unit: "per month",
-          graphic: "playing",
           cta: { label: "Join Now", href: "#waitlist" },
           features: [
             "30% off every court hour",
@@ -342,7 +344,7 @@ export const waitlist = {
   heading: "Be first on the court.",
   body: "Join the waitlist for early access, founding-member perks, and opening-day updates. No spam, just news about the club.",
   button: "Notify Me",
-  success: "You're in the pack! 🐾",
+  success: "Your place is held.",
   successNote:
     "We'll be in touch with founding-member perks and the moment we open in 2027.",
   skillLabel: "Skill level",
@@ -389,7 +391,7 @@ export const faq = {
     },
     {
       q: "How much will membership cost?",
-      a: "Two paid tiers: Player at $59/month (15% off court time) and Top Dog at $129/month (30% off, monthly open-play sessions, and priority booking). A free Pup account books at list rate. Waitlist members lock in founding rates.",
+      a: "Two paid tiers: Athlete at $59/month (15% off court time) and Olympian at $129/month (30% off, monthly open-play sessions, and priority booking). A free Initiate account books at list rate. Waitlist members lock in founding rates.",
     },
   ],
 } as const;

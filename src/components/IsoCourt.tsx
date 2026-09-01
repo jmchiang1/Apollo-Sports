@@ -1,7 +1,7 @@
 import { cn } from "@/lib/cn";
 
 /**
- * Isometric racquet court illustration, drawn to match the club palette:
+ * Isometric racket court illustration, drawn to match the club palette:
  * a deep-teal slab with cream lines and a teal mesh net. Both sports share the
  * same outer court + net; only the internal markings differ — pickleball adds
  * the teal kitchen (non-volley zone), badminton is the bare slab.
@@ -61,18 +61,19 @@ const MARKINGS: Record<Sport, Marks> = {
   },
 };
 
-/** The slab is `--color-plum`, which is also the hero's background — so on the
- *  hero it needs `lifted`, or the court dissolves into the section behind it. */
+/** The slab sits on the onyx band that is also the hero's background — so on
+ *  the hero it needs `lifted`, or the court dissolves into the section behind
+ *  it. Court lines are ivory; the pickleball kitchen is the gold accent. */
 type Tone = "slab" | "lifted";
 
 const SURFACE: Record<Tone, { surface: string; side: string }> = {
-  slab: { surface: "#1D3C44", side: "#132a30" },
-  lifted: { surface: "#2c5c68", side: "#1d434d" },
+  slab: { surface: "#0a1513", side: "#050f0e" },
+  lifted: { surface: "#1a2b28", side: "#101d1b" },
 };
 
 const C = {
-  zone: "#5fc5b3", // pickleball kitchen
-  line: "#f6f5f0", // cream court lines
+  zone: "#c6a15b", // pickleball kitchen
+  line: "#f2ece0", // ivory court lines
   net: "#000000", // black mesh net
   tape: "#ffffff", // white top tape
   post: "#000000", // black posts

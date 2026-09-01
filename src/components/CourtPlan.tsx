@@ -66,13 +66,13 @@ function pickleballLines(): Line[] {
 }
 
 const SURFACE = {
-  slab: { surface: "#1D3C44", side: "#132a30" },
-  lifted: { surface: "#2c5c68", side: "#1d434d" },
+  slab: { surface: "#0a1513", side: "#050f0e" },
+  lifted: { surface: "#1a2b28", side: "#101d1b" },
 } as const;
 
 const C = {
-  zone: "#5fc5b3",
-  line: "#f6f5f0",
+  zone: "#c6a15b",
+  line: "#f2ece0",
 } as const;
 
 export function CourtPlan({
@@ -92,10 +92,10 @@ export function CourtPlan({
     <svg
       viewBox={`0 0 ${W} ${L}`}
       className={cn("court-plan-svg", className)}
-      // Subtle teal glow like the original IsoCourt art — overrides the
+      // Subtle gold glow like the original IsoCourt art — overrides the
       // stylesheet's heavier dark drop-shadow, which read as 3D bloom once
       // the camera scaled the tile up.
-      style={{ filter: "drop-shadow(0 6px 16px rgba(95, 197, 179, 0.25))" }}
+      style={{ filter: "drop-shadow(0 6px 16px rgba(198, 161, 91, 0.22))" }}
       role="img"
       aria-label={`Top-down plan of a ${sport} court`}
     >

@@ -1,7 +1,6 @@
 import { waitlist } from "@/config/siteConfig";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { WaitlistForm } from "./WaitlistForm";
-import { ApolloMascot } from "./ApolloMascot";
 import { OverlayGraphic } from "./OverlayGraphic";
 
 export function WaitlistSection() {
