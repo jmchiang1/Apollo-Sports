@@ -231,6 +231,141 @@ body::after {
   padding: 0 0.06em;
 }
 
+/* ── Page loader ───────────────────────────────────────────────────────────
+   The mark is a shuttlecock, so it enters the way one opens: the five feather
+   strokes unfurl out of the cork, centre first, then the inner pair, then the
+   outer pair, and the cork band and base settle underneath them.
+
+   Every path scales from ONE shared origin — (124, 243) in the art's own
+   coordinates, which is the point where all five feathers converge. That is
+   what makes them radiate instead of each growing from its own middle, and it
+   needs `transform-box: view-box` so the origin is read in viewBox units
+   rather than against each path's own bounding box.
+
+   The whole sequence lives here rather than in JS on purpose: an overlay that
+   covers the page must be able to remove itself without a script. See the note
+   in PageLoader.tsx. Timings are mirrored there and must move together.
+   ────────────────────────────────────────────────────────────────────────── */
+/* Hand-off from the intro to the page.
+   Without this the overlay clears onto a hero that is already fully settled,
+   which reads as a cut rather than an arrival. The page fades up as the
+   overlay fades down, so the two crossfade.
+
+   OPACITY ONLY, and on the page wrapper rather than on anything in the hero.
+   Two constraints force that, and both are easy to trip:
+
+   1. A `transform` here would make `.site-main` a containing block for its
+      descendants, which breaks `position: sticky` on `.hero-pin` and kills the
+      fly-over. Opacity creates a stacking context but NOT a containing block,
+      so it is safe. That is why there is no accompanying rise.
+   2. The obvious targets inside the hero — `.hero-scene`, `.hero-copy-wrap`,
+      `.hero-eyebrow-bottom` — all carry an INLINE opacity written by Motion
+      for the scroll-driven camera fade. A CSS animation outranks an inline
+      declaration while it runs, so animating those would hijack the camera for
+      the first second of scrolling and then hand it back with a jump.
+
+   `backwards` fill, and no `forwards`: during the delay the element holds the
+   `from` state, and once the animation is over it returns to its natural
+   opacity of 1. So if the animation never runs at all, the page is simply
+   visible — this can never strand the site at opacity 0. */
+.site-main,
+.header-bar {
+  animation: page-arrive 900ms var(--ease-out-soft) 1620ms backwards;
+}
+
+@keyframes page-arrive {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Scroll lock while the intro is up. See the note in PageLoader.tsx for why
+   this is a class rather than an inline style. */
+body.is-loading {
+  overflow: hidden;
+}
+
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9998; /* over the header (z-50), under the grain (9999) */
+  display: grid;
+  place-items: center;
+  background-color: var(--color-onyx);
+  animation: loader-out 550ms var(--ease-out-soft) 1550ms forwards;
+}
+
+/* `visibility` is a discrete property: animated normally it would flip at the
+   halfway point and cut the fade off. Holding it to 99% lets the fade play in
+   full, then takes the node out of the accessibility tree and off the hit
+   grid even in the JS-never-ran case. */
+@keyframes loader-out {
+  0% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 0;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+.page-loader-mark {
+  height: clamp(4.5rem, 13vw, 8rem);
+  width: auto;
+}
+
+.page-loader-mark path {
+  opacity: 0;
+  transform-box: view-box;
+  transform-origin: 124px 243px;
+  animation: loader-unfurl 700ms var(--ease-out-soft) forwards;
+}
+
+@keyframes loader-unfurl {
+  from {
+    opacity: 0;
+    transform: scale(0.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Paths in source order: 1 centre feather, 2/4 inner pair, 3/5 outer pair,
+   6 cork band, 7 base. Matched by position so the art stays a single
+   un-annotated export — see ApolloLogo.tsx. */
+.page-loader-mark path:nth-of-type(2),
+.page-loader-mark path:nth-of-type(4) {
+  animation-delay: 120ms;
+}
+.page-loader-mark path:nth-of-type(3),
+.page-loader-mark path:nth-of-type(5) {
+  animation-delay: 240ms;
+}
+.page-loader-mark path:nth-of-type(6) {
+  animation-delay: 360ms;
+}
+.page-loader-mark path:nth-of-type(7) {
+  animation-delay: 450ms;
+}
+
+/* No intro at all when motion is not wanted. In CSS, not JS, so it holds
+   before hydration too. */
+@media (prefers-reduced-motion: reduce) {
+  .page-loader {
+    display: none;
+  }
+}
+
 /* ── Classical motifs ──────────────────────────────────────────────────────
    These replace the old `.tex-dots` / `.tex-waffle` polka-dot and waffle
    textures, which read as casual and fought the theme. Both take their colour
@@ -238,13 +373,19 @@ body::after {
    AND on the stone ones — no light/dark variant needed.
    ────────────────────────────────────────────────────────────────────────── */
 
-/* Column fluting: vertical reeding, the surface texture of a Doric shaft. */
-.tex-fluting {
-  background-image: repeating-linear-gradient(
+/* Column fluting: vertical reeding, the surface texture of a Doric shaft.
+   Held in a custom property so a pseudo-element can reuse it without the
+   gradient being written out twice (same reason as `--meander` below). */
+:root {
+  --fluting: repeating-linear-gradient(
     90deg,
     currentColor 0 1px,
     transparent 1px 13px
   );
+}
+
+.tex-fluting {
+  background-image: var(--fluting);
 }
 
 /* One tile of a Greek key (meander), as a MASK rather than a background image.
@@ -259,18 +400,12 @@ body::after {
      element height and the mask-size, so the two can never drift apart and
      squash the key. Change it here only. */
   --meander-h: 28px;
+  /* Both live courses (the stats frieze and the footer's top edge) apply the
+     mask on a PSEUDO-ELEMENT, which cannot take a class — so there is no
+     helper class here, only the token. Anything new that wants a meander
+     course should copy the six mask declarations from `.stats-section::before`
+     and drive them from these two custom properties. */
   --meander: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M0 18H20M2 18V2H18V14H6V6H14V10' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
-}
-
-.rule-meander {
-  height: var(--meander-h);
-  background-color: currentColor;
-  -webkit-mask-image: var(--meander);
-  mask-image: var(--meander);
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
-  -webkit-mask-size: var(--meander-h) var(--meander-h);
-  mask-size: var(--meander-h) var(--meander-h);
 }
 
 /* ── Marble bands ──────────────────────────────────────────────────────────
@@ -384,11 +519,22 @@ body::after {
   .faq-toggle {
     @apply grid h-8 w-8 shrink-0 place-items-center rounded-none bg-onyx-3 text-gold transition-all duration-300;
   }
+  /* DO NOT ROTATE THIS. The old `+` glyph rotated 45deg into an x, and the
+     obvious port is a half turn — but a palmette is an ornament, not a caret,
+     and upside down it just reads as broken. A half turn is also backwards for
+     an accordion: it would leave the resting state (five of six rows) pointing
+     down and the open one up.
+     The state is carried by the fill instead — the chip inverts from a gold
+     fan on onyx to an onyx fan on gold, which is unambiguous and keeps the
+     ornament upright in both states. `aria-expanded` on the button is what
+     actually conveys it to assistive tech. */
   .faq-toggle-open {
-    @apply rotate-45 bg-gold text-plum;
+    @apply bg-gold text-plum;
   }
+  /* Larger than the `+` it replaced: five blades need the room to separate.
+     The chip stays h-8/w-8, so nothing reflows. */
   .faq-toggle-icon {
-    @apply h-4 w-4;
+    @apply h-5 w-5;
   }
   .faq-answer-wrap {
     @apply overflow-hidden;
@@ -1232,6 +1378,21 @@ body::after {
   .membership-section {
     @apply pb-40 sm:pb-44;
   }
+  /* Reeded wall behind the membership tiers. This band is the largest flat
+     surface on the page, and the fluting gives it the grain of a colonnade
+     without adding an element to the layout.
+     PAINT ORDER: a plain `absolute` pseudo with no z-index sits below every
+     positioned sibling, and each content block here is wrapped in something
+     `relative` (`.pricing-heading-wrap`, `.pricing-group`), so the reeding
+     stays behind all of it. That is why this needs no stacking context.
+     Clipped by `.pricing-section`'s own `overflow-hidden`. */
+  .membership-section::before {
+    content: "";
+    @apply pointer-events-none absolute inset-0;
+    background-image: var(--fluting);
+    color: var(--color-cream);
+    opacity: 0.035;
+  }
   .membership-peek-wrap {
     @apply pointer-events-none absolute inset-x-0 bottom-0 z-0 mx-auto flex max-w-6xl justify-end px-6 sm:px-8;
   }
@@ -1645,6 +1806,12 @@ body::after {
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
+    /* Zeroing the DURATION alone is not enough once anything animates on a
+       delay. `.site-main` fades in with `backwards` fill, so it holds opacity
+       0 until its delay elapses — and reduced-motion users get no intro to
+       cover that, so the page would sit blank for 1.6s and then snap in.
+       Collapsing the delay is what makes the page simply be there. */
+    animation-delay: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;

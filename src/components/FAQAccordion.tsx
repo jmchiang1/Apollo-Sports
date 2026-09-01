@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Plus } from "lucide-react";
 import { faq } from "@/config/siteConfig";
+import { Palmette } from "./Palmette";
 import { SectionWrapper, Reveal } from "./Reveal";
 import { TodoText } from "./Todo";
 import { cn } from "@/lib/cn";
@@ -21,7 +21,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
       >
         <span className="faq-question-text">{q}</span>
         <span className={cn("faq-toggle", open && "faq-toggle-open")}>
-          <Plus className="faq-toggle-icon" strokeWidth={2.5} />
+          <Palmette className="faq-toggle-icon" />
         </span>
       </button>
       <AnimatePresence initial={false}>

@@ -4,6 +4,7 @@ import "./globals.css";
 import { brand } from "@/config/siteConfig";
 import { cn } from "@/lib/utils";
 import { ButtonPointerGlow } from "@/components/ButtonPointerGlow";
+import { PageLoader } from "@/components/PageLoader";
 
 // Body face — Manrope carries everything that is not a title.
 const manrope = Manrope({
@@ -70,6 +71,7 @@ export default function RootLayout({
       className={cn("h-full", manrope.variable, marcellus.variable, "font-sans")}
     >
       <body className="min-h-full flex flex-col bg-onyx text-ink">
+        <PageLoader />
         {children}
         <ButtonPointerGlow />
       </body>
