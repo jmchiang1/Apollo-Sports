@@ -91,7 +91,7 @@ export function SportsSection() {
           {sports.cards.map((card) => (
             <SportRow
               key={card.name}
-              title={`${card.courts} ${card.name} courts`}
+              title={`${card.name} courts`}
               body={card.body}
               features={card.features}
               lead={card.lead}

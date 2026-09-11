@@ -1,6 +1,7 @@
 import { Phone } from "lucide-react";
 import { footer, nav, todo } from "@/config/siteConfig";
 import { Wordmark } from "./Wordmark";
+import { cn } from "@/lib/cn";
 import { CopyEmail } from "./CopyEmail";
 import { TodoText } from "./Todo";
 import { InstagramIcon, FacebookIcon } from "./SocialIcons";
@@ -9,7 +10,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="footer-inner">
-        <div className="footer-grid">
+        <div className={cn("footer-grid", nav.length === 0 && "footer-grid-compact")}>
           {/* brand */}
           <div>
             <Wordmark invert />
@@ -36,8 +37,9 @@ export function Footer() {
             </div>
           </div>
 
-          {/* explore */}
-          <div>
+          {/* explore — hidden while `nav` is empty, or the column renders as a
+              heading with nothing under it. Returns with the nav entries. */}
+          <div className={nav.length === 0 ? "hidden" : undefined}>
             <h4 className="footer-col-title">Explore</h4>
             <ul className="footer-links">
               {nav.map((item) => (

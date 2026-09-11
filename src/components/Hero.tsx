@@ -8,13 +8,14 @@ import {
   useTransform,
   useMotionTemplate,
   type Variants,
+  type MotionStyle,
 } from "motion/react";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
 import { hero } from "@/config/siteConfig";
 import heroImage from "../../assets/hero2.png";
 import { ButtonLink } from "./Button";
 import { CourtPlan, W, L, type Sport } from "./CourtPlan";
+import { Wordmark } from "./Wordmark";
 import { useSafeReducedMotion } from "./Reveal";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -45,13 +46,19 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const HERO_FLYOVER = true;
 
 // ── facility layout ─────────────────────────────────────────────────────
-// Eight badminton courts on one even grid — a dedicated all-badminton club —
-// with the same gap in both axes so the floor reads as a single regular block.
+// ONE COURT. It used to be eight, on a grid whose shape followed the screen's
+// (4x2 on desktop, 2x4 on a phone), and the fly-over's payoff was pulling back
+// to reveal the whole block.
 //
-// The grid's SHAPE follows the screen's. Courts are drawn length-vertical (see
-// CourtPlan), so a 4×2 block is ~1.14:1 — fine in a landscape frame, but on a
-// portrait phone it can only ever fill the width and leaves half the height
-// empty. Tiled 2×4 the same eight courts run tall instead, and fill the frame.
+// That had to go for two reasons. The court count is not decided, so landing
+// on exactly eight was a claim we cannot make. And the bigger one: the reveal
+// showed a FINISHED FACILITY, which is the most persuasive thing on the page
+// and the likeliest reason visitors thought the club was already open. The
+// copy now says "We are building"; the hero has to agree with it.
+//
+// So the camera no longer reveals a facility. It watches a single court get
+// marked out (see CourtPlan's two layers), swinging from an oblique angle to a
+// flat architectural plan as the ink goes down. Nothing in here counts.
 const GAP = 22;
 
 type Court = { sport: Sport; x: number; y: number; hero?: boolean };
@@ -81,10 +88,20 @@ function buildLayout(cols: number, rows: number, heroIndex: number) {
   };
 }
 
-// Both start the camera on a court in the lower-middle of the block, so the
-// pull-back reveals courts on every side of it.
-const LAYOUT_WIDE = buildLayout(4, 2, 5); // desktop — bottom row, 2nd column
-const LAYOUT_TALL = buildLayout(2, 4, 4); // mobile — 3rd row, 1st column
+// One court, so it is its own hero and its centre is the transform origin.
+// `buildLayout` is kept rather than inlined: it still solves the floor size and
+// origin, and restoring a grid later is a one-argument change.
+const LAYOUT_ONE = buildLayout(1, 1, 0);
+
+// The end frame is a flat plan. A single court is 92x200 plan units, so it is
+// far taller than it is wide — parked upright on a landscape desktop it is a
+// narrow strip down the middle of the frame with dead space either side. So on
+// desktop the camera finishes at rotateZ(90deg) and the court lies along the
+// frame (200x92, about 2.17:1); on a portrait phone it stays upright, where
+// that proportion already fits. `END_RX` is shallow on purpose: this is meant
+// to read as a drawing, and the flatter it lands the more it does.
+const END_RX = 14;
+const COS_RX_END = Math.cos((END_RX * Math.PI) / 180);
 
 // Standing net, in plan px. Real badminton proportions: posts ~5ft tall with
 // the ~2.5ft-deep mesh hanging from the top — clear air beneath it.
@@ -128,8 +145,7 @@ function headlineLine(line: string) {
   );
 }
 
-/** Vertical squash from the end frame's rotateX(26°). */
-const COS_RX = Math.cos((26 * Math.PI) / 180);
+
 
 export function Hero() {
   // The reduced-motion branch renders a different tree (a single static frame,
@@ -152,13 +168,9 @@ export function Hero() {
   const vpW = useSyncExternalStore(resizeSubscribe, readW, readZero);
   const vpH = useSyncExternalStore(resizeSubscribe, readH, readZero);
   const lg = vpW >= 1024;
-  // Wide block on a landscape frame, tall block on a portrait one. Server
-  // renders the tall layout (vpW is 0); useSyncExternalStore re-renders with
-  // the real viewport straight after hydration, and at that point only the
-  // hero court is visible anyway — the other seven are still at opacity 0.
-  const { courts, gridW, gridH, heroCX, heroCY } = lg
-    ? LAYOUT_WIDE
-    : LAYOUT_TALL;
+  const { courts, gridW, gridH, heroCX, heroCY } = LAYOUT_ONE;
+  // Desktop lays the court along the frame, a phone keeps it upright.
+  const endRz = lg ? 90 : 0;
   // Mobile opens with a large, low court so it reads as the full-bleed hero
   // element from the Figma mobile design (was 2.2 → 3.1 → 4.3).
   const s0 = vpW === 0 ? 4 : lg ? vpW / 172 : 5.9;
@@ -170,21 +182,22 @@ export function Hero() {
   const TOP = lg ? 96 : 84; // clearance under the sticky header
   const BOTTOM = lg ? 64 : 48; // breathing room at the foot of the frame
   const avail = Math.max(160, vpH - TOP - BOTTOM);
-  const fitH = avail / (gridH * COS_RX);
-  const fitW = (vpW - (lg ? 96 : 24)) / gridW;
+  // The court's END footprint, which is the plan SWAPPED on desktop because it
+  // finishes at rotateZ(90°). Fitting the unrotated 92×200 there would size it
+  // for a strip that never appears.
+  const endW = lg ? gridH : gridW;
+  const endH = lg ? gridW : gridH;
+  const fitH = avail / (endH * COS_RX_END);
+  const fitW = (vpW - (lg ? 160 : 40)) / endW;
   const sEnd = vpH === 0 ? 1.4 : Math.max(0.7, Math.min(fitH, fitW));
-  // Vertical placement. The plan's top edge sits `planTop` down the viewport;
-  // solving the camera translate for that lands the transform origin (the hero
-  // court centre, heroCY plan-units down the grid) in the right place.
-  const planH = gridH * sEnd * COS_RX;
+  // With a single court the transform origin IS the court's centre and the
+  // grid's, so centring is just "put the origin in the middle of the space
+  // under the header" — no hero-court offset to solve. The floor is anchored
+  // at the viewport centre, hence the − vpH / 2.
+  const planH = endH * sEnd * COS_RX_END;
   const planTop = TOP + (avail - planH) / 2;
-  const tyEnd =
-    vpH === 0 ? 200 : planTop + heroCY * COS_RX * sEnd - vpH / 2;
-  // Horizontal: centre the whole grid. The hero court (the transform origin)
-  // sits gridW/2 − heroCX plan-units left of the grid centre, so translating
-  // by (heroCX − gridW/2)·s lands the grid centre on the viewport centre for
-  // any hero-court choice or grid width.
-  const txEnd = (heroCX - gridW / 2) * sEnd;
+  const tyEnd = vpH === 0 ? 200 : planTop + planH / 2 - vpH / 2;
+  const txEnd = 0;
 
   // Both the fly-over and the still hero collapse to the same geometry when
   // there is no camera to drive: no track, no sticky pin, anchor at the top.
@@ -228,21 +241,32 @@ export function Hero() {
   const CAM_END = lg ? 0.78 : 0.94;
   const t = useTransform(p, [0, CAM_END, 1], [0, 1, 1]);
 
-  // Camera: angled hero court bottom-right → flattens overhead, centered →
-  // pulls back to the facility.
-  const rx = useTransform(t, [0, 0.5, 1], [54, 18, 26]);
-  const rz = useTransform(t, [0, 0.5, 1], [45, 12, 0]);
-  const s = useTransform(t, [0, 0.5, 1], [s0 / K, 2.7 / K, sEnd / K]);
+  // Camera: oblique court in the lower-right → swings flat and square on, and
+  // lands as an architectural plan. Most of the move is now ROTATION rather
+  // than scale — with one court there is no block to pull back from, and the
+  // turn from an oblique view to a flat plan is what sells "drawing".
+  const sMid = s0 + (sEnd - s0) * 0.55;
+  const rx = useTransform(t, [0, 0.5, 1], [54, 32, END_RX]);
+  const rz = useTransform(
+    t,
+    [0, 0.5, 1],
+    lg ? [45, 68, endRz] : [45, 22, endRz],
+  );
+  const s = useTransform(t, [0, 0.5, 1], [s0 / K, sMid / K, sEnd / K]);
   const tx = useTransform(t, [0, 0.5, 1], [tx0, 0, txEnd]);
   const ty = useTransform(t, [0, 0.5, 1], [ty0, 0, tyEnd]);
   const floorTransform = useMotionTemplate`translate3d(${tx}px, ${ty}px, 0) rotateX(${rx}deg) rotateZ(${rz}deg) scale(${s})`;
 
+  // The ink. Starts just after the copy has begun clearing, and finishes at
+  // 0.9 so the finished court holds for a beat before the pin releases rather
+  // than the last line landing on the handover.
+  const draw = useTransform(t, [0.05, 0.9], [0, 1]);
+
   // Copy fades out early so the camera move owns the frame.
   const copyOpacity = useTransform(t, [0, 0.26], [1, 0]);
   const copyY = useTransform(t, [0, 0.26], [0, -64]);
-  // The five surrounding courts fade in as we pull back.
-  const othersOpacity = useTransform(t, [0.22, 0.52], [0, 1]);
-  // Standing net recedes as we go overhead, fully gone by the reveal.
+  // Standing net recedes as the camera flattens — a net seen from overhead is
+  // just its line, which the ink draws last anyway.
   const netOpacity = useTransform(t, [0.34, 0.7], [1, 0]);
 
   const staticFloor = reduce
@@ -322,6 +346,21 @@ export function Hero() {
           </div>
         )}
 
+        {/* Motion serialises `--draw`'s initial 0 into the SSR markup, which is
+            right for a normal load (the client picks up from exactly there,
+            with no flash) and wrong with scripting off, where nothing ever
+            advances it and the court renders as ghost markings with no ink.
+            `!important` is needed because it is beating an inline style, and
+            <noscript> means it only ever applies when there is no JS to do
+            the drawing. */}
+        <noscript>
+          <style
+            dangerouslySetInnerHTML={{
+              __html: ".hero-floor{--draw:1 !important}",
+            }}
+          />
+        </noscript>
+
         {/* ── 3D camera scene ─────────────────────────────────────────── */}
         <motion.div
           // `.hero-scene-off` is display:none — the whole rig stays mounted and
@@ -339,14 +378,26 @@ export function Hero() {
         >
           <motion.div
             className="hero-floor"
-            style={{
-              width: gridW * K,
-              height: gridH * K,
-              marginLeft: -heroCX * K,
-              marginTop: -heroCY * K,
-              transformOrigin: `${heroCX * K}px ${heroCY * K}px`,
-              ...staticFloor,
-            }}
+            style={
+              {
+                width: gridW * K,
+                height: gridH * K,
+                marginLeft: -heroCX * K,
+                marginTop: -heroCY * K,
+                transformOrigin: `${heroCX * K}px ${heroCY * K}px`,
+                // Inherited by the court's ink strokes. Set EXPLICITLY to 1
+                // under reduced motion rather than omitted: Motion serialises
+                // this MotionValue's initial 0 into the SSR markup, so leaving
+                // it out does not fall back to the registered `initial-value`,
+                // it keeps the 0 already in the HTML and the court stays a
+                // ghost. Measured.
+                "--draw": reduce ? 1 : draw,
+                ...staticFloor,
+                // `MotionStyle` does not model CSS custom properties, so the
+                // `--draw` entry above has to go through `unknown`. Motion
+                // itself handles them fine at runtime.
+              } as unknown as MotionStyle
+            }
           >
             {courts.map((court, i) => (
               <motion.div
@@ -357,7 +408,6 @@ export function Hero() {
                   top: court.y * K,
                   width: W * K,
                   height: L * K,
-                  opacity: court.hero ? 1 : reduce ? 0 : othersOpacity,
                 }}
               >
                 <CourtPlan sport={court.sport} />
@@ -425,6 +475,48 @@ export function Hero() {
         </motion.div>
 
         {/* ── copy overlay ────────────────────────────────────────────── */}
+        {/* The brand mark, at the top of the page and OUTSIDE `.hero-copy-wrap`.
+            It used to sit at the head of the centred stack, which meant it
+            inherited `copyOpacity` and was at 0 by roughly 0.6vh of scroll —
+            so the whole pinned fly-over, about three screens of it, played with
+            no brand anywhere on screen, and nothing appeared again until the
+            footer. Measured. Out here it holds for the entire pin and then
+            scrolls away with it.
+
+            Keeps the `.hero-wordmark` class: PageLoader flies its opening mark
+            to `.hero-wordmark .wordmark-logo`, and the `logo-land` hand-off in
+            globals.css is scoped to the same selector. Both follow this
+            element wherever it goes.
+
+            Its own entrance rather than `variants={fadeUp}` — it is no longer a
+            child of the copy's stagger container, so a variant here would never
+            be triggered. */}
+        <motion.div
+          className="hero-wordmark"
+          initial={reduce ? false : { opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
+        >
+          <Wordmark />
+        </motion.div>
+
+        {/* Ground for the type. The copy column is centred and the court fills
+            the frame from about 63% of the width rightward, so the two overlap
+            in the middle-right at every desktop size — measured 83px at 1512
+            and 113px at 1280, putting the net's black post hard against the
+            end of "Badminton". No shift of the camera fixes that at all widths
+            (the overlap grows as the viewport narrows), so the type gets its
+            own ground instead.
+
+            Fades with `copyOpacity`, not held: once the copy clears, the camera
+            owns the frame and a scrim still sitting there would just be dimming
+            the court for no reason. */}
+        <motion.div
+          className="hero-copy-scrim"
+          aria-hidden
+          style={staticHero ? undefined : { opacity: copyOpacity }}
+        />
+
         <motion.div
           className="hero-copy-wrap"
           style={staticHero ? undefined : { opacity: copyOpacity, y: copyY }}
@@ -435,9 +527,6 @@ export function Hero() {
             variants={group}
             className="hero-copy"
           >
-            <motion.p variants={fadeUp} className="hero-eyebrow">
-              {hero.eyebrow}
-            </motion.p>
             <motion.h1 variants={fadeUp} className="hero-headline">
               {hero.headlineLines.map((line) => (
                 <span key={line} className="hero-headline-line">
@@ -448,35 +537,22 @@ export function Hero() {
             <motion.p variants={fadeUp} className="hero-subhead">
               {hero.subhead}
             </motion.p>
-            <motion.div variants={fadeUp} className="hero-actions">
-              <ButtonLink
-                href={hero.primaryCta.href}
-                variant="accent"
-                size="lg"
-                // Full-bleed on mobile (matches the Figma mobile hero); reverts
-                // to its natural width once the row goes horizontal at sm.
-                className="w-full sm:w-auto"
-              >
-                {hero.primaryCta.label}
-              </ButtonLink>
-              <a href={hero.secondaryCta.href} className="group hero-secondary">
-                {hero.secondaryCta.label}
-                <ArrowRight className="hero-secondary-icon" />
-              </a>
-            </motion.div>
           </motion.div>
         </motion.div>
 
-        {/* Mobile-only status pill — sits bottom-centre over the court, matching
-            the Figma mobile hero. Shortened to just the opening line, on a
-            translucent-black chip. Fades out with the copy as the fly-over
-            begins (desktop keeps the full eyebrow at the top instead). */}
-        <motion.div
-          className="hero-eyebrow-bottom"
-          style={staticHero ? undefined : { opacity: copyOpacity }}
-        >
-          {hero.eyebrow.split("·").pop()?.trim()}
-        </motion.div>
+        {/* The one action on the page, along the bottom of the viewport rather
+            than inside the centred stack. It replaced the "Opening Fall 2027"
+            line that used to sit here.
+
+            NOT inside `.hero-copy`, and NOT tied to `copyOpacity`: the copy
+            clears early so the camera owns the frame, and the only way to act
+            on this page must not clear with it. It sits inside `.hero-pin`, so
+            it holds for the whole pinned hero and then scrolls away with it. */}
+        <div className="hero-cta-bottom">
+          <ButtonLink href={hero.primaryCta.href} variant="accent" size="lg">
+            {hero.primaryCta.label}
+          </ButtonLink>
+        </div>
       </div>
     </section>
   );

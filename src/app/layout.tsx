@@ -25,7 +25,7 @@ const marcellus = Marcellus({
 });
 
 const META_DESCRIPTION =
-  "A dedicated indoor badminton club in central Nassau County: 8 courts, open play, leagues, and memberships for every level.";
+  "A dedicated indoor badminton club coming to central Nassau County in 2027: open play, leagues, and memberships for every level.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://apolloracketclub.com"),

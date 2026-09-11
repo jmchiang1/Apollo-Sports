@@ -121,14 +121,20 @@ export function Header() {
           >
             {hero.primaryCta.label}
           </ButtonLink>
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            aria-label="Open menu"
-            className="header-menu-btn"
-          >
-            <Menu className="header-icon" />
-          </button>
+          {/* Hidden while `nav` is empty: with Programs/Pricing/FAQ unmounted
+              the overlay would open onto nothing but the same waitlist button
+              that is already sitting next to this one. Comes back on its own
+              as soon as `nav` has entries again. */}
+          {nav.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-label="Open menu"
+              className="header-menu-btn"
+            >
+              <Menu className="header-icon" />
+            </button>
+          )}
         </div>
       </div>
 

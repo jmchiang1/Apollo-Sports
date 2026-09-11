@@ -28,7 +28,10 @@ export const brand = {
 /** Placeholders only Jonathan confirms. Rendered as visible [TODO] tokens. */
 export const todo = {
   address: "Coming Soon",
-  courts: "8 regulation badminton courts",
+  // COURT COUNT IS NOT DECIDED. Every number that used to say "8" is gone
+  // from the copy on purpose; do not reintroduce one here until the build is
+  // committed, because this string feeds the sports section verbatim.
+  courts: "Regulation badminton courts",
   pricing: "[TODO: pricing]",
   hours: "8 AM – Midnight",
   /**
@@ -61,17 +64,24 @@ export const todo = {
  * Vision is deliberately absent: `.vision-section` is display:none, and a
  * hidden target has no box, so the browser can't scroll to it.
  */
-export const nav = [
-  { label: "Courts", href: "#courts" },
-  { label: "Programs", href: "#programs" },
-  { label: "Pricing", href: "#pricing" },
-  // Location is out until there is an address to publish — restore this entry
-  // when LocationSection is mounted again.
-  { label: "FAQ", href: "#faq" },
-] as const;
+/**
+ * EMPTY ON PURPOSE. Programs, Pricing and FAQ are unmounted (see
+ * SiteOriginal.tsx) because they read as an operating club, so every one of
+ * those links would scroll to nothing. The header keeps its waitlist button,
+ * which is the only destination the page now has — and a nav bar of one item
+ * is worse than none.
+ *
+ * Header.tsx hides the mobile menu button while this is empty. Restore entries
+ * here as sections come back, and Courts/Location need their sections mounted
+ * too (`#courts` is the hero's own anchor and is still live).
+ */
+export const nav = [] as ReadonlyArray<{ label: string; href: string }>;
 
 export const hero = {
-  eyebrow: `Coming in ${todo.opening}`,
+  // The old `eyebrow` field is GONE. It rendered as a stamp above the headline,
+  // then as a line along the bottom of the viewport, and the waitlist button
+  // took that spot. Its job — saying the club is not open yet — belongs to the
+  // subhead now, so there is exactly one place doing it.
   // One line per entry — the hero breaks exactly here, no reflow. Line 1 is the
   // service area; swap it for whichever city/region the club lands in.
   // "Club", not "Center" — the brand is Apollo Racket Club. `Badminton` stays
@@ -80,11 +90,22 @@ export const hero = {
   headlineLines: ["Nassau County's", "Premier Badminton", "Club"],
   // Word within a headline line to accent in gold (must appear verbatim).
   headlineHighlight: "Badminton",
-  subhead:
-    "A dedicated indoor badminton club in central Nassau County: 8 courts, private bookings, open play, and leagues for every level.",
+  // THE ONLY THING ON THE FIRST SCREEN THAT SAYS THE CLUB IS NOT OPEN YET.
+  // Everything above it is a present-tense claim, and "Join the Waitlist" does
+  // not carry it alone — full gyms and busy restaurants run waitlists too.
+  // Don't remove this without putting the opening date somewhere else on the
+  // first screen: visitors read the page as an operating club while it was
+  // missing, which is the whole reason the site got cut down.
+  //
+  // ONE LINE, not the old three-sentence version. It sits directly under a
+  // 4rem headline in a centred stack, where a paragraph competes with the
+  // headline instead of supporting it, and it leads with the DATE because that
+  // is the fact a first-time visitor is missing.
+  subhead: `Opening ${todo.opening} in central Nassau County.`,
   primaryCta: { label: "Join the Waitlist", href: "#waitlist" },
-  // Points at Programs, not Vision — the Vision section is hidden (see `nav`).
-  secondaryCta: { label: "See what we're building", href: "#top" },
+  // NO SECOND CTA. It read "See what we're building" and pointed at `#top`,
+  // which went nowhere even before Programs was unmounted. The waitlist is the
+  // only thing to do on this page, so it is the only button.
 } as const;
 
 export const vision = {
@@ -92,7 +113,7 @@ export const vision = {
   heading: "The club we always wished existed.",
   paragraphs: [
     "We're building a welcoming, well-run indoor club where badminton comes first: proper courts, proper height, and a real community for players at every level.",
-    "Long Island has plenty of places to play pickleball. What it's missing is a club built for badminton. That's what we're building: eight courts and real programming, all of it badminton.",
+    "Long Island has plenty of places to play pickleball. What it's missing is a club built for badminton. That's what we're building: regulation courts and real programming, all of it badminton.",
     "There's even a real lounge with seating, workspace, and Wi-Fi, for the parent putting in 6–8 hours a week while a kid trains. No badminton facility around here offers it.",
   ],
   founderNote:
@@ -106,11 +127,14 @@ export const sports = {
   cards: [
     {
       name: "Badminton",
-      courts: 8,
+      // DECORATIVE ONLY — sizes the isometric court cluster, and is not a claim
+      // about how many courts get built. The rendered label deliberately no
+      // longer prints this number (see SportsSection).
+      courts: 4,
       lead: true,
-      body: "Eight regulation courts with true ceiling height and tournament-grade mats and lighting. Singles, doubles, and mixed, from your first rally to competitive league.",
+      body: "Regulation courts with true ceiling height and tournament-grade mats and lighting. Singles, doubles, and mixed, from your first rally to competitive league.",
       features: [
-        "8 regulation courts & true ceiling height",
+        "Regulation courts & true ceiling height",
         "Tournament-grade mats & lighting",
         "Singles, doubles & mixed play",
         "Spacing, lighting, air & flooring tuned to one sport",
@@ -122,10 +146,15 @@ export const sports = {
 /** Big-number stat strip. `courts` value is a planning estimate (see todo). */
 export const stats = {
   items: [
-    { value: "8", label: "Total courts" },
-    { value: "22+ ft", label: "Ceiling height" },
-    { value: "16", label: "hours a day" },
-    { value: "'27", label: "Opening" },
+    // "planned" / "will open" wording is load-bearing: these are specs of a
+    // building that does not exist yet, and stated flat they read as a tour of
+    // somewhere you could walk into.
+    // Replaces "8 / Courts planned". The count is undecided, and this says the
+    // thing the club actually differentiates on without needing a number.
+    // { value: "100%", label: "Badminton" },
+    { value: "25+ ft", label: "Ceiling height" },
+    { value: "16", label: "Hours a day" },
+    { value: "Fall 2027", label: "Opening" },
   ],
 } as const;
 
@@ -260,7 +289,7 @@ export const pricing = {
           icon: "CalendarClock",
           cta: { label: "Get booking updates", href: "#waitlist" },
           features: [
-            "8 regulation badminton courts",
+            "Regulation badminton courts",
             "Non-peak $50 · peak $70",
             "Book by the hour, online",
             "Unlimited guests on court",
@@ -388,7 +417,7 @@ export const faq = {
     },
     {
       q: "Will you have pickleball?",
-      a: "No. Apollo is a dedicated badminton club. Pickle N Par opens 14 pickleball courts about five minutes away in New Hyde Park, and the corridor has no dedicated badminton. Committing all eight courts to one sport is the whole point.",
+      a: "No. Apollo is a dedicated badminton club. Pickle N Par opens 14 pickleball courts about five minutes away in New Hyde Park, and the corridor has no dedicated badminton. Committing every court to one sport is the whole point.",
     },
     {
       q: "Can I take lessons?",

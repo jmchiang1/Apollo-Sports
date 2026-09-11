@@ -256,8 +256,9 @@ body::after {
 
    `backwards` fill and no `forwards`, like `page-arrive` below: if this
    animation never runs, the logo is simply visible. It cannot be stranded
-   hidden by a flight that failed. Scoped to the header so the footer's
-   wordmark is untouched. */
+   hidden by a flight that failed. Scoped to the hero (and the header, for
+   whenever that bar comes back) so the footer's wordmark is untouched. */
+.hero-wordmark .wordmark-logo,
 .header-bar .wordmark-logo {
   animation: logo-land 150ms var(--ease-out-soft) 2250ms backwards;
 }
@@ -440,6 +441,15 @@ body.is-loading {
    ────────────────────────────────────────────────────────────────────────── */
 /* initial-value is the REVEALED end state, not the hidden start: an unanimated
    heading must be fully visible. `.is-cut` is what runs the wipe from 0%. */
+/* 1 is the FINISHED state, not the blank one: anything that never sets this —
+   no JS, reduced motion, any other consumer of CourtPlan — must get a fully
+   marked court rather than an empty slab. Hero drives it from 0 on scroll. */
+@property --draw {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
 @property --cut {
   syntax: "<percentage>";
   inherits: false;
@@ -487,8 +497,13 @@ body.is-loading {
      the reveal lands in the first third and the whole thing reads quick however
      long the duration is — the same trap as the hero image fade. A symmetric
      S holds roughly half the wipe at half the time, which is what actually
-     reads as a slow, deliberate cut. */
-  animation: heading-cut 2s cubic-bezier(0.4, 0, 0.6, 1) both;
+     reads as a deliberate cut rather than a slide.
+
+     1.1s. It ran at 2s and read as sluggish: with the S-curve most of the ink
+     is still covered at the halfway point, so a two-second wipe leaves a
+     heading unreadable for about a second after it is on screen. The curve is
+     what sells the chisel, so the duration came down instead of the easing. */
+  animation: heading-cut 1.1s cubic-bezier(0.4, 0, 0.6, 1) both;
 }
 
 /* Belt and braces. `HeadingCut` already withholds `.is-cut` under reduced
@@ -660,21 +675,27 @@ body.is-loading {
    and the stats frieze as one dark opening (same tone, no seam between them)
    leaves seven bands, so the only arrangement that alternates cleanly is:
 
-     hero + stats   onyx      <- pinned
-     programs       marble
-     memberships    onyx
-     pay as you go  marble
-     waitlist       onyx
-     FAQ            marble
-     footer         onyx      <- pinned
+     hero + stats      onyx      <- pinned
+     waitlist          marble
+     epigraph + footer onyx      <- pinned
 
-   Waitlist used to be marble and FAQ onyx, which was fine while Location sat
-   between them. With Location gone, pay-as-you-go and waitlist became adjacent
-   marble bands and read as one long beige block — so the two swapped. */
+   Programs, pay-as-you-go and the FAQ carried every marble band on the page,
+   so unmounting them (see SiteOriginal.tsx) left nothing but onyx from the
+   hero to the footer. Waitlist takes the marble back — it is the one band
+   between the two pinned onyx ends, so the alternation survives the page
+   getting shorter, and the one light band on the page is the one thing the
+   page wants you to do.
+
+   The unmounted sections keep their entries below so the full sequence
+   restores itself if they are ever mounted again. If that happens, move
+   waitlist back OFF this list: it sat next to pay-as-you-go, and two adjacent
+   marble bands read as one long beige block, which is why they were swapped
+   in the first place. */
 .vision-section,
 .programs-section,
 .rates-section,
-.faq-section {
+.faq-section,
+.waitlist-section {
   --color-onyx: var(--color-stone);
   --color-onyx-2: var(--color-stone-2);
   --color-onyx-3: var(--color-stone-3);
@@ -708,7 +729,13 @@ body.is-loading {
 .rates-section .pricing-badge,
 /* The FAQ's open toggle is a gold-filled chip carrying onyx text, so it needs
    true gold rather than the carved variant. */
-.faq-section .faq-toggle-open {
+.faq-section .faq-toggle-open,
+/* The waitlist's submit button is a gold fill carrying onyx text, same as the
+   buttons above. Its `.waitlist-step-number` chips are deliberately NOT here:
+   those are gold TEXT on an onyx-3 chip, so the marble remap turning them into
+   carved gold on stone is exactly right. */
+.waitlist-section .btn-primary,
+.waitlist-section .btn-accent {
   --color-gold: #c6a15b;
   --color-gold-light: #d9bc88;
 }
@@ -1245,6 +1272,26 @@ body.is-loading {
     @apply block h-full w-full;
     filter: drop-shadow(0 10px 22px rgba(10, 25, 30, 0.45));
   }
+  /* The hero court inking itself in. Hero drives `--draw` from 0 to 1 across
+     the scroll; each marking waits its turn via `--i` (see the draw order in
+     CourtPlan) and then uncovers over `--draw-window` of the timeline.
+
+     STAGGER x LAST INDEX + WINDOW MUST COME TO 1, or the last marking never
+     finishes: 0.068 x 10 + 0.32 = 1.0 for badminton's eleven marks. Adding a
+     marking means re-solving this, not just appending to the array.
+
+     The clamp is what keeps each segment at rest before and after its slot —
+     without it, later markings would run negative offsets and appear early. */
+  .court-plan-ink {
+    --draw-stagger: 0.068;
+    --draw-window: 0.32;
+    stroke-dasharray: 1;
+    stroke-dashoffset: clamp(
+      0,
+      1 - (var(--draw) - var(--i) * var(--draw-stagger)) / var(--draw-window),
+      1
+    );
+  }
   /* Standing net on the hero court: a mesh plane rotated up out of the floor. */
   .hero-net {
     @apply absolute left-0 w-full;
@@ -1260,29 +1307,72 @@ body.is-loading {
   }
 
   /* Copy overlay — floats above the scene, left-aligned. */
+  /* Sits between the court (`z-[1]`) and the copy (`z-10`). Centred on the
+     copy block, which means it has to follow it: the pin top-aligns the stack
+     below sm and centres it from sm up. */
+  .hero-copy-scrim {
+    @apply pointer-events-none absolute inset-0 z-[5];
+    background: radial-gradient(
+      ellipse 62% 34% at 50% 30%,
+      rgba(5, 15, 14, 0.92) 0%,
+      rgba(5, 15, 14, 0.72) 42%,
+      rgba(5, 15, 14, 0) 76%
+    );
+  }
+  @media (min-width: 640px) {
+    .hero-copy-scrim {
+      background: radial-gradient(
+        ellipse 42% 36% at 50% 50%,
+        rgba(5, 15, 14, 0.92) 0%,
+        rgba(5, 15, 14, 0.7) 44%,
+        rgba(5, 15, 14, 0) 78%
+      );
+    }
+  }
   .hero-copy-wrap {
-    /* Mobile: clear the fixed header (top state is h-24) so the top-aligned copy
-       doesn't tuck under the logo. Neutralised at sm where the pin re-centres. */
-    @apply relative z-10 mx-auto w-full max-w-6xl px-6 pt-28 sm:px-8 sm:pt-0;
+    /* Clears the pinned wordmark, and ONLY matters below sm. The pin
+       top-aligns the copy there instead of centring it, so without this the
+       copy runs straight under the mark — measured a 44px overlap at `pt-16`,
+       which was sized back when the mark was part of this stack rather than
+       above it. From sm the pin centres the stack and this is neutralised. */
+    @apply relative z-10 mx-auto w-full max-w-6xl px-6 pt-36 sm:px-8 sm:pt-0;
   }
+  /* CENTRED AT EVERY SIZE. The copy used to sit left with the court filling the
+     right of the frame; with no header bar and nothing to navigate to, the page
+     is a single centred statement and the wordmark is the top of it. */
   .hero-copy {
-    /* Nudge the copy down on mobile so it sits lower under the header; reset at
-       sm where the pin re-centres the copy. */
-    @apply mt-12 max-w-xl sm:mt-0;
+    @apply mx-auto flex max-w-2xl flex-col items-center text-center;
   }
-  /* Top eyebrow — desktop only. On mobile the status moves to a bottom-centre
-     pill over the court (see `.hero-eyebrow-bottom`). */
-  .hero-eyebrow {
-    @apply mb-6 hidden items-center rounded-none bg-cream/[0.06] px-4 py-2 text-sm font-semibold text-cream backdrop-blur-sm sm:inline-flex;
+  /* The single action, pinned along the bottom of the viewport. It replaced
+     the "Opening Fall 2027" line that sat here, and before that a bordered
+     chip above the headline.
+
+     `pointer-events` are deliberately NOT disabled. The element this replaced
+     was decorative text and carried `pointer-events-none`; left on a button
+     that looks completely normal and simply never clicks. */
+  .hero-cta-bottom {
+    @apply absolute bottom-8 left-1/2 z-20 -translate-x-1/2 sm:bottom-10;
   }
-  /* Mobile status pill: shortened copy on a translucent-black chip, centred at
-     the bottom of the hero over the court. Hidden from sm up. */
-  .hero-eyebrow-bottom {
-    @apply pointer-events-none absolute bottom-[3%] left-1/2 z-10 inline-flex -translate-x-1/2 items-center rounded-none px-4 py-2 text-sm font-semibold text-cream backdrop-blur-md sm:hidden;
-    background-color: rgba(0, 0, 0, 0.25);
+  /* The brand mark, pinned to the top of the hero rather than stacked above
+     the headline — see the note in Hero.tsx for why it had to leave the copy.
+     `z-20` puts it over both the court (`z-[1]`) and the copy scrim (`z-[5]`). */
+  .hero-wordmark {
+    @apply absolute left-1/2 top-7 z-20 flex -translate-x-1/2 justify-center sm:top-9;
+  }
+  /* THE REFERENCE PROPORTION, and only here. Wordmark.tsx explains why the base
+     `.wordmark-logo` is small next to the text: matching the art at a 40px
+     header mark would drop the "RACKET CLUB" line under 10px. That is a HEADER
+     constraint, and there is no header any more — at hero scale the mark can
+     take its real size without touching the sub-line. The art puts the mark at
+     ~1.8x the height of the two-line text block (about 4x the cap height of
+     APOLLO); measured here it was 0.83x, i.e. SHORTER than the text. Scoped to
+     `.hero-wordmark` so the footer's lockup, still at header scale, is left
+     alone. */
+  .hero-wordmark .wordmark-logo {
+    @apply h-20 sm:h-[5.5rem];
   }
   .hero-headline {
-    @apply text-center font-display text-[clamp(2.15rem,9vw,2.85rem)] font-normal leading-[0.98] text-cream sm:text-left sm:text-6xl lg:text-[3.4rem] xl:text-[4.1rem];
+    @apply text-center font-display text-[clamp(2.15rem,9vw,2.85rem)] font-normal leading-[0.98] text-cream sm:text-6xl lg:text-[3.4rem] xl:text-[4.1rem];
   }
   .hero-headline-line {
     display: block;
@@ -1293,10 +1383,16 @@ body.is-loading {
   .hero-subhead {
     /* Hidden on mobile to de-clutter the hero (headline + CTA + court only);
        shown from sm up. */
-    @apply mt-7 hidden max-w-xl text-lg leading-relaxed text-cream/70 sm:block;
+    /* VISIBLE ON MOBILE TOO. It was `hidden sm:block`, so a phone visitor got
+       the headline and a Join button and never saw "We are building" at all —
+       the one sentence that says the club is not open yet. Smaller and tighter
+       below sm so the extra line does not push the CTA off the first screen. */
+    @apply mx-auto mt-5 max-w-xl text-base leading-relaxed text-cream/70 sm:mt-7 sm:text-lg;
   }
   .hero-actions {
-    @apply mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center;
+    /* `items-center` / `justify-center`, not `items-start` — the single button
+       is the foot of a centred stack now. */
+    @apply mt-9 flex w-full flex-col items-center justify-center gap-4 sm:flex-row;
   }
   /* Secondary "See what we're building" link — desktop only; the Figma mobile
      hero drops it. */
@@ -1469,7 +1565,12 @@ body.is-loading {
     @apply bottom-0 -scale-y-100;
   }
   .stats-grid {
-    @apply mx-auto grid max-w-6xl grid-cols-2 gap-x-8 gap-y-10 px-6 py-12 sm:grid-cols-4 sm:px-8 sm:py-14;
+    /* Column count TRACKS `stats.items`, currently three — a fixed 4 left a
+       dead track when one was removed. Mobile stays at TWO, not three: at
+       390px three tracks are ~103px each and `text-5xl` overflows them
+       (measured). Three items over two columns leaves one on a second row,
+       which is the lesser cost. Revisit both if the array changes length. */
+    @apply mx-auto grid max-w-6xl grid-cols-2 gap-x-8 gap-y-10 px-6 py-12 sm:grid-cols-3 sm:px-8 sm:py-14;
   }
   .stats-item {
     @apply border-l-[3px] border-gold/45 pl-4;
@@ -1982,8 +2083,14 @@ body.is-loading {
   .waitlist-form-fields {
     @apply grid gap-4 sm:grid-cols-2;
   }
+  /* `text-ink/65`, NOT `text-muted`. Tailwind resolves `text-muted` to
+     `var(--muted)` — the leftover shadcn palette near the bottom of this file,
+     which is `oklch(0.97 0 0)`, near-white — and not to this site's
+     `--color-muted`. It passed unnoticed as light grey on onyx; on the marble
+     waitlist band it measured 1.03:1, i.e. invisible. `--color-ink` is remapped
+     by the marble block, so this reads on either ground. */
   .waitlist-form-label-muted {
-    @apply font-medium text-muted;
+    @apply font-medium text-ink/65;
   }
   /* Required-field mark. Gold rather than the usual red — this is a waitlist,
      not an error state, and red would read as a validation failure. */
@@ -2014,8 +2121,9 @@ body.is-loading {
   .waitlist-form-submit-icon {
     @apply h-4 w-4 animate-spin;
   }
+  /* See `.waitlist-form-label-muted` — same `var(--muted)` trap. */
   .waitlist-form-disclaimer {
-    @apply text-xs text-muted;
+    @apply text-xs text-ink/65;
   }
 
   /* ── Closing epigraph ───────────────────────────────────────────────────
@@ -2178,6 +2286,11 @@ body.is-loading {
   }
   .footer-grid {
     @apply grid gap-10 md:grid-cols-[1.5fr_1fr_1.1fr];
+  }
+  /* Two tracks while `nav` is empty and the Explore column is hidden —
+     otherwise Contact sits in the middle with a dead third track beside it. */
+  .footer-grid-compact {
+    @apply md:grid-cols-[1.5fr_1.1fr];
   }
   .footer-tagline {
     @apply mt-4 max-w-xs text-sm leading-relaxed text-cream/60;

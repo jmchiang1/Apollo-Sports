@@ -12,8 +12,9 @@ const FLIGHT_AT = 1450;
 const FLIGHT_MS = 900;
 const REMOVE_AT = 2450;
 
-/** Where the mark flies to: the header's logo slot, measured at flight time. */
-const TARGET = ".header-bar .wordmark-logo";
+/** Where the mark flies to: the hero's centred logo, measured at flight time.
+ *  (Was the header bar's slot, until the bar was removed — see SiteOriginal.) */
+const TARGET = ".hero-wordmark .wordmark-logo";
 
 /**
  * Brand intro: the shuttlecock mark unfurls from its cork, then flies to the

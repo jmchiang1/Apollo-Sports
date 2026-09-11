@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { cn } from "@/lib/cn";
 
 /**
@@ -9,6 +10,19 @@ import { cn } from "@/lib/cn";
  * Coordinate space is `W` (width, horizontal) × `L` (length, vertical); the net
  * runs horizontally across the middle at y = L/2. Markings are proportional,
  * simplified for legibility at plan scale.
+ *
+ * TWO LAYERS, and that is the whole point of the hero. Every marking is drawn
+ * twice: once as a faint GHOST that is always present, and once as solid INK
+ * that draws itself on as the page scrolls. The ghost means the landing frame
+ * is a complete, legible court rather than an empty rectangle; the ink means
+ * what you watch is the court being marked out, not a facility being toured.
+ * A club that is still being drawn cannot be mistaken for one you can book,
+ * which is the entire reason this replaced the old fly-over.
+ *
+ * The ink layer is driven by `--draw` (0 → 1) and staggered by `--i`, both
+ * handled in globals.css. `--draw` is registered with `initial-value: 1`, so
+ * anything that never sets it — no JS, reduced motion, any other consumer of
+ * this component — gets the finished court.
  */
 
 export type Sport = "pickleball" | "badminton";
@@ -28,40 +42,54 @@ const midY = L / 2; // net line
 const span = x1 - x0;
 const half = y1 - y0;
 
-type Line = [number, number, number, number];
+type Seg = [number, number, number, number];
+/** A marking, with the stroke weight it carries. */
+type Mark = { p: Seg; w: number };
 
-/** Badminton markings, simplified: one service line per end, spanning only the
- *  singles side lines, with the centre line running from it to the net. */
-function badmintonLines(): Line[] {
+const LINE_W = 1.15;
+const NET_W = 1.8; // the net reads a touch bolder than the markings
+
+/**
+ * Badminton markings, simplified: one service line per end, spanning only the
+ * singles side lines, with the centre line running from it to the net.
+ *
+ * ORDER IS THE DRAW ORDER, and it is the order a court actually gets marked:
+ * the boundary goes down first (and runs around, side by side), then the
+ * singles lines, the service lines, the centre lines, and the net last. Keep
+ * new markings in the place they would really be painted.
+ */
+function badmintonMarks(): Mark[] {
   const sgl = x0 + span * 0.075; // singles side lines inset
   const sglR = x1 - span * 0.075;
   const svc = half * 0.13; // service line inset from the back boundary
   return [
-    [x0, y0, x1, y0],
-    [x1, y0, x1, y1],
-    [x1, y1, x0, y1],
-    [x0, y1, x0, y0], // outer
-    [sgl, y0, sgl, y1],
-    [sglR, y0, sglR, y1], // singles side lines
-    [sgl, y0 + svc, sglR, y0 + svc], // service lines — stop at the singles lines
-    [sgl, y1 - svc, sglR, y1 - svc],
-    [cx, y0 + svc, cx, midY], // centre lines run service line → net
-    [cx, midY, cx, y1 - svc],
+    { p: [x0, y0, x1, y0], w: LINE_W }, // outer, drawn around
+    { p: [x1, y0, x1, y1], w: LINE_W },
+    { p: [x1, y1, x0, y1], w: LINE_W },
+    { p: [x0, y1, x0, y0], w: LINE_W },
+    { p: [sgl, y0, sgl, y1], w: LINE_W }, // singles side lines
+    { p: [sglR, y0, sglR, y1], w: LINE_W },
+    { p: [sgl, y0 + svc, sglR, y0 + svc], w: LINE_W }, // service lines
+    { p: [sgl, y1 - svc, sglR, y1 - svc], w: LINE_W },
+    { p: [cx, y0 + svc, cx, midY], w: LINE_W }, // centre: service line → net
+    { p: [cx, midY, cx, y1 - svc], w: LINE_W },
+    { p: [x0, midY, x1, midY], w: NET_W }, // the net goes up last
   ];
 }
 
-/** Pickleball markings, proportional to a real court. */
-function pickleballLines(): Line[] {
+/** Pickleball markings, proportional to a real court. Same draw-order rule. */
+function pickleballMarks(): Mark[] {
   const kitchen = half * 0.318; // non-volley zone from net
   return [
-    [x0, y0, x1, y0],
-    [x1, y0, x1, y1],
-    [x1, y1, x0, y1],
-    [x0, y1, x0, y0], // outer
-    [x0, midY - kitchen, x1, midY - kitchen], // kitchen lines
-    [x0, midY + kitchen, x1, midY + kitchen],
-    [cx, y0, cx, midY - kitchen], // centre lines (service areas only)
-    [cx, midY + kitchen, cx, y1],
+    { p: [x0, y0, x1, y0], w: LINE_W },
+    { p: [x1, y0, x1, y1], w: LINE_W },
+    { p: [x1, y1, x0, y1], w: LINE_W },
+    { p: [x0, y1, x0, y0], w: LINE_W },
+    { p: [x0, midY - kitchen, x1, midY - kitchen], w: LINE_W }, // kitchen
+    { p: [x0, midY + kitchen, x1, midY + kitchen], w: LINE_W },
+    { p: [cx, y0, cx, midY - kitchen], w: LINE_W }, // centre (service areas)
+    { p: [cx, midY + kitchen, cx, y1], w: LINE_W },
+    { p: [x0, midY, x1, midY], w: NET_W },
   ];
 }
 
@@ -75,6 +103,10 @@ const C = {
   line: "#f2ece0",
 } as const;
 
+/** How visible the un-inked plan is. Enough to read the court, faint enough
+ *  that the ink arriving over it is the thing you notice. */
+const GHOST = 0.17;
+
 export function CourtPlan({
   sport,
   tone = "lifted",
@@ -85,7 +117,7 @@ export function CourtPlan({
   className?: string;
 }) {
   const { surface } = SURFACE[tone];
-  const lines = sport === "pickleball" ? pickleballLines() : badmintonLines();
+  const marks = sport === "pickleball" ? pickleballMarks() : badmintonMarks();
   const kitchen = half * 0.318;
 
   return (
@@ -97,7 +129,7 @@ export function CourtPlan({
       // the camera scaled the tile up.
       style={{ filter: "drop-shadow(0 6px 16px rgba(198, 161, 91, 0.22))" }}
       role="img"
-      aria-label={`Top-down plan of a ${sport} court`}
+      aria-label={`Plan of a ${sport} court`}
     >
       {/* slab */}
       <rect x={0} y={0} width={W} height={L} rx={2} fill={surface} />
@@ -114,26 +146,36 @@ export function CourtPlan({
         />
       )}
 
-      {/* net line — a touch bolder than the markings */}
-      <line
-        x1={x0}
-        y1={midY}
-        x2={x1}
-        y2={midY}
-        stroke={C.line}
-        strokeWidth={1.8}
-        strokeLinecap="round"
-      />
-
-      {lines.map(([ax, ay, bx, by], i) => (
+      {/* Ghost: the plan, always present. */}
+      {marks.map(({ p: [ax, ay, bx, by], w }, i) => (
         <line
-          key={i}
+          key={`g${i}`}
           x1={ax}
           y1={ay}
           x2={bx}
           y2={by}
           stroke={C.line}
-          strokeWidth={1.15}
+          strokeOpacity={GHOST}
+          strokeWidth={w}
+          strokeLinecap="round"
+        />
+      ))}
+
+      {/* Ink: the same markings, drawn on. `pathLength={1}` normalises every
+          segment so one dash length covers all of them regardless of their
+          real lengths — the same trick the palmette uses. */}
+      {marks.map(({ p: [ax, ay, bx, by], w }, i) => (
+        <line
+          key={`i${i}`}
+          className="court-plan-ink"
+          style={{ "--i": i } as CSSProperties}
+          pathLength={1}
+          x1={ax}
+          y1={ay}
+          x2={bx}
+          y2={by}
+          stroke={C.line}
+          strokeWidth={w}
           strokeLinecap="round"
         />
       ))}
