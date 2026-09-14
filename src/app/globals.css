@@ -450,6 +450,7 @@ body.is-loading {
   initial-value: 1;
 }
 
+
 @property --cut {
   syntax: "<percentage>";
   inherits: false;
@@ -514,6 +515,43 @@ body.is-loading {
     animation: none;
     -webkit-mask-image: none;
     mask-image: none;
+  }
+}
+
+/* The waitlist button rising in from the bottom edge, last of the arrival.
+   A CSS animation rather than a Motion one on purpose — see the note in
+   Hero.tsx: this is the only action on the page, and a Motion `initial` would
+   ship it as an inline `opacity: 0` that never clears without the bundle.
+   With `both` fill, a button whose animation never runs is simply visible. */
+@keyframes cta-rise {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* THE ONLY THING IN THE HERO THAT ANIMATES. The copy and the court both had
+   entrances and both were taken back out; this one stayed.
+
+   2900ms. `page-arrive` finishes fading the page up at 2420ms, so this leaves
+   roughly half a second of settled, still page before the button moves — the
+   pause is the point, it is what makes the rise read as a deliberate last
+   beat rather than part of the page loading.
+
+   FLOOR IS ~1600ms, whatever else changes. `page-arrive` holds the page at
+   opacity 0 until 1520ms, so an earlier start plays behind the intro and is
+   never seen — exactly how the hero copy's old entrance went unnoticed. */
+.hero-cta-rise {
+  animation: cta-rise 900ms var(--ease-out-soft) 2900ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cta-rise {
+    animation: none;
   }
 }
 
@@ -1350,8 +1388,13 @@ body.is-loading {
      `pointer-events` are deliberately NOT disabled. The element this replaced
      was decorative text and carried `pointer-events-none`; left on a button
      that looks completely normal and simply never clicks. */
+  /* Centres with FLEX, not `left-1/2 -translate-x-1/2`. The button inside
+     animates up from below on arrival, and a Motion `y` on a child of a
+     translate-centred parent is fine — but putting the motion on this element
+     itself would overwrite the centring transform. Flex keeps the two
+     concerns apart, so the entrance cannot break the layout. */
   .hero-cta-bottom {
-    @apply absolute bottom-8 left-1/2 z-20 -translate-x-1/2 sm:bottom-10;
+    @apply absolute inset-x-0 bottom-8 z-20 flex justify-center sm:bottom-10;
   }
   /* The brand mark, pinned to the top of the hero rather than stacked above
      the headline — see the note in Hero.tsx for why it had to leave the copy.

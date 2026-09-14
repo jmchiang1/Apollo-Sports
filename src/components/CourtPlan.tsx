@@ -19,10 +19,11 @@ import { cn } from "@/lib/cn";
  * A club that is still being drawn cannot be mistaken for one you can book,
  * which is the entire reason this replaced the old fly-over.
  *
- * The ink layer is driven by `--draw` (0 → 1) and staggered by `--i`, both
- * handled in globals.css. `--draw` is registered with `initial-value: 1`, so
- * anything that never sets it — no JS, reduced motion, any other consumer of
- * this component — gets the finished court.
+ * The ghost is static: it is just there, at rest, from first paint. Only the
+ * ink moves, driven by `--draw` from SCROLL and staggered by `--i` (see
+ * globals.css). `--draw` is registered with `initial-value: 1`, so anything
+ * that never sets it — reduced motion, another consumer of this component —
+ * gets the finished court rather than a bare plan.
  */
 
 export type Sport = "pickleball" | "badminton";
@@ -146,7 +147,9 @@ export function CourtPlan({
         />
       )}
 
-      {/* Ghost: the plan, always present. */}
+      {/* Ghost: the faint plan, simply present. It briefly drew itself in on
+          page load; that was taken back out, so these are plain strokes with
+          no dash machinery. */}
       {marks.map(({ p: [ax, ay, bx, by], w }, i) => (
         <line
           key={`g${i}`}

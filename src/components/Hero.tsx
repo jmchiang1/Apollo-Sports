@@ -7,7 +7,6 @@ import {
   useSpring,
   useTransform,
   useMotionTemplate,
-  type Variants,
   type MotionStyle,
 } from "motion/react";
 import Image from "next/image";
@@ -123,14 +122,23 @@ const readW = () => window.innerWidth;
 const readH = () => window.innerHeight;
 const readZero = () => 0;
 
-const group: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } },
-};
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 22 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
-};
+/**
+ * HOW THE HERO ARRIVES. The copy and the court are STATIC: they come in with
+ * the page's own `page-arrive` fade and nothing else. Both had entrances of
+ * their own — the copy rising, the court plan drawing itself — and both were
+ * taken back out deliberately. Do not reinstate either without being asked.
+ *
+ * The one moving part is the waitlist button (`cta-rise` in globals.css), and
+ * the court's white ink, which is not an entrance at all: it follows SCROLL.
+ *
+ * THE ONE RULE IF ANY OF THAT CHANGES: `page-arrive` holds the page at opacity
+ * 0 until 1520ms and fades it up to 2420ms, so an entrance starting earlier
+ * than ~1600ms plays behind the intro and is never seen. That is not
+ * hypothetical — the copy's original Motion entrance ran on mount, finished by
+ * ~900ms, and looked to everyone like the hero simply did not animate. Keep
+ * any new delay in step with `page-arrive` and PageLoader's own constants
+ * (FLIGHT_AT / REMOVE_AT).
+ */
 
 /** Accents `hero.headlineHighlight` within a line, if it appears there. */
 function headlineLine(line: string) {
@@ -260,6 +268,10 @@ export function Hero() {
   // The ink. Starts just after the copy has begun clearing, and finishes at
   // 0.9 so the finished court holds for a beat before the pin releases rather
   // than the last line landing on the handover.
+
+  // The solid white ink, back on SCROLL where it belongs. The arrival draws
+  // the faint ghost plan (CSS, `court-ghost-draw`); this lays the white over
+  // it as the camera moves, which is what the pinned hero is for.
   const draw = useTransform(t, [0.05, 0.9], [0, 1]);
 
   // Copy fades out early so the camera move owns the frame.
@@ -346,21 +358,6 @@ export function Hero() {
           </div>
         )}
 
-        {/* Motion serialises `--draw`'s initial 0 into the SSR markup, which is
-            right for a normal load (the client picks up from exactly there,
-            with no flash) and wrong with scripting off, where nothing ever
-            advances it and the court renders as ghost markings with no ink.
-            `!important` is needed because it is beating an inline style, and
-            <noscript> means it only ever applies when there is no JS to do
-            the drawing. */}
-        <noscript>
-          <style
-            dangerouslySetInnerHTML={{
-              __html: ".hero-floor{--draw:1 !important}",
-            }}
-          />
-        </noscript>
-
         {/* ── 3D camera scene ─────────────────────────────────────────── */}
         <motion.div
           // `.hero-scene-off` is display:none — the whole rig stays mounted and
@@ -385,12 +382,8 @@ export function Hero() {
                 marginLeft: -heroCX * K,
                 marginTop: -heroCY * K,
                 transformOrigin: `${heroCX * K}px ${heroCY * K}px`,
-                // Inherited by the court's ink strokes. Set EXPLICITLY to 1
-                // under reduced motion rather than omitted: Motion serialises
-                // this MotionValue's initial 0 into the SSR markup, so leaving
-                // it out does not fall back to the registered `initial-value`,
-                // it keeps the 0 already in the HTML and the court stays a
-                // ghost. Measured.
+                // Scroll-driven ink. Under reduced motion there is no scroll
+                // to follow, so it is pinned at the finished state.
                 "--draw": reduce ? 1 : draw,
                 ...staticFloor,
                 // `MotionStyle` does not model CSS custom properties, so the
@@ -488,17 +481,14 @@ export function Hero() {
             globals.css is scoped to the same selector. Both follow this
             element wherever it goes.
 
-            Its own entrance rather than `variants={fadeUp}` — it is no longer a
-            child of the copy's stagger container, so a variant here would never
-            be triggered. */}
-        <motion.div
-          className="hero-wordmark"
-          initial={reduce ? false : { opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-        >
+            NO entrance animation of its own. It had one, and it ran on mount
+            and was finished by ~800ms — entirely behind the intro, so nothing
+            ever saw it while it cost an inline `opacity: 0` in the SSR markup.
+            What you actually see is `logo-land` handing the mark over from the
+            flying one at 2250ms. */}
+        <div className="hero-wordmark">
           <Wordmark />
-        </motion.div>
+        </div>
 
         {/* Ground for the type. The copy column is centred and the court fills
             the frame from about 63% of the width rightward, so the two overlap
@@ -521,23 +511,16 @@ export function Hero() {
           className="hero-copy-wrap"
           style={staticHero ? undefined : { opacity: copyOpacity, y: copyY }}
         >
-          <motion.div
-            initial={reduce ? "visible" : "hidden"}
-            animate="visible"
-            variants={group}
-            className="hero-copy"
-          >
-            <motion.h1 variants={fadeUp} className="hero-headline">
+          <div className="hero-copy">
+            <h1 className="hero-headline">
               {hero.headlineLines.map((line) => (
                 <span key={line} className="hero-headline-line">
                   {headlineLine(line)}
                 </span>
               ))}
-            </motion.h1>
-            <motion.p variants={fadeUp} className="hero-subhead">
-              {hero.subhead}
-            </motion.p>
-          </motion.div>
+            </h1>
+            <p className="hero-subhead">{hero.subhead}</p>
+          </div>
         </motion.div>
 
         {/* The one action on the page, along the bottom of the viewport rather
@@ -549,9 +532,20 @@ export function Hero() {
             on this page must not clear with it. It sits inside `.hero-pin`, so
             it holds for the whole pinned hero and then scrolls away with it. */}
         <div className="hero-cta-bottom">
-          <ButtonLink href={hero.primaryCta.href} variant="accent" size="lg">
-            {hero.primaryCta.label}
-          </ButtonLink>
+          {/* Rises from below the fold — a CSS animation, NOT a Motion one.
+              Motion bakes its `initial` into the SSR markup as an inline
+              `opacity: 0`, which would leave the only action on the page
+              invisible whenever the bundle does not run. As an animation with
+              `both` fill, a button whose animation never runs is simply there.
+
+              On this inner element rather than `.hero-cta-bottom` because that
+              one does the centring; a transform here would otherwise fight it.
+              See `cta-rise` in globals.css for the timing. */}
+          <div className="hero-cta-rise">
+            <ButtonLink href={hero.primaryCta.href} variant="accent" size="lg">
+              {hero.primaryCta.label}
+            </ButtonLink>
+          </div>
         </div>
       </div>
     </section>
